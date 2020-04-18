@@ -10,16 +10,19 @@ def cigar_parse(cigar):
     if cigar == '=':
         yield (0, '=')
         return
-
-    count = ""
-    for char in cigar:
-        try:
-            int(char)
-        except:
-            yield (int(count), char)
-            count = ""
-        else:
-            count += char
+    try:
+        count = ""
+        for char in cigar:
+            try:
+                int(char)
+            except:
+                yield (int(count), char)
+                count = ""
+            else:
+                count += char
+    except ValueError:
+        print(cigar)
+        raise
 
 
 def slice_query_target(query, target, cigar_tuple):
