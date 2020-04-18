@@ -93,7 +93,8 @@ def make_snp_tables(clusters, seqs, df):
         table = pd.DataFrame(
             {'snp': [snp_count(h, seqs) for h in hits],
              'location': [location(get_id(h.query), df) for h in hits],
-             'date': pd.to_datetime(df['date'][df.index.isin(idx)])},
+             'date': pd.to_datetime(df['date'][df.index.isin(idx)],
+                                    errors='coerce')},
             index=idx)
         table = table.sort_values(by=['snp', 'date'])
         snps[get_id(target)] = table
