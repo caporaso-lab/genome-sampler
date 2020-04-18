@@ -16,6 +16,8 @@ def cigar_parse(cigar):
             try:
                 int(char)
             except:
+                if not count:
+                    count = 0
                 yield (int(count), char)
                 count = ""
             else:
