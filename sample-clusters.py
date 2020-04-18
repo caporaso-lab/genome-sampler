@@ -7,6 +7,10 @@ import skbio
 
 
 def cigar_parse(cigar):
+    if cigar == '=':
+        yield (0, '=')
+        return
+
     count = ""
     for char in cigar:
         try:
@@ -37,6 +41,9 @@ def slice_query_target(query, target, cigar_tuple):
             target = target[count:]
         elif op == 'D':
             query = query[count:]
+        elif op == '=':
+            new_query = query
+            new_target = target
 
     return skbio.DNA(new_query), skbio.DNA(new_target)
 
