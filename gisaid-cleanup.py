@@ -44,8 +44,8 @@ with open(argv[2], 'w') as output_f:
             count_too_much_N += 1
             continue
 
-        s.metadata['id'] = s.metadata['id'].replace(' ', '_')
-
+        s.metadata['id'] = ' '.join([s.metadata['id'], s.metadata['description']]).strip().replace(' ', '_')
+        del s.metadata['description']
         s = skbio.DNA(str(s), metadata=s.metadata)
         s.write(output_f, format='fasta')
         count_written += 1
