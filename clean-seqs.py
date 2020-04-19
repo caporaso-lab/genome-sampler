@@ -36,7 +36,7 @@ def fix_ua(s):
 def main(input, output, remove, fix_date):
 
     if remove:
-        remove = set(l for l in remove)
+        remove = set(l.strip() for l in remove)
     else:
         remove = set()
 
