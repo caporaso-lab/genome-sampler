@@ -56,14 +56,14 @@ def main(input, output, remove, fix_date):
             nonlocal renamed
             total += 1
 
-            if seq.metadata['id'] in remove:
-                removed += 1
-                continue
-
             if seq.metadata['id'] in seen:
                 duplicates += 1
                 continue
             seen.add(seq.metadata['id'])
+
+            if seq.metadata['id'] in remove:
+                removed += 1
+                continue
 
             if fix_date:
                 change = False
