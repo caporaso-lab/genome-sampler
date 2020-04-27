@@ -6,16 +6,16 @@ import numpy as np
 import skbio
 
 @click.command()
-@click.option('--tsv', help='filepath to sequence ids',
+@click.option('--tsv', help='filepath to sequence metadata',
               type=click.File(mode='r'), required=True)
 @click.option('--max-conservation', 
               help=('only show positions with conservation less'
-                    ' than (exclusive) this value'),
+                    ' than (exclusive) this value (default=1.0'),
               type=float, default=1.0)
-@click.argument('input', type=click.Path())
+@click.argument('alignment', type=click.Path())
 @click.argument('output', type=click.Path())
 @click.argument('output-gap-degen', type=click.Path())
-def main(input, output, output_gap_degen, tsv, max_conservation):
+def main(alignment, output, output_gap_degen, tsv, max_conservation):
     group_column = 'clade'
     df = pd.read_csv(tsv, sep='\t', header=0)
     try:
@@ -29,7 +29,7 @@ def main(input, output, output_gap_degen, tsv, max_conservation):
         raise KeyError('Column named "%s" does not exist in metadata. Existing columns are: %s' 
                        % (group_column, ', '.join(df.columns)))
 
-    msa = skbio.TabularMSA.read(input, format='fasta', constructor=skbio.DNA)
+    msa = skbio.TabularMSA.read(alignment, format='fasta', constructor=skbio.DNA)
     msa.reassign_index(minter='id')
 
     # indices must be identical (we can consider relaxing this if necessary)
