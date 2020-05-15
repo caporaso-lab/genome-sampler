@@ -1,0 +1,2 @@
+include versioneer.py
+include q2_covid_19/_version.py
