@@ -1,4 +1,3 @@
-import qiime2
 from qiime2.plugin import Plugin, Metadata, Int, Range
 
 from q2_types.feature_data import FeatureData
@@ -16,7 +15,7 @@ plugin = Plugin(
     short_description='TODO'
 )
 
-
+plugin.register_formats(IDSelectionDirFmt)
 plugin.register_semantic_types(Selection)
 plugin.register_semantic_type_to_format(FeatureData[Selection],
                                         artifact_format=IDSelectionDirFmt)
@@ -26,6 +25,8 @@ def _1(obj: IDSelection) -> IDSelectionDirFmt:
     result = IDSelectionDirFmt()
 
     inclusion = obj.inclusion
+    assert not inclusion.index.has_duplicates
+
     include = inclusion.index[inclusion]
     exclude = inclusion.index[~inclusion]
     with open(result.included.path_maker(), 'w') as fh:
@@ -33,9 +34,7 @@ def _1(obj: IDSelection) -> IDSelectionDirFmt:
     with open(result.excluded.path_maker(), 'w') as fh:
         fh.write('\n'.join(exclude))
 
-    md = obj.metadata.copy()
-    md.index.name = 'id'
-    qiime2.Metadata(md).save(result.metadata.path_maker())
+    obj.metadata.save(result.metadata.path_maker())
 
     with open(result.label.path_maker(), 'w') as fh:
         fh.write(obj.label)

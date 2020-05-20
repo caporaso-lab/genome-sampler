@@ -37,7 +37,7 @@ class IDSelectionDirFmt(model.DirectoryFormat):
 
 
 class IDSelection:
-    def __init__(self, inclusion: pd.Series, metadata: pd.DataFrame, 
+    def __init__(self, inclusion: pd.Series, metadata: qiime2.Metadata,
                  label: str):
         self.inclusion = inclusion
         self.metadata = metadata
