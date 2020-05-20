@@ -3,7 +3,7 @@
 {% set release = '.'.join(version.split('.')[:2]) %}
 
 package:
-  name: q2-covid-19
+  name: q2-covid
   version: {{ version }}
 
 source:
@@ -26,10 +26,10 @@ requirements:
 
 test:
   imports:
-    - q2_covid_19
-    - qiime2.plugins.covid_19
+    - q2_covid
+    - qiime2.plugins.covid
 
 about:
-  home: https://github.com/caporaso-lab/q2-covid-19
+  home: https://github.com/caporaso-lab/q2-covid
   license: BSD-3-Clause
   license_family: BSD

@@ -38,3 +38,10 @@ def main(input, output, rate, hist):
 
 if __name__ == '__main__':
     main()
+
+
+def subsample_longitudinal(time: qiime2.CategoricalMetadataColumn,
+                           start: str,
+                           rate_n: int = 7,
+                           rate_duration: int = 7) -> pd.Series:
+    pass
