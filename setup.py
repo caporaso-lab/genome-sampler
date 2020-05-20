@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 import versioneer
 
 setup(
-    name='q2-covid-19',
+    name='q2-covid',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     license='BSD-3-Clause',
@@ -11,13 +11,13 @@ setup(
     author="Evan Bolyen",
     author_email="ebolyen@gmail.com",
     description="TODO",
-    url="https://github.com/caporaso-lab/q2-covid-19",
+    url="https://github.com/caporaso-lab/q2-covid",
     entry_points={
         'qiime2.plugins':
-        ['q2-covid-19=q2_covid_19.plugin_setup:plugin']
+        ['q2-covid=q2_covid.plugin_setup:plugin']
     },
     package_data={
-        'q2_covid_19': ['citations.bib']
+        'q2_covid': ['citations.bib']
     },
     zip_safe=False,
 )

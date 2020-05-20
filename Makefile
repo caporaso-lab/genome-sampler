@@ -12,7 +12,7 @@ test: all
 	py.test
 
 test-cov: all
-	py.test --cov=q2_covid_19
+	py.test --cov=q2_covid
 
 install: all
 	$(PYTHON) setup.py install
