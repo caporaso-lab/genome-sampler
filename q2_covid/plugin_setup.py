@@ -1,9 +1,11 @@
+import qiime2
 from qiime2.plugin import Plugin, Metadata, Int, Range
 
 from q2_types.feature_data import FeatureData
 
 import q2_covid
-from q2_covid.common import (IDSelectionDirFmt, IDSelection, Selection)
+from q2_covid.common import (IDSelectionDirFmt, IDSelection, Selection,
+                             IDMetadataFormat, UNIXListFormat)
 from q2_covid.subsample_random import subsample_random
 
 plugin = Plugin(
@@ -43,6 +45,12 @@ def _1(obj: IDSelection) -> IDSelectionDirFmt:
     return result
 
 
+@plugin.register_transformer
+def _2(fmt: IDSelectionDirFmt) -> qiime2.Metadata:
+    md = fmt.metadata.view(IDMetadataFormat).to_metadata()
+    return md.filter_ids(fmt.included.view(UNIXListFormat).to_list())
+
+
 plugin.methods.register_function(
     function=subsample_random,
     inputs={},
@@ -62,5 +70,5 @@ plugin.methods.register_function(
         'selection': 'The selected IDs.'
     },
     name='Randomly sample IDs',
-    description=''
+    description='Randomly sample IDs without replacement.'
 )
