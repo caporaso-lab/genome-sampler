@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     author="Evan Bolyen",
     author_email="ebolyen@gmail.com",
-    description="TODO",
+    description="QIIME 2 plugin for genomic epidemiology.",
     url="https://github.com/caporaso-lab/q2-covid",
     entry_points={
         'qiime2.plugins':

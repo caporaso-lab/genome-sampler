@@ -17,7 +17,7 @@ class UNIXListFormat(model.TextFileFormat):
             return [s.strip() for s in fh]
 
 
-class IDMetadata(model.TextFileFormat):
+class IDMetadataFormat(model.TextFileFormat):
     def _validate_(self, level):
         try:
             self.to_metadata()
@@ -32,7 +32,7 @@ class IDMetadata(model.TextFileFormat):
 class IDSelectionDirFmt(model.DirectoryFormat):
     included = model.File('included.txt', format=UNIXListFormat)
     excluded = model.File('excluded.txt', format=UNIXListFormat)
-    metadata = model.File('metadata.tsv', format=IDMetadata)
+    metadata = model.File('metadata.tsv', format=IDMetadataFormat)
     label = model.File('label.txt', format=UNIXListFormat)
 
 

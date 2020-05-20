@@ -28,6 +28,13 @@ class TestSubsampleRandom(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'larger than'):
             subsample_random(self.md, n)
 
+    def test_n_matches(self):
+        n = self.md.id_count
+
+        sel = subsample_random(self.md, n)
+
+        self.assertEqual(sel.inclusion.sum(), n)
+
     def test_seed_works(self):
         n = 15
         seed = 123
@@ -38,7 +45,6 @@ class TestSubsampleRandom(unittest.TestCase):
         for _ in range(50):
             sel = subsample_random(self.md, n, seed=seed)
             self.assertEqual(list(sel.inclusion), exp)
-
 
 
 

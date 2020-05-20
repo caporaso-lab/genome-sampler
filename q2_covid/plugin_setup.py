@@ -11,8 +11,9 @@ plugin = Plugin(
     website='https://github.com/caporaso-lab/q2-covid',
     package='q2_covid',
     version=q2_covid.__version__,
-    description='TODO',
-    short_description='TODO'
+    description='Tools for genomic epidemiology focused on the SARS-CoV-2'
+                ' virus.',
+    short_description='Tools for genomic epidemiology.'
 )
 
 plugin.register_formats(IDSelectionDirFmt)
@@ -53,12 +54,12 @@ plugin.methods.register_function(
     outputs=[('selection', FeatureData[Selection])],
     parameter_descriptions={
         'ids': 'IDs to subsample from.',
-        'n': 'How many IDs to sample.',
-        'seed': 'Random seed to use to initialize random number generator'
+        'n': 'Number of IDs to sample.',
+        'seed': 'Random seed to use to initialize random number generator.'
     },
     input_descriptions={},
     output_descriptions={
-        'selection': 'The selected IDs'
+        'selection': 'The selected IDs.'
     },
     name='Randomly sample IDs',
     description=''
