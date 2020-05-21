@@ -1,5 +1,6 @@
 import qiime2
-from qiime2.plugin import Plugin, Metadata, Int, Range
+from qiime2.plugin import (Plugin, Metadata, Int, Range, Str, MetadataColumn,
+                           Categorical)
 
 from q2_types.feature_data import FeatureData
 
@@ -7,6 +8,7 @@ import q2_covid
 from q2_covid.common import (IDSelectionDirFmt, IDSelection, Selection,
                              IDMetadataFormat, UNIXListFormat)
 from q2_covid.subsample_random import subsample_random
+from q2_covid.subsample_longitudinal import subsample_longitudinal
 
 plugin = Plugin(
     name='covid',
@@ -71,4 +73,22 @@ plugin.methods.register_function(
     },
     name='Randomly sample IDs',
     description='Randomly sample IDs without replacement.'
+)
+
+
+plugin.methods.register_function(
+    function=subsample_longitudinal,
+    inputs={},
+    parameters={
+        'time': MetadataColumn[Categorical],
+        'start': Str,
+        'rate_n': Int % Range(1, None),
+        'rate_duration': Int % Range(1, None)
+    },
+    outputs=[('selection', FeatureData[Selection])],
+    input_descriptions={},
+    parameter_descriptions={},
+    output_descriptions={},
+    name='',
+    description=''
 )
