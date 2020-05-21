@@ -36,5 +36,3 @@ class TestGISAIDDNAFASTAFormatTransformerTests(TestPluginBase):
 
         self.assertEqual(obs[1].metadata['id'], 'pangolin/Asdf/JKL/2017')
         self.assertEqual(str(obs[1]), 'ACGTGACCANNNNNNNNNACGTCAGTACAGTACCANN')
-
-        

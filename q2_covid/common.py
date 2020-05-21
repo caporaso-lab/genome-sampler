@@ -53,11 +53,11 @@ Selection = SemanticType('Selection', variant_of=FeatureData.field['type'])
 # https://github.com/qiime2/q2-types/blob/058ee0e40e38edaa02b1aad034df37456aeb4ddf/q2_types/feature_data/_format.py#L146
 class GISAIDDNAFASTAFormat(model.TextFileFormat):
     def _validate_lines(self, max_lines):
-        FASTADNAValidator = re.compile(r'[ACGTURYKMSWBDHVNacgturykmswbdhvn\- ]+\r?\n?')
+        FASTADNAValidator = re.compile(r'[ACGTURYKMSWBDHVNacgturykmswbdhvn\-\. ]+\r?\n?')
         ValidationSet = frozenset(('A', 'C', 'G', 'T', 'U', 'R', 'Y', 'K', 'M',
                                    'S', 'W', 'B', 'D', 'H', 'V', 'N', 'a', 'c',
                                    'g', 't', 'u', 'r', 'y', 'k', 'm', 's', 'w',
-                                   'b', 'd', 'h', 'v', 'n', '-', ' '))
+                                   'b', 'd', 'h', 'v', 'n', '-', '.', ' '))
 
         last_line_was_ID = False
         ids = {}
