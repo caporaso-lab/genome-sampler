@@ -1,18 +1,19 @@
 import qiime2
-from qiime2.plugin import Plugin, Metadata, Int, Range
+from qiime2.plugin import Plugin, Metadata, Int, Range, Float
 
 import skbio
 import tempfile
 
 from q2_types.feature_data import (
         FeatureData, DNAIterator, DNAFASTAFormat, 
-        DNASequencesDirectoryFormat)
+        DNASequencesDirectoryFormat, Sequence)
 
 import q2_covid
 from q2_covid.common import (IDSelectionDirFmt, IDSelection, Selection,
                              IDMetadataFormat, UNIXListFormat, 
                              GISAIDDNAFASTAFormat)
 from q2_covid.subsample_random import subsample_random
+from q2_covid.filter import filter_seqs
 
 plugin = Plugin(
     name='covid',
@@ -113,4 +114,31 @@ plugin.methods.register_function(
     },
     name='Randomly sample IDs',
     description='Randomly sample IDs without replacement.'
+)
+
+
+plugin.methods.register_function(
+    function=filter_seqs,
+    inputs={'sequences': FeatureData[Sequence]},
+    parameters={
+        'min_length': Int % Range(1, None),
+        'max_length': Int % Range(1, None),
+        'max_ambiguous_fraction': Float % Range(0, 1, inclusive_end=True)
+    },
+    outputs=[('filtered_sequences', FeatureData[Sequence])],
+    parameter_descriptions={
+        'min_length': ('The minimum length of a sequence that will allow' 
+                       ' it be retained.'),
+        'max_length': ('The maximum length of a sequence that will allow'
+                       ' the sequence to be retained.'),
+        'max_ambiguous_fraction': 
+         ('The maximum fraction of sequence characters that can be ambiguous'
+          ' (e.g., N) that will allow it be retained.')
+    },
+    input_descriptions={'sequences': 'The sequences to be filtered.'},
+    output_descriptions={
+        'filtered_sequences': 'The sequences retained after filtering.'
+    },
+    name='Filter sequences.',
+    description='Filter sequences based on their length and ambiguity.'
 )

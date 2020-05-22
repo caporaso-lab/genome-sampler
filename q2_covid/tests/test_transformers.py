@@ -29,10 +29,13 @@ class TestGISAIDDNAFASTAFormatTransformerTests(TestPluginBase):
         obs = skbio.io.read(obs_fp, format='fasta', constructor=skbio.DNA)
         obs = list(obs)
         
-        self.assertEqual(len(obs), 2)
+        self.assertEqual(len(obs), 3)
 
         self.assertEqual(obs[0].metadata['id'], 'USA/AZ-TGXXXX/2020')
         self.assertEqual(str(obs[0]), 'ACGTNTGCATNACANTGCTANNNNNNNN')
 
         self.assertEqual(obs[1].metadata['id'], 'pangolin/Asdf/JKL/2017')
         self.assertEqual(str(obs[1]), 'ACGTGACCANNNNNNNNNACGTCAGTACAGTACCANN')
+
+        self.assertEqual(obs[2].metadata['id'], 'NC_045512.2')
+        self.assertEqual(len(obs[2]), 29903)
