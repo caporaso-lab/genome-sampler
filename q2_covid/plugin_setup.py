@@ -137,9 +137,7 @@ plugin.methods.register_function(
                        ' will be excluded. The start date plus the '
                        '`days_per_interval` defines the bounds of the '
                        'sampling intervals. If not provided, this will '
-                       'default to the first date in metadata. The date ' 
-                       'must be provided in ISO 8601 format (see '
-                       'https://en.wikipedia.org/wiki/ISO_8601).'),
+                       'default to the first date in metadata.'),
         'samples_per_interval': ('The number of random dates to select in each '
                                  'interval.'),
         'days_per_interval': ('The length of each interval in days.'),
@@ -150,7 +148,10 @@ plugin.methods.register_function(
     },
     name='Subsample dates across time',
     description=('Sample dates at random without replacement '
-                 'from each user-defined interval.')
+                 'from each user-defined interval. Dates should be provided '
+                 'in ISO-8601 format (see '
+                 'https://en.wikipedia.org/wiki/ISO_8601) both in metadata '
+                 'and for `start_date`.')
 )
 
 
