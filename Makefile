@@ -12,7 +12,7 @@ test: all
 	py.test
 
 test-cov: all
-	py.test --cov=q2_covid
+	py.test --cov=genome_sampler
 
 install: all
 	$(PYTHON) setup.py install

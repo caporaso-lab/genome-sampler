@@ -3,7 +3,7 @@ import unittest
 import pandas as pd
 import qiime2
 
-from q2_covid.subsample_random import subsample_random
+from genome_sampler.subsample_random import subsample_random
 
 
 class TestSubsampleRandom(unittest.TestCase):

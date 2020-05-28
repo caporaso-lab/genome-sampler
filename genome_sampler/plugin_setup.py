@@ -9,20 +9,20 @@ from q2_types.feature_data import (
         FeatureData, DNAIterator, DNAFASTAFormat, 
         DNASequencesDirectoryFormat, Sequence)
 
-import q2_covid
-from q2_covid.common import (IDSelectionDirFmt, IDSelection, Selection,
+import genome_sampler
+from genome_sampler.common import (IDSelectionDirFmt, IDSelection, Selection,
                              IDMetadataFormat, UNIXListFormat, 
                              GISAIDDNAFASTAFormat)
-from q2_covid.subsample_random import subsample_random
-from q2_covid.subsample_longitudinal import subsample_longitudinal
-from q2_covid.filter import filter_seqs
+from genome_sampler.subsample_random import subsample_random
+from genome_sampler.subsample_longitudinal import subsample_longitudinal
+from genome_sampler.filter import filter_seqs
 
 plugin = Plugin(
-    name='covid',
-    website='https://github.com/caporaso-lab/q2-covid',
-    package='q2_covid',
-    version=q2_covid.__version__,
-    description='Tools for sampling collections of genomes.',
+    name='genome-sampler',
+    website='https://github.com/caporaso-lab/genome-sampler',
+    package='genome_sampler',
+    version=genome_sampler.__version__,
+    description='Tools for sampling from collections of genomes.',
     short_description='Genome sampler.'
 )
 

@@ -3,21 +3,22 @@ from setuptools import find_packages, setup
 import versioneer
 
 setup(
-    name='q2-covid',
+    name='genome-sampler',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     license='BSD-3-Clause',
     packages=find_packages(),
     author="Evan Bolyen",
     author_email="ebolyen@gmail.com",
-    description="QIIME 2 plugin for genomic epidemiology.",
-    url="https://github.com/caporaso-lab/q2-covid",
+    description="QIIME 2 plugin for sampling collections of sequences.",
+    url="https://github.com/caporaso-lab/genome-sampler",
     entry_points={
         'qiime2.plugins':
-        ['q2-covid=q2_covid.plugin_setup:plugin']
+        ['genome-sampler=genome_sampler.plugin_setup:plugin']
     },
     package_data={
-        'q2_covid': ['citations.bib']
+        'genome_sampler': ['citations.bib'],
+        'genome_sampler.tests': ['data/*']
     },
     zip_safe=False,
 )

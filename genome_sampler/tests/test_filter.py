@@ -16,7 +16,7 @@ from ..filter import filter_seqs
 
 
 class FilterTests(TestPluginBase):
-    package = 'q2_covid.tests'
+    package = 'genome_sampler.tests'
 
     def test_no_filter(self):
         exp = pd.Series({'s1': skbio.DNA('ACGTTNGACA', metadata={'id': 's1'}),

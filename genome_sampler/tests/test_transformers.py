@@ -18,7 +18,7 @@ from ..plugin_setup import GISAIDDNAFASTAFormat
 
 
 class TestGISAIDDNAFASTAFormatTransformerTests(TestPluginBase):
-    package = 'q2_covid.tests'
+    package = 'genome_sampler.tests'
 
     def test_gisaid_dna_fasta_format_to_dna_iterator(self):
         input, obs = self.transform_format(GISAIDDNAFASTAFormat, 
