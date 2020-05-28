@@ -123,7 +123,7 @@ plugin.methods.register_function(
     parameters={
         'min_length': Int % Range(1, None),
         'max_length': Int % Range(1, None),
-        'max_ambiguous_fraction': Float % Range(0, 1, inclusive_end=True)
+        'max_proportion_ambiguous': Float % Range(0, 1, inclusive_end=True)
     },
     outputs=[('filtered_sequences', FeatureData[Sequence])],
     parameter_descriptions={
@@ -131,8 +131,8 @@ plugin.methods.register_function(
                        ' it be retained.'),
         'max_length': ('The maximum length of a sequence that will allow'
                        ' the sequence to be retained.'),
-        'max_ambiguous_fraction': 
-         ('The maximum fraction of sequence characters that can be ambiguous'
+        'max_proportion_ambiguous':
+         ('The maximum proportion of sequence characters that can be ambiguous'
           ' (e.g., N) that will allow it be retained.')
     },
     input_descriptions={'sequences': 'The sequences to be filtered.'},

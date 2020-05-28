@@ -49,7 +49,7 @@ class FilterTests(TestPluginBase):
         inp = pd.Series({'s1': skbio.DNA('ACGTTGACANNNN', metadata={'id': 's1'}),
                          's2': skbio.DNA('AA', metadata={'id': 's2'})})
         exp = pd.Series({'s2': skbio.DNA('AA', metadata={'id': 's2'})})
-        obs = filter_seqs(inp, max_ambiguous_fraction=.3)
+        obs = filter_seqs(inp, max_proportion_ambiguous=.3)
 
         self.assertEqual(list(obs.index), list(exp.index))
         self.assertEqual(list(obs), list(exp))
@@ -58,7 +58,7 @@ class FilterTests(TestPluginBase):
         inp = pd.Series({'s1': skbio.DNA('ACGTTGACANNNN', metadata={'id': 's1'}),
                          's2': skbio.DNA('AA', metadata={'id': 's2'})})
         exp = pd.Series({'s2': skbio.DNA('AA', metadata={'id': 's2'})})
-        obs = filter_seqs(inp, max_ambiguous_fraction=.3, max_length=5)
+        obs = filter_seqs(inp, max_proportion_ambiguous=.3, max_length=5)
 
         self.assertEqual(list(obs.index), list(exp.index))
         self.assertEqual(list(obs), list(exp))
@@ -67,7 +67,7 @@ class FilterTests(TestPluginBase):
         inp = pd.Series({'s1': skbio.DNA('ACGTTGACA', metadata={'id': 's1'}),
                          's2': skbio.DNA('AAN', metadata={'id': 's2'})})
         exp = pd.Series({'s1': skbio.DNA('ACGTTGACA', metadata={'id': 's1'})})
-        obs = filter_seqs(inp, max_ambiguous_fraction=.3, min_length=4)
+        obs = filter_seqs(inp, max_proportion_ambiguous=.3, min_length=4)
 
         self.assertEqual(list(obs.index), list(exp.index))
         self.assertEqual(list(obs), list(exp))
