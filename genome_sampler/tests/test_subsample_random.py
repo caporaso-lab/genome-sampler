@@ -47,6 +47,5 @@ class TestSubsampleRandom(unittest.TestCase):
             self.assertEqual(list(sel.inclusion.items()), exp)
 
 
-
 if __name__ == '__main__':
     unittest.main()

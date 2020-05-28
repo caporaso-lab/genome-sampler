@@ -1,18 +1,31 @@
-import qiime2
-from qiime2.plugin import (Plugin, Metadata, Int, Range, Str, MetadataColumn,
-                           Categorical, Float)
-
 import skbio
-import tempfile
-
+import qiime2
+from qiime2.plugin import (
+    Plugin,
+    Metadata,
+    Int,
+    Range,
+    Str,
+    MetadataColumn,
+    Categorical,
+    Float,
+)
 from q2_types.feature_data import (
-        FeatureData, DNAIterator, DNAFASTAFormat, 
-        DNASequencesDirectoryFormat, Sequence)
+    FeatureData,
+    DNAFASTAFormat,
+    DNASequencesDirectoryFormat,
+    Sequence,
+)
 
 import genome_sampler
-from genome_sampler.common import (IDSelectionDirFmt, IDSelection, Selection,
-                             IDMetadataFormat, UNIXListFormat, 
-                             GISAIDDNAFASTAFormat)
+from genome_sampler.common import (
+    IDSelectionDirFmt,
+    IDSelection,
+    Selection,
+    IDMetadataFormat,
+    UNIXListFormat,
+    GISAIDDNAFASTAFormat,
+)
 from genome_sampler.subsample_random import subsample_random
 from genome_sampler.subsample_longitudinal import subsample_longitudinal
 from genome_sampler.filter import filter_seqs
@@ -31,6 +44,7 @@ plugin.register_formats(GISAIDDNAFASTAFormat)
 plugin.register_semantic_types(Selection)
 plugin.register_semantic_type_to_format(FeatureData[Selection],
                                         artifact_format=IDSelectionDirFmt)
+
 
 @plugin.register_transformer
 def _1(obj: IDSelection) -> IDSelectionDirFmt:
@@ -68,7 +82,7 @@ def _read_gisaid_dna_fasta(path):
                     yield line
                 else:
                     # Due to a bug in skbio 0.5.5, the lowercase option can't
-                    # be used with skbio.io.read for reading DNA sequences. 
+                    # be used with skbio.io.read for reading DNA sequences.
                     # Convert sequences to uppercase here.
                     line = line.upper()
                     # Spaces and gap characters can appear in unaligned GISAID
@@ -76,7 +90,7 @@ def _read_gisaid_dna_fasta(path):
                     line = line.replace('-', '')
                     line = line.replace('.', '')
                     line = line.replace(' ', '')
-                    yield line 
+                    yield line
 
     result = skbio.io.read(_cleanup_gen(), verify=False,
                            format='fasta', constructor=skbio.DNA)
@@ -127,31 +141,31 @@ plugin.methods.register_function(
         'start_date': Str,
         'samples_per_interval': Int % Range(1, None),
         'days_per_interval': Int % Range(1, None),
-        'seed': Int % Range(0, None)
+        'seed': Int % Range(0, None),
     },
     outputs=[('selection', FeatureData[Selection])],
     input_descriptions={},
     parameter_descriptions={
         'dates': 'Dates to sample from.',
-        'start_date': ('Start date of first interval. Dates before this date '
-                       ' will be excluded. The start date plus the '
-                       '`days_per_interval` defines the bounds of the '
-                       'sampling intervals. If not provided, this will '
-                       'default to the first date in metadata.'),
-        'samples_per_interval': ('The number of random dates to select in each '
-                                 'interval.'),
-        'days_per_interval': ('The length of each interval in days.'),
-        'seed': ('Seed used for random number generators.')
+        'start_date': 'Start date of first interval. Dates before this date '
+                      ' will be excluded. The start date plus the '
+                      '`days_per_interval` defines the bounds of the '
+                      'sampling intervals. If not provided, this will '
+                      'default to the first date in metadata.',
+        'samples_per_interval': 'The number of random dates to select in '
+                                'each interval.',
+        'days_per_interval': 'The length of each interval in days.',
+        'seed': 'Seed used for random number generators.',
     },
     output_descriptions={
         'selection': 'The subsampled dates.'
     },
     name='Subsample dates across time',
-    description=('Sample dates at random without replacement '
-                 'from each user-defined interval. Dates should be provided '
-                 'in ISO-8601 format (see '
-                 'https://en.wikipedia.org/wiki/ISO_8601) both in metadata '
-                 'and for `start_date`.')
+    description='Sample dates at random without replacement '
+                'from each user-defined interval. Dates should be provided '
+                'in ISO-8601 format (see '
+                'https://en.wikipedia.org/wiki/ISO_8601) both in metadata '
+                'and for `start_date`.',
 )
 
 
@@ -165,18 +179,18 @@ plugin.methods.register_function(
     },
     outputs=[('filtered_sequences', FeatureData[Sequence])],
     parameter_descriptions={
-        'min_length': ('The minimum length of a sequence that will allow' 
-                       ' it be retained.'),
-        'max_length': ('The maximum length of a sequence that will allow'
-                       ' the sequence to be retained.'),
+        'min_length': 'The minimum length of a sequence that will allow'
+                      ' it be retained.',
+        'max_length': 'The maximum length of a sequence that will allow'
+                      ' the sequence to be retained.',
         'max_proportion_ambiguous':
-         ('The maximum proportion of sequence characters that can be ambiguous'
-          ' (e.g., N) that will allow it be retained.')
+            'The maximum proportion of sequence characters that can be '
+            'ambiguous (e.g., N) that will allow it be retained.',
     },
     input_descriptions={'sequences': 'The sequences to be filtered.'},
     output_descriptions={
         'filtered_sequences': 'The sequences retained after filtering.'
     },
     name='Filter sequences.',
-    description='Filter sequences based on their length and ambiguity.'
+    description='Filter sequences based on their length and ambiguity.',
 )

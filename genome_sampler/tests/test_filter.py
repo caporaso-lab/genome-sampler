@@ -1,12 +1,3 @@
-# ----------------------------------------------------------------------------
-# Copyright (c) 2016-2020, QIIME 2 development team.
-#
-# Distributed under the terms of the Modified BSD License.
-#
-# The full license is in the file LICENSE, distributed with this software.
-# ----------------------------------------------------------------------------
-
-import unittest
 import skbio
 import pandas as pd
 
@@ -46,16 +37,18 @@ class FilterTests(TestPluginBase):
         self.assertEqual(list(obs), list(exp))
 
     def test_too_ambiguous(self):
-        inp = pd.Series({'s1': skbio.DNA('ACGTTGACANNNN', metadata={'id': 's1'}),
+        inp = pd.Series({'s1': skbio.DNA('ACGTTGACANNNN',
+                                         metadata={'id': 's1'}),
                          's2': skbio.DNA('AA', metadata={'id': 's2'})})
         exp = pd.Series({'s2': skbio.DNA('AA', metadata={'id': 's2'})})
         obs = filter_seqs(inp, max_proportion_ambiguous=.3)
 
         self.assertEqual(list(obs.index), list(exp.index))
         self.assertEqual(list(obs), list(exp))
-    
+
     def test_too_long_and_too_ambiguous(self):
-        inp = pd.Series({'s1': skbio.DNA('ACGTTGACANNNN', metadata={'id': 's1'}),
+        inp = pd.Series({'s1': skbio.DNA('ACGTTGACANNNN',
+                                         metadata={'id': 's1'}),
                          's2': skbio.DNA('AA', metadata={'id': 's2'})})
         exp = pd.Series({'s2': skbio.DNA('AA', metadata={'id': 's2'})})
         obs = filter_seqs(inp, max_proportion_ambiguous=.3, max_length=5)

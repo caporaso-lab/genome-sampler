@@ -8,13 +8,14 @@ from genome_sampler.common import IDSelection
 
 def _sample_group(samples_per_interval, seed):
     state = np.random.RandomState(seed=seed)
+
     def _sampler(df):
         df = df.dropna(axis=0)
         if len(df) > samples_per_interval:
             return df.sample(samples_per_interval, random_state=state)
         else:
             return df
-    
+
     return _sampler
 
 
@@ -39,8 +40,8 @@ def subsample_longitudinal(dates: qiime2.CategoricalMetadataColumn,
             # observation)
             df.loc[filter_before] = float('nan')
 
-    grouped = df.groupby(pd.Grouper(freq=window_size, convention='start', 
-                                    closed='left'), 
+    grouped = df.groupby(pd.Grouper(freq=window_size, convention='start',
+                                    closed='left'),
                          group_keys=False)
     filtered_df = grouped.apply(_sample_group(samples_per_interval, seed))
 

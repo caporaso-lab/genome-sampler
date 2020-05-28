@@ -1,12 +1,3 @@
-# ----------------------------------------------------------------------------
-# Copyright (c) 2016-2020, QIIME 2 development team.
-#
-# Distributed under the terms of the Modified BSD License.
-#
-# The full license is in the file LICENSE, distributed with this software.
-# ----------------------------------------------------------------------------
-
-import unittest
 import os.path
 
 import skbio
@@ -21,14 +12,14 @@ class TestGISAIDDNAFASTAFormatTransformerTests(TestPluginBase):
     package = 'genome_sampler.tests'
 
     def test_gisaid_dna_fasta_format_to_dna_iterator(self):
-        input, obs = self.transform_format(GISAIDDNAFASTAFormat, 
+        input, obs = self.transform_format(GISAIDDNAFASTAFormat,
                                            DNASequencesDirectoryFormat,
                                            filename='gisaid1.fasta')
-        
+
         obs_fp = os.path.join(str(obs), 'dna-sequences.fasta')
         obs = skbio.io.read(obs_fp, format='fasta', constructor=skbio.DNA)
         obs = list(obs)
-        
+
         self.assertEqual(len(obs), 3)
 
         self.assertEqual(obs[0].metadata['id'], 'USA/AZ-TGXXXX/2020')
