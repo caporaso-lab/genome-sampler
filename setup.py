@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     author="Evan Bolyen",
     author_email="ebolyen@gmail.com",
-    description="QIIME 2 plugin for sampling collections of sequences.",
+    description="QIIME 2 plugin for sampling from collections of sequences.",
     url="https://github.com/caporaso-lab/genome-sampler",
     entry_points={
         'qiime2.plugins':
