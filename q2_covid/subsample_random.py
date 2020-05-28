@@ -1,5 +1,5 @@
 import pandas as pd
-import qiime2 
+import qiime2
 
 from q2_covid.common import IDSelection
 

@@ -40,11 +40,11 @@ class TestSubsampleRandom(unittest.TestCase):
         seed = 123
         sel = subsample_random(self.md, n, seed=seed)
 
-        exp = list(sel.inclusion)
+        exp = list(sel.inclusion.items())
 
         for _ in range(50):
             sel = subsample_random(self.md, n, seed=seed)
-            self.assertEqual(list(sel.inclusion), exp)
+            self.assertEqual(list(sel.inclusion.items()), exp)
 
 
 

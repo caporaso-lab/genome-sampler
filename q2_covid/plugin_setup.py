@@ -1,5 +1,6 @@
 import qiime2
-from qiime2.plugin import Plugin, Metadata, Int, Range, Float
+from qiime2.plugin import (Plugin, Metadata, Int, Range, Str, MetadataColumn,
+                           Categorical, Float)
 
 import skbio
 import tempfile
@@ -13,6 +14,7 @@ from q2_covid.common import (IDSelectionDirFmt, IDSelection, Selection,
                              IDMetadataFormat, UNIXListFormat, 
                              GISAIDDNAFASTAFormat)
 from q2_covid.subsample_random import subsample_random
+from q2_covid.subsample_longitudinal import subsample_longitudinal
 from q2_covid.filter import filter_seqs
 
 plugin = Plugin(
@@ -100,7 +102,7 @@ plugin.methods.register_function(
     parameters={
         'ids': Metadata,
         'n': Int % Range(1, None),
-        'seed': Int
+        'seed': Int % Range(0, None)
     },
     outputs=[('selection', FeatureData[Selection])],
     parameter_descriptions={
@@ -114,6 +116,42 @@ plugin.methods.register_function(
     },
     name='Randomly sample IDs',
     description='Randomly sample IDs without replacement.'
+)
+
+
+plugin.methods.register_function(
+    function=subsample_longitudinal,
+    inputs={},
+    parameters={
+        'dates': MetadataColumn[Categorical],
+        'start_date': Str,
+        'samples_per_interval': Int % Range(1, None),
+        'days_per_interval': Int % Range(1, None),
+        'seed': Int % Range(0, None)
+    },
+    outputs=[('selection', FeatureData[Selection])],
+    input_descriptions={},
+    parameter_descriptions={
+        'dates': 'Dates to sample from.',
+        'start_date': ('Start date of first interval. Dates before this date '
+                       ' will be excluded. The start date plus the '
+                       '`days_per_interval` defines the bounds of the '
+                       'sampling intervals. If not provided, this will '
+                       'default to the first date in metadata.'),
+        'samples_per_interval': ('The number of random dates to select in each '
+                                 'interval.'),
+        'days_per_interval': ('The length of each interval in days.'),
+        'seed': ('Seed used for random number generators.')
+    },
+    output_descriptions={
+        'selection': 'The subsampled dates.'
+    },
+    name='Subsample dates across time',
+    description=('Sample dates at random without replacement '
+                 'from each user-defined interval. Dates should be provided '
+                 'in ISO-8601 format (see '
+                 'https://en.wikipedia.org/wiki/ISO_8601) both in metadata '
+                 'and for `start_date`.')
 )
 
 
