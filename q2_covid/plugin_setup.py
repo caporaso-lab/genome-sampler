@@ -59,7 +59,7 @@ plugin.methods.register_function(
     parameters={
         'ids': Metadata,
         'n': Int % Range(1, None),
-        'seed': Int
+        'seed': Int % Range(0, None)
     },
     outputs=[('selection', FeatureData[Selection])],
     parameter_descriptions={
@@ -80,15 +80,30 @@ plugin.methods.register_function(
     function=subsample_longitudinal,
     inputs={},
     parameters={
-        'time': MetadataColumn[Categorical],
-        'start': Str,
-        'rate_n': Int % Range(1, None),
-        'rate_duration': Int % Range(1, None)
+        'dates': MetadataColumn[Categorical],
+        'start_date': Str,
+        'samples_per_interval': Int % Range(1, None),
+        'days_per_interval': Int % Range(1, None),
+        'seed': Int % Range(0, None)
     },
     outputs=[('selection', FeatureData[Selection])],
     input_descriptions={},
-    parameter_descriptions={},
-    output_descriptions={},
-    name='',
-    description=''
+    parameter_descriptions={
+        'dates': 'Dates to sample from.',
+        'start_date': ('Start date of first interval. Dates before this date '
+                       ' will be excluded. The start date plus the '
+                       '`days_per_interval` defines the bounds of the '
+                       'sampling intervals. If not provided, this will '
+                       'default to the first date in metadata.'),
+        'samples_per_interval': ('The number of random dates to select in each '
+                                 'interval.'),
+        'days_per_interval': ('The length of each interval in days.'),
+        'seed': ('Seed used for random number generators.')
+    },
+    output_descriptions={
+        'selection': 'The subsampled dates.'
+    },
+    name='Subsample dates across time',
+    description=('Sample dates at random without replacement '
+                 'from each user-defined interval.')
 )
