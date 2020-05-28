@@ -137,7 +137,9 @@ plugin.methods.register_function(
                        ' will be excluded. The start date plus the '
                        '`days_per_interval` defines the bounds of the '
                        'sampling intervals. If not provided, this will '
-                       'default to the first date in metadata.'),
+                       'default to the first date in metadata. The date ' 
+                       'must be provided in ISO 8601 format (see '
+                       'https://en.wikipedia.org/wiki/ISO_8601).'),
         'samples_per_interval': ('The number of random dates to select in each '
                                  'interval.'),
         'days_per_interval': ('The length of each interval in days.'),
