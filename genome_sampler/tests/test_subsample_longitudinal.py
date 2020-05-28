@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import qiime2
 
-from q2_covid.subsample_longitudinal import subsample_longitudinal
+from genome_sampler.subsample_longitudinal import subsample_longitudinal
 
 
 class TestSubsampleLongitudinal(unittest.TestCase):

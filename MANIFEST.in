@@ -1,2 +1,2 @@
 include versioneer.py
-include q2_covid/_version.py
+include genome_sampler/_version.py

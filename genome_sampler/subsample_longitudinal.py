@@ -3,7 +3,7 @@ import numpy as np
 
 import qiime2
 
-from q2_covid.common import IDSelection
+from genome_sampler.common import IDSelection
 
 
 def _sample_group(samples_per_interval, seed):
