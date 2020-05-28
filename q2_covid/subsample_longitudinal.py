@@ -6,11 +6,12 @@ import qiime2
 from q2_covid.common import IDSelection
 
 
-def _sample_group(samples_per_interval):
+def _sample_group(samples_per_interval, seed):
+    state = np.random.RandomState(seed=seed)
     def _sampler(df):
         df = df.dropna(axis=0)
         if len(df) > samples_per_interval:
-            return df.sample(samples_per_interval)
+            return df.sample(samples_per_interval, random_state=state)
         else:
             return df
     
@@ -20,7 +21,8 @@ def _sample_group(samples_per_interval):
 def subsample_longitudinal(dates: qiime2.CategoricalMetadataColumn,
                            start_date: str = None,
                            samples_per_interval: int = 7,
-                           days_per_interval: int = 7) -> IDSelection:
+                           days_per_interval: int = 7,
+                           seed: int = None) -> IDSelection:
 
     window_size = '%dD' % days_per_interval
 
@@ -40,7 +42,7 @@ def subsample_longitudinal(dates: qiime2.CategoricalMetadataColumn,
     grouped = df.groupby(pd.Grouper(freq=window_size, convention='start', 
                                     closed='left'), 
                          group_keys=False)
-    filtered_df = grouped.apply(_sample_group(samples_per_interval))
+    filtered_df = grouped.apply(_sample_group(samples_per_interval, seed))
 
     df = df.dropna(axis=0)
     selection = pd.Series(False, index=dates.to_series().index)
