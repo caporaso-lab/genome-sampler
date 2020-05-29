@@ -4,7 +4,7 @@ import qiime2
 from genome_sampler.common import IDSelection
 
 
-def subsample_random(ids: qiime2.Metadata, n: int, seed: int=None) \
+def subsample_random(ids: qiime2.Metadata, n: int, seed: int = None) \
         -> IDSelection:
     if n > ids.id_count:
         raise ValueError("Value for n is larger than the number of IDs"

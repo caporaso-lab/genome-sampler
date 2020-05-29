@@ -1,0 +1,41 @@
+name: lint-build-test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up python 3.6
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+    - name: install dependencies
+      run: python -m pip install --upgrade pip
+    - name: lint
+      run: |
+        # Note: no q2lint here, since this isn't an official QIIME 2 product
+        pip install -q flake8
+        flake8
+
+  build-and-test:
+    needs: lint
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    # for versioneer
+    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - uses: qiime2/action-library-packaging@alpha1
+      with: 
+        plugin-name: genome-sampler
+        additional-tests: pytest --pyargs genome_sampler

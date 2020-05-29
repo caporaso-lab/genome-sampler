@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# flake8: noqa
 
 import click
 import pandas as pd
