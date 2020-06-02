@@ -133,6 +133,7 @@ def run_command(cmd, verbose=True):
         print(" ".join(cmd), end='\n\n')
     subprocess.run(cmd, check=True)
 
+
 def ids_from_fasta(fasta):
     seqs = skbio.io.read(fasta, format='fasta', constructor=skbio.DNA)
     return [s.metadata['id'] for s in seqs]

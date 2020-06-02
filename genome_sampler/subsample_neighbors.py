@@ -3,7 +3,7 @@ import tempfile
 import pandas as pd
 import numpy as np
 
-import qiime2
+from qiime2.metadata import CategoricalMetadataColumn
 from q2_types.feature_data import DNAFASTAFormat
 
 from genome_sampler.common import IDSelection, run_command, ids_from_fasta
@@ -79,10 +79,9 @@ def _sample_clusters(clusters, samples_per_cluster, seed):
 #  (matching columns) / (alignment length - terminal gaps)
 def subsample_neighbors(focal_seqs: DNAFASTAFormat,
                         context_seqs: DNAFASTAFormat,
-                        ids: qiime2.Metadata,
                         percent_id: float,
                         samples_per_cluster: int,
-                        locale: str = None,
+                        locale: CategoricalMetadataColumn = None,
                         max_accepts: int = 10,
                         n_threads: int = 1,
                         seed: int = None) -> IDSelection:
@@ -96,10 +95,12 @@ def subsample_neighbors(focal_seqs: DNAFASTAFormat,
 
     context_ids = ids_from_fasta(str(context_seqs))
 
-    inclusion = pd.Series(False, index=context_ids)
-    ids = ids.filter_ids(inclusion.index)
+    inclusion = pd.Series(False, index=context_ids, name='inclusion')
     if locale is not None:
-        locale = ids.get_column(locale).to_series()
+        locale = locale.filter_ids(inclusion.index).to_series()
+        metadata = pd.DataFrame(locale)
+    else:
+        metadata = pd.DataFrame(index=inclusion.index)
 
     with tempfile.NamedTemporaryFile() as vsearch_out_f:
         command = ['vsearch',
@@ -123,4 +124,4 @@ def subsample_neighbors(focal_seqs: DNAFASTAFormat,
             _sample_clusters(clusters, samples_per_cluster, seed=seed)
         inclusion[context_seqs_to_keep] = True
 
-    return IDSelection(inclusion, ids, "subsample_neighbors")
+    return IDSelection(inclusion, metadata, "subsample_neighbors")

@@ -37,46 +37,53 @@ class TestSubsampleNeighbors(TestPluginBase):
     def test_subsample_neighbors_no_locale(self):
         sel = subsample_neighbors(self.focal_seqs1,
                                   self.context_seqs1,
-                                  self.context_md1,
                                   percent_id=0.98,
                                   samples_per_cluster=2)
 
         obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
         exp_sampled_context_seqs = ['c1', 'c2', 'c5']
-        self.assertEqual(set(obs_sampled_context_seqs),
-                         set(exp_sampled_context_seqs))
-        self.assertEqual(len(sel.inclusion), len(self.context_md1.ids))
-        self.assertEqual(sel.metadata, self.context_md1)
+
+        exp_inclusion = pd.Series([True, True, False, False, True, False],
+                                  index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
+                                  name='inclusion')
+        exp_metadata = pd.DataFrame(index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'])
+
+        pdt.assert_series_equal(sel.inclusion, exp_inclusion)
+        pdt.assert_frame_equal(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_no_locale_alt_percent_id(self):
         sel = subsample_neighbors(self.focal_seqs1,
                                   self.context_seqs1,
-                                  self.context_md1,
                                   percent_id=1.0,
                                   samples_per_cluster=2)
 
         obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
-        exp_sampled_context_seqs = ['c1', 'c2']
-        self.assertEqual(set(obs_sampled_context_seqs),
-                         set(exp_sampled_context_seqs))
-        self.assertEqual(len(sel.inclusion), len(self.context_md1.ids))
-        self.assertEqual(sel.metadata, self.context_md1)
+
+        exp_inclusion = pd.Series([True, True, False, False, False, False],
+                                  index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
+                                  name='inclusion')
+        exp_metadata = pd.DataFrame(index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'])
+
+        pdt.assert_series_equal(sel.inclusion, exp_inclusion)
+        pdt.assert_frame_equal(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_no_locale_alt_samples_per_cluster(self):
         sel = subsample_neighbors(self.focal_seqs1,
                                   self.context_seqs1,
-                                  self.context_md1,
                                   percent_id=0.98,
                                   samples_per_cluster=3)
 
         obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
-        exp_sampled_context_seqs = ['c1', 'c2', 'c3', 'c5']
-        self.assertEqual(set(obs_sampled_context_seqs),
-                         set(exp_sampled_context_seqs))
-        self.assertEqual(len(sel.inclusion), len(self.context_md1.ids))
-        self.assertEqual(sel.metadata, self.context_md1)
+
+        exp_inclusion = pd.Series([True, True, True, False, True, False],
+                                  index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
+                                  name='inclusion')
+        exp_metadata = pd.DataFrame(index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'])
+
+        pdt.assert_series_equal(sel.inclusion, exp_inclusion)
+        pdt.assert_frame_equal(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_locale(self):
@@ -85,20 +92,23 @@ class TestSubsampleNeighbors(TestPluginBase):
         count_obs_c4 = 0
         count_obs_c5 = 0
 
+        exp_metadata = self.context_md1.to_dataframe()
+
         for _ in range(self._N_TEST_ITERATIONS):
             sel = subsample_neighbors(self.focal_seqs1,
                                       self.context_seqs1,
-                                      self.context_md1,
                                       percent_id=0.98,
                                       samples_per_cluster=2,
-                                      locale='x')
+                                      locale=self.context_md1.get_column('x'))
 
             obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
             self.assertTrue('c1' in set(obs_sampled_context_seqs))
             self.assertEqual(sel.inclusion.sum(), 3)
-            self.assertEqual(len(sel.inclusion), len(self.context_md1.ids))
-            self.assertEqual(sel.metadata, self.context_md1)
+            self.assertEqual(len(sel.inclusion), 6)
+
+            pdt.assert_frame_equal(sel.metadata, exp_metadata)
             self.assertEqual(sel.label, 'subsample_neighbors')
+
             if 'c2' in obs_sampled_context_seqs:
                 count_obs_c2 += 1
             if 'c3' in obs_sampled_context_seqs:
@@ -115,79 +125,72 @@ class TestSubsampleNeighbors(TestPluginBase):
         self.assertTrue(count_obs_c4 > count_obs_c5)
 
     def test_subsample_neighbors_locale_w_seed(self):
+        exp_metadata = self.context_md1.to_dataframe()
         # since we're setting a random seed, the result we get the first
         # time is our expected every time
         exp_sel = subsample_neighbors(self.focal_seqs1,
                                       self.context_seqs1,
-                                      self.context_md1,
                                       percent_id=0.98,
                                       samples_per_cluster=2,
-                                      locale='x',
+                                      locale=self.context_md1.get_column('x'),
                                       seed=0)
-        exp_sampled_context_seqs = exp_sel.inclusion[exp_sel.inclusion].keys()
-        self.assertTrue('c1' in set(exp_sampled_context_seqs))
-        self.assertEqual(len(exp_sampled_context_seqs), 3)
+        self.assertTrue(exp_sel.inclusion['c1'])
+        self.assertEqual(exp_sel.inclusion.sum(), 3)
+        pdt.assert_frame_equal(exp_sel.metadata, exp_metadata)
 
         for _ in range(self._N_TEST_ITERATIONS):
             sel = subsample_neighbors(self.focal_seqs1,
                                       self.context_seqs1,
-                                      self.context_md1,
                                       percent_id=0.98,
                                       samples_per_cluster=2,
-                                      locale='x',
+                                      locale=self.context_md1.get_column('x'),
                                       seed=0)
 
             obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
-            self.assertEqual(set(obs_sampled_context_seqs),
-                             set(exp_sampled_context_seqs))
+            pdt.assert_series_equal(sel.inclusion,
+                                    exp_sel.inclusion)
 
     def test_subsample_neighbors_invalid_max_accepts(self):
         with self.assertRaisesRegex(ValueError, 'obtained per cluster'):
             subsample_neighbors(self.focal_seqs1,
                                 self.context_seqs1,
-                                self.context_md1,
                                 percent_id=0.98,
                                 samples_per_cluster=11)
-
-    def test_subsample_neighbors_invalid_locale(self):
-        with self.assertRaisesRegex(ValueError, 'not a column'):
-            subsample_neighbors(self.focal_seqs1,
-                                self.context_seqs1,
-                                self.context_md1,
-                                percent_id=0.98,
-                                samples_per_cluster=3,
-                                locale='y')
 
     def test_subsample_neighbors_terminal_gaps_ignored(self):
         sel = subsample_neighbors(self.focal_seqs2,
                                   self.context_seqs2,
-                                  self.context_md2,
                                   percent_id=1.0,
                                   samples_per_cluster=2)
 
-        obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
-        exp_sampled_context_seqs = ['c1']
-        self.assertEqual(set(obs_sampled_context_seqs),
-                         set(exp_sampled_context_seqs))
-        self.assertEqual(len(sel.inclusion), len(self.context_md2.ids))
-        self.assertEqual(sel.metadata, self.context_md2)
+        exp_inclusion = pd.Series([True],
+                                  index=['c1'],
+                                  name='inclusion')
+        exp_metadata = pd.DataFrame(index=['c1'])
+
+        pdt.assert_series_equal(sel.inclusion, exp_inclusion)
+        pdt.assert_frame_equal(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_metadata_superset(self):
-        context_md2 = self.get_data_path('context-metadata-2-extra-ids.tsv')
-        context_md2 = qiime2.Metadata.load(context_md2)
+        context_md = self.get_data_path('context-metadata-2-extra-ids.tsv')
+        context_md = qiime2.Metadata.load(context_md)
 
         sel = subsample_neighbors(self.focal_seqs2,
                                   self.context_seqs2,
-                                  context_md2,
                                   percent_id=1.0,
-                                  samples_per_cluster=2)
+                                  samples_per_cluster=2,
+                                  locale=context_md.get_column('x'))
 
         obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
-        exp_sampled_context_seqs = ['c1']
-        self.assertEqual(set(obs_sampled_context_seqs),
-                         set(exp_sampled_context_seqs))
-        self.assertEqual(set(sel.metadata.ids), set(['c1']))
+
+        exp_inclusion = pd.Series([True],
+                                  index=['c1'],
+                                  name='inclusion')
+        exp_metadata = context_md.filter_ids(['c1']).to_dataframe()
+
+        pdt.assert_series_equal(sel.inclusion, exp_inclusion)
+        pdt.assert_frame_equal(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_metadata_subset(self):
@@ -197,9 +200,9 @@ class TestSubsampleNeighbors(TestPluginBase):
         with self.assertRaisesRegex(ValueError, 'not present in the metadata'):
             subsample_neighbors(self.focal_seqs1,
                                 self.context_seqs1,
-                                context_md,
                                 percent_id=0.98,
-                                samples_per_cluster=1)
+                                samples_per_cluster=1,
+                                locale=context_md.get_column('x'))
 
     def test_clusters_from_vsearch_out_no_locale(self):
         vsearch_out = pd.DataFrame(
