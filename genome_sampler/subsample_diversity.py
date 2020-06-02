@@ -7,16 +7,6 @@ from q2_types.feature_data import DNAFASTAFormat
 from genome_sampler.common import IDSelection, run_command, ids_from_fasta
 
 
-def _clusters_from_uc(uc):
-    hits = uc[uc['type'] == 'H']
-    clusters = {}
-    for r in hits.itertuples():
-        if r.target not in clusters:
-            clusters[r.target] = []
-        clusters[r.target].append(r)
-    return clusters
-
-
 # According to the vsearch 2.14.2 documentation, percent_id is defined as:
 #  (matching columns) / (alignment length - terminal gaps)
 def subsample_diversity(context_seqs: DNAFASTAFormat,
