@@ -187,14 +187,14 @@ class TestSubsampleNeighbors(TestPluginBase):
         exp_sampled_context_seqs = ['c1']
         self.assertEqual(set(obs_sampled_context_seqs),
                          set(exp_sampled_context_seqs))
-        self.assertEqual(sel.metadata.ids, ['c1'])
+        self.assertEqual(set(sel.metadata.ids), set(['c1']))
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_metadata_subset(self):
         context_md = self.get_data_path('context-metadata-1-missing-id.tsv')
         context_md = qiime2.Metadata.load(context_md)
 
-        with self.assertRaisesRegex(ValueError, 'not contained in the index'):
+        with self.assertRaisesRegex(ValueError, 'not present in the metadata'):
             subsample_neighbors(self.focal_seqs1,
                                 self.context_seqs1,
                                 context_md,

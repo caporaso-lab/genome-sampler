@@ -2,6 +2,7 @@ import re
 import subprocess
 
 import pandas as pd
+import skbio
 
 import qiime2
 import qiime2.plugin.model as model
@@ -131,3 +132,7 @@ def run_command(cmd, verbose=True):
         print("\nCommand:", end=' ')
         print(" ".join(cmd), end='\n\n')
     subprocess.run(cmd, check=True)
+
+def ids_from_fasta(fasta):
+    seqs = skbio.io.read(fasta, format='fasta', constructor=skbio.DNA)
+    return [s.metadata['id'] for s in seqs]

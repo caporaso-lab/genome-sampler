@@ -6,7 +6,7 @@ import numpy as np
 import qiime2
 from q2_types.feature_data import DNAFASTAFormat
 
-from genome_sampler.common import IDSelection, run_command
+from genome_sampler.common import IDSelection, run_command, ids_from_fasta
 
 
 def _clusters_from_vsearch_out(vsearch_out, locale):
@@ -94,8 +94,10 @@ def subsample_neighbors(focal_seqs: DNAFASTAFormat,
                          'obtained per cluster.' %
                          (max_accepts, samples_per_cluster))
 
-    df = ids.to_dataframe()
-    inclusion = pd.Series(False, index=df.index)
+    context_ids = ids_from_fasta(str(context_seqs))
+
+    inclusion = pd.Series(False, index=context_ids)
+    ids = ids.filter_ids(inclusion.index)
     if locale is not None:
         locale = ids.get_column(locale).to_series()
 
