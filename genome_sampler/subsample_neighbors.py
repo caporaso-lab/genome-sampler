@@ -17,53 +17,63 @@ def _clusters_from_vsearch_out(vsearch_out, locale):
     else:
         def f(context_id):
             return locale[context_id]
+
     for r in vsearch_out.itertuples():
         if r.focal_id not in clusters:
             clusters[r.focal_id] = []
         clusters[r.focal_id].append((r.context_id,
                                      r.n_mismatches,
                                      f(r.context_id)))
-    return clusters
+    columns = ['context_id', 'n_mismatches', 'locale']
+    return {focal_id: pd.DataFrame(hits, columns=columns)
+            for focal_id, hits in clusters.items()}
 
 
-def _sort_on_n_mismatches(element):
-    return element[1]
-
-
-def _sample_cluster(sorted_cluster, samples_per_cluster):
-
-    len_sorted_cluster = len(sorted_cluster)
-    if len_sorted_cluster == 0:
+def _sample_cluster(cluster, samples_per_cluster, random_state):
+    len_cluster = cluster.shape[0]
+    if len_cluster == 0:
         return []
 
-    indices = map(int,
-                  np.linspace(0, len_sorted_cluster-1, samples_per_cluster))
-    return [sorted_cluster[i][0] for i in indices]
+    if len_cluster <= samples_per_cluster:
+        return list(cluster['context_id'])
+
+    unique_locales = cluster['locale'].unique()
+    if len(unique_locales) == 1:
+        # if only one locale, select context sequences spanning the range
+        # of number of mismatches
+        sorted_cluster = cluster.sort_values(by='n_mismatches')
+        indices = map(int, np.linspace(0, len_cluster-1, samples_per_cluster))
+        return [sorted_cluster.iloc[i]['context_id'] for i in indices]
+
+    # convert locations into number of obs, take the inverse, then scale by
+    # number of unique locations so it all sums to 1. Infrequent location obs
+    # will have a high weight, frequent location obs will have an individually
+    # lower weight, but collectively all locations have the same weight when
+    # all obs are summed within a location class.
+    loc = cluster['locale']
+    weights = ((1 / loc.map(loc.value_counts())) / len(loc.unique()))
+    # TODO: if multiple samples are being selected from the same locale, it
+    # would be good to sample across the number of mismatches to the focal
+    # sequence, as we're doing where there is only a single locale. To do that,
+    # I think we'd need to get the count of how many of each locale we want
+    # at random (like the rarefaction algorithm) and then use the approach
+    # above (which would then generalize to one or more locales).
+    result = cluster.sample(samples_per_cluster,
+                            weights=weights,
+                            random_state=random_state)
+    return list(result['context_id'])
 
 
-def _sample_clusters(clusters, samples_per_cluster):
+def _sample_clusters(clusters, samples_per_cluster, seed):
     result = []
+    random_state = np.random.RandomState(seed=seed)
 
     for cluster in clusters.values():
-        cluster.sort(key=_sort_on_n_mismatches)
-        sampled_cluster = _sample_cluster(cluster, samples_per_cluster)
+        sampled_cluster = _sample_cluster(
+                cluster, samples_per_cluster, random_state)
         result += sampled_cluster
     return set(result)
 
-
-# def make_snp_tables(clusters, seqs, df):
-#     snps = {}
-#     for target, hits in clusters.items():
-#         idx = [get_id(h.query) for h in hits]
-#         table = pd.DataFrame(
-#             {'snp': [snp_count(h, seqs) for h in hits],
-#              'location': [location(get_id(h.query), df) for h in hits],
-#              'date': pd.to_datetime(df['date'][df.index.isin(idx)],
-#                                     errors='coerce')},
-#             index=idx)
-#         table = table.sort_values(by=['snp', 'date'])
-#         snps[get_id(target)] = table
-#     return snps
 
 # According to the vsearch 2.14.2 documentation, percent_id is defined as:
 #  (matching columns) / (alignment length - terminal gaps)
@@ -74,10 +84,20 @@ def subsample_neighbors(focal_seqs: DNAFASTAFormat,
                         samples_per_cluster: int,
                         locale: str = None,
                         max_accepts: int = 10,
-                        n_threads: int = 1) -> IDSelection:
+                        n_threads: int = 1,
+                        seed: int = None) -> IDSelection:
+
+    if max_accepts < samples_per_cluster:
+        raise ValueError('max_accepts (%d) must be greater than or equal to '
+                         'samples_per_cluster (%d), since it is determines '
+                         'the largest number of samples that could be '
+                         'obtained per cluster.' %
+                         (max_accepts, samples_per_cluster))
 
     df = ids.to_dataframe()
     inclusion = pd.Series(False, index=df.index)
+    if locale is not None:
+        locale = ids.get_column(locale).to_series()
 
     with tempfile.NamedTemporaryFile() as vsearch_out_f:
         command = ['vsearch',
@@ -90,14 +110,15 @@ def subsample_neighbors(focal_seqs: DNAFASTAFormat,
                    '--maxaccepts', str(max_accepts),
                    '--uc_allhits',
                    '--userfields', 'query+target+mism']
-        run_command(command, verbose=False)
+        run_command(command)
 
         vsearch_out = pd.read_csv(
             open(vsearch_out_f.name), sep='\t', na_values='*',
             names=['focal_id', 'context_id', 'n_mismatches'])
 
         clusters = _clusters_from_vsearch_out(vsearch_out, locale)
-        context_seqs_to_keep = _sample_clusters(clusters, samples_per_cluster)
+        context_seqs_to_keep = \
+            _sample_clusters(clusters, samples_per_cluster, seed=seed)
         inclusion[context_seqs_to_keep] = True
 
     return IDSelection(inclusion, ids, "subsample_neighbors")

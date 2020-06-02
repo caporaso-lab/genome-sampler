@@ -28,6 +28,7 @@ from genome_sampler.common import (
 )
 from genome_sampler.subsample_random import subsample_random
 from genome_sampler.subsample_longitudinal import subsample_longitudinal
+from genome_sampler.subsample_neighbors import subsample_neighbors
 from genome_sampler.filter import filter_seqs
 
 plugin = Plugin(
@@ -158,7 +159,7 @@ plugin.methods.register_function(
         'seed': 'Seed used for random number generators.',
     },
     output_descriptions={
-        'selection': 'The subsampled dates.'
+        'selection': 'The selected ids (i.e., the subsampled dates).'
     },
     name='Subsample dates across time',
     description='Sample dates at random without replacement '
@@ -166,6 +167,58 @@ plugin.methods.register_function(
                 'in ISO-8601 format (see '
                 'https://en.wikipedia.org/wiki/ISO_8601) both in metadata '
                 'and for `start_date`.',
+)
+
+
+plugin.methods.register_function(
+    function=subsample_neighbors,
+    inputs={'focal_seqs': FeatureData[Sequence],
+            'context_seqs': FeatureData[Sequence]},
+    parameters={
+        'ids': Metadata,
+        'percent_id': Float % Range(0, 1, inclusive_end=True),
+        'samples_per_cluster': Int % Range(1, None),
+        # not using CategoricalMetadataColumn since I need all ids for
+        # creating the result object, and providing a locale is optional
+        'locale': Str,
+        'max_accepts': Int % Range(1, None),
+        'n_threads': Int % Range(1, None),
+        'seed': Int % Range(0, None)
+    },
+    outputs=[('selection', FeatureData[Selection])],
+    input_descriptions={
+        'focal_seqs': 'The focal sequences.',
+        'context_seqs': 'The context sequences which will be sampled from.'},
+    parameter_descriptions={
+        'ids': 'The context sequence metadata.',
+        'percent_id': ('The percent identity threshold for clustering. If a '
+                       'context sequence matches a focal sequence at greater '
+                       'than or equal to this percent identity, the context '
+                       'sequence will be considered a neighbor of the focal '
+                       'sequence.'),
+        'samples_per_cluster': ('The number of context sequences to sample '
+                                'per cluster, where clusters are the '
+                                'context sequences that match at `percent_id` '
+                                'to a given focal sequence.'),
+        'locale': ('The name of the metadata column that contains locale '
+                   'data. If provided, sampling will be performed across '
+                   'locales. (While this is designed for locale sampling, '
+                   'any categorical metadata column could be provided.)'),
+        'max_accepts': ('The maximum number of context sequences that match '
+                        'a focal sequence at `percent_id` or higher that '
+                        'will be identified. Up to `samples_per_cluster` of '
+                        'these will be sampled.'),
+        'n_threads': 'The number of threads to use for processing.',
+        'seed': 'Seed used for random number generators.',
+    },
+    output_descriptions={
+        'selection': 'The selected ids (i.e., the subsampled neighbors).'
+    },
+    name='Subsample context sequences.',
+    description=('Sample context sequences that are near-neighbors of focal '
+                 'sequences, including sampling over locales if provided. '
+                 'This is useful for avoiding apparant monophylies of '
+                 'focal sequences.'),
 )
 
 

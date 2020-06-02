@@ -122,11 +122,12 @@ class GISAIDDNAFASTAFormat(model.TextFileFormat):
 
 
 def run_command(cmd, verbose=True):
-    print("Running external command line application. This may print "
-          "messages to stdout and/or stderr.")
-    print("The command being run is below. This command cannot "
-          "be manually re-run as it will depend on temporary files that "
-          "no longer exist.")
-    print("\nCommand:", end=' ')
-    print(" ".join(cmd), end='\n\n')
+    if verbose:
+        print("Running external command line application. This may print "
+              "messages to stdout and/or stderr.")
+        print("The command being run is below. This command cannot "
+              "be manually re-run as it will depend on temporary files that "
+              "no longer exist.")
+        print("\nCommand:", end=' ')
+        print(" ".join(cmd), end='\n\n')
     subprocess.run(cmd, check=True)
