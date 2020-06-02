@@ -25,6 +25,15 @@ class TestSubsampleNeighbors(TestPluginBase):
         context_md1 = self.get_data_path('context-metadata-1.tsv')
         self.context_md1 = qiime2.Metadata.load(context_md1)
 
+        focal_seqs2 = self.get_data_path('focal-seqs-2.fasta')
+        self.focal_seqs2 = DNAFASTAFormat(focal_seqs2, 'r')
+
+        context_seqs2 = self.get_data_path('context-seqs-2.fasta')
+        self.context_seqs2 = DNAFASTAFormat(context_seqs2, 'r')
+
+        context_md2 = self.get_data_path('context-metadata-2.tsv')
+        self.context_md2 = qiime2.Metadata.load(context_md2)
+
     def test_subsample_neighbors_no_locale(self):
         sel = subsample_neighbors(self.focal_seqs1,
                                   self.context_seqs1,
@@ -148,6 +157,49 @@ class TestSubsampleNeighbors(TestPluginBase):
                                 percent_id=0.98,
                                 samples_per_cluster=3,
                                 locale='y')
+
+    def test_subsample_neighbors_terminal_gaps_ignored(self):
+        sel = subsample_neighbors(self.focal_seqs2,
+                                  self.context_seqs2,
+                                  self.context_md2,
+                                  percent_id=1.0,
+                                  samples_per_cluster=2)
+
+        obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
+        exp_sampled_context_seqs = ['c1']
+        self.assertEqual(set(obs_sampled_context_seqs),
+                         set(exp_sampled_context_seqs))
+        self.assertEqual(len(sel.inclusion), len(self.context_md2.ids))
+        self.assertEqual(sel.metadata, self.context_md2)
+        self.assertEqual(sel.label, 'subsample_neighbors')
+
+    def test_subsample_neighbors_metadata_superset(self):
+        context_md2 = self.get_data_path('context-metadata-2-extra-ids.tsv')
+        context_md2 = qiime2.Metadata.load(context_md2)
+
+        sel = subsample_neighbors(self.focal_seqs2,
+                                  self.context_seqs2,
+                                  context_md2,
+                                  percent_id=1.0,
+                                  samples_per_cluster=2)
+
+        obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
+        exp_sampled_context_seqs = ['c1']
+        self.assertEqual(set(obs_sampled_context_seqs),
+                         set(exp_sampled_context_seqs))
+        self.assertEqual(sel.metadata.ids, ['c1'])
+        self.assertEqual(sel.label, 'subsample_neighbors')
+
+    def test_subsample_neighbors_metadata_subset(self):
+        context_md = self.get_data_path('context-metadata-1-missing-id.tsv')
+        context_md = qiime2.Metadata.load(context_md)
+
+        with self.assertRaisesRegex(ValueError, 'not contained in the index'):
+            subsample_neighbors(self.focal_seqs1,
+                                self.context_seqs1,
+                                context_md,
+                                percent_id=0.98,
+                                samples_per_cluster=1)
 
     def test_clusters_from_vsearch_out_no_locale(self):
         vsearch_out = pd.DataFrame(
