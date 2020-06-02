@@ -40,9 +40,6 @@ class TestSubsampleNeighbors(TestPluginBase):
                                   percent_id=0.98,
                                   samples_per_cluster=2)
 
-        obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
-        exp_sampled_context_seqs = ['c1', 'c2', 'c5']
-
         exp_inclusion = pd.Series([True, True, False, False, True, False],
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
                                   name='inclusion')
@@ -58,8 +55,6 @@ class TestSubsampleNeighbors(TestPluginBase):
                                   percent_id=1.0,
                                   samples_per_cluster=2)
 
-        obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
-
         exp_inclusion = pd.Series([True, True, False, False, False, False],
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
                                   name='inclusion')
@@ -74,8 +69,6 @@ class TestSubsampleNeighbors(TestPluginBase):
                                   self.context_seqs1,
                                   percent_id=0.98,
                                   samples_per_cluster=3)
-
-        obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
 
         exp_inclusion = pd.Series([True, True, True, False, True, False],
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
@@ -146,7 +139,6 @@ class TestSubsampleNeighbors(TestPluginBase):
                                       locale=self.context_md1.get_column('x'),
                                       seed=0)
 
-            obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
             pdt.assert_series_equal(sel.inclusion,
                                     exp_sel.inclusion)
 
@@ -181,8 +173,6 @@ class TestSubsampleNeighbors(TestPluginBase):
                                   percent_id=1.0,
                                   samples_per_cluster=2,
                                   locale=context_md.get_column('x'))
-
-        obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
 
         exp_inclusion = pd.Series([True],
                                   index=['c1'],

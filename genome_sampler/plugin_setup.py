@@ -29,6 +29,7 @@ from genome_sampler.common import (
 from genome_sampler.subsample_random import subsample_random
 from genome_sampler.subsample_longitudinal import subsample_longitudinal
 from genome_sampler.subsample_neighbors import subsample_neighbors
+from genome_sampler.subsample_diversity import subsample_diversity
 from genome_sampler.filter import filter_seqs
 
 plugin = Plugin(
@@ -129,8 +130,10 @@ plugin.methods.register_function(
     output_descriptions={
         'selection': 'The selected IDs.'
     },
-    name='Randomly sample IDs',
-    description='Randomly sample IDs without replacement.'
+    name='Sample IDs at random.',
+    description=('Randomly sample IDs without replacement. This is useful '
+                 'for evaluation purposes (e.g., to test whether another '
+                 'sampling approach is more useful than random sampling).')
 )
 
 
@@ -161,7 +164,7 @@ plugin.methods.register_function(
     output_descriptions={
         'selection': 'The selected ids (i.e., the subsampled dates).'
     },
-    name='Subsample dates across time',
+    name='Sample dates uniformly across time',
     description='Sample dates at random without replacement '
                 'from each user-defined interval. Dates should be provided '
                 'in ISO-8601 format (see '
@@ -185,20 +188,20 @@ plugin.methods.register_function(
     outputs=[('selection', FeatureData[Selection])],
     input_descriptions={
         'focal_seqs': 'The focal sequences.',
-        'context_seqs': 'The context sequences which will be sampled from.'},
+        'context_seqs': 'The context sequences to be sampled from.'},
     parameter_descriptions={
-        'percent_id': ('The percent identity threshold for clustering. If a '
+        'percent_id': ('The percent identity threshold for searching. If a '
                        'context sequence matches a focal sequence at greater '
                        'than or equal to this percent identity, the context '
                        'sequence will be considered a neighbor of the focal '
                        'sequence.'),
         'samples_per_cluster': ('The number of context sequences to sample '
-                                'per cluster, where clusters are the '
-                                'context sequences that match at `percent_id` '
-                                'to a given focal sequence.'),
+                                'per cluster, where clusters are the up-to '
+                                '`max_accepts` context sequences that match '
+                                'at `percent_id` to a given focal sequence.'),
         'locale': ('The metadata column that contains locale '
                    'data. If provided, sampling will be performed across '
-                   'locales. (While this is designed for locale sampling, '
+                   'locales. (While this was designed for locale sampling, '
                    'any categorical metadata column could be provided.)'),
         'max_accepts': ('The maximum number of context sequences that match '
                         'a focal sequence at `percent_id` or higher that '
@@ -210,11 +213,44 @@ plugin.methods.register_function(
     output_descriptions={
         'selection': 'The selected ids (i.e., the subsampled neighbors).'
     },
-    name='Subsample context sequences.',
+    name=('Sample context sequences that are near-neighbors of focal '
+          'sequences.'),
     description=('Sample context sequences that are near-neighbors of focal '
                  'sequences, including sampling over locales if provided. '
-                 'This is useful for avoiding apparant monophylies of '
+                 'This is useful for avoiding apparent monophylies of '
                  'focal sequences.'),
+)
+
+
+plugin.methods.register_function(
+    function=subsample_diversity,
+    inputs={'context_seqs': FeatureData[Sequence]},
+    parameters={
+        'percent_id': Float % Range(0, 1, inclusive_end=True),
+        'max_accepts': Int % Range(1, None),
+        'n_threads': Int % Range(1, None)
+    },
+    outputs=[('selection', FeatureData[Selection])],
+    input_descriptions={
+        'context_seqs': 'The context sequences to be sampled from.'},
+    parameter_descriptions={
+        'percent_id': ('The percent identity threshold for clustering. '
+                       'Context sequences will be dereplicated such that no '
+                       'pair of retained sequences will have a percent '
+                       'identity to one another that is this high.'),
+        'max_accepts': ('The maximum number of context sequences that will '
+                        'be queried before a new cluster is defned.'),
+        'n_threads': 'The number of threads to use for processing.',
+    },
+    output_descriptions={
+        'selection': ('The selected ids (i.e., the diversity-sampled context '
+                      'sequences).')
+    },
+    name='Identify a divergent collection of context sequences.',
+    description=('Sample context sequences to a collection of divergent '
+                 'sequences. This is useful for retaining the diversity of '
+                 'the context sequences in a smaller data set, and for '
+                 'downsampling abundant lineages.'),
 )
 
 
