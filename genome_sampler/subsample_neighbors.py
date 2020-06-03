@@ -43,8 +43,9 @@ def _sample_cluster(cluster, samples_per_cluster, random_state):
         # if only one locale, select context sequences spanning the range
         # of number of mismatches
         sorted_cluster = cluster.sort_values(by='n_mismatches')
-        indices = map(int, np.linspace(0, len_cluster-1, samples_per_cluster))
-        return [sorted_cluster.iloc[i]['context_id'] for i in indices]
+
+        idx = np.linspace(0, len_cluster-1, samples_per_cluster).astype(int)
+        return sorted_cluster['context_id'].iloc[idx].tolist()
 
     # convert locations into number of obs, take the inverse, then scale by
     # number of unique locations so it all sums to 1. Infrequent location obs

@@ -346,7 +346,7 @@ class TestSubsampleNeighbors(TestPluginBase):
             if 'c42' in obs:
                 count_obs_c42 += 1
 
-        # since c4, c2, and c42 all have locale "abc" and c99 has locale "abc",
+        # c4, c2, and c42 all have locale "abc" and c99 has locale "abc",
         # so we expect to see c99 more frequently than any of the other three
         self.assertTrue(count_obs_c99 > count_obs_c4)
         self.assertTrue(count_obs_c99 > count_obs_c2)
