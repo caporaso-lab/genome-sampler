@@ -39,3 +39,60 @@ jobs:
       with: 
         plugin-name: genome-sampler
         additional-tests: pytest --pyargs genome_sampler
+
+  doc-build:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    # TODO: any way to cache and extract the miniconda
+    # installation included in action-library-packaging?
+    - name: setup miniconda
+      uses: goanpeca/setup-miniconda@v1
+      with:
+        auto-update-conda: true
+        python-version: 3.6
+    - name: fetch built package
+      uses: actions/download-artifact@v1
+      with:
+        name: linux-64
+        path: built
+    - name: create conda testing env
+      run: conda create -q -y -p ./test-env
+    - name: install plugin and conda dependencies
+      run: |
+        conda install -p ./test-env -q -y \
+          -c file://$PWD/built \
+          -c qiime2-staging/label/r2020.6 \
+          -c conda-forge \
+          -c bioconda \
+          -c defaults \
+          --override-channels genome-sampler sphinx=2.4.4 pip
+    - name: install pip dependencies
+      shell: bash -l {0}
+      run: |
+        conda activate ./test-env
+        pip install -U "jupyter-book>=0.7.0b"
+    - name: build doc
+      run: conda run -p ./test-env jb build docs/
+    - name: save built doc
+      uses: actions/upload-artifact@v2
+      with:
+        name: docs
+        path: docs/_build/html
+
+  doc-publish:
+    needs: doc-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - name: fetch built docs
+      uses: actions/download-artifact@v1
+      with:
+        name: docs
+        path: built-docs
+    - name: deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./built-docs
