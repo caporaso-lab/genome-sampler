@@ -1,11 +1,12 @@
-import pandas as pd
-
 import re
+import subprocess
+
+import pandas as pd
+import skbio
 
 import qiime2
 import qiime2.plugin.model as model
 from qiime2.plugin import SemanticType
-
 from q2_types.feature_data import FeatureData
 from qiime2.plugin import ValidationError
 
@@ -119,3 +120,20 @@ class GISAIDDNAFASTAFormat(model.TextFileFormat):
     def _validate_(self, max_lines):
         level_map = {'min': 100, 'max': float('inf')}
         self._validate_lines(level_map[max_lines])
+
+
+def run_command(cmd, verbose=True):
+    if verbose:
+        print("Running external command line application. This may print "
+              "messages to stdout and/or stderr.")
+        print("The command being run is below. This command cannot "
+              "be manually re-run as it will depend on temporary files that "
+              "no longer exist.")
+        print("\nCommand:", end=' ')
+        print(" ".join(cmd), end='\n\n')
+    subprocess.run(cmd, check=True)
+
+
+def ids_from_fasta(fasta):
+    seqs = skbio.io.read(fasta, format='fasta', constructor=skbio.DNA)
+    return [s.metadata['id'] for s in seqs]
