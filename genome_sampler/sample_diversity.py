@@ -10,10 +10,10 @@ from genome_sampler.common import IDSelection, run_command, ids_from_fasta
 
 # According to the vsearch 2.14.2 documentation, percent_id is defined as:
 #  (matching columns) / (alignment length - terminal gaps)
-def subsample_diversity(context_seqs: DNAFASTAFormat,
-                        percent_id: float,
-                        max_accepts: int = 10,
-                        n_threads: int = 1) -> IDSelection:
+def sample_diversity(context_seqs: DNAFASTAFormat,
+                     percent_id: float,
+                     max_accepts: int = 10,
+                     n_threads: int = 1) -> IDSelection:
 
     context_ids = ids_from_fasta(str(context_seqs))
     inclusion = pd.Series(False, index=context_ids, name='inclusion')
@@ -42,4 +42,4 @@ def subsample_diversity(context_seqs: DNAFASTAFormat,
 
     return IDSelection(inclusion,
                        qiime2.Metadata(metadata),
-                       "subsample_diversity")
+                       "sample_diversity")

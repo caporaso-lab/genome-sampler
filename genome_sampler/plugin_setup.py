@@ -26,10 +26,10 @@ from genome_sampler.common import (
     UNIXListFormat,
     GISAIDDNAFASTAFormat,
 )
-from genome_sampler.subsample_random import subsample_random
-from genome_sampler.subsample_longitudinal import subsample_longitudinal
-from genome_sampler.subsample_neighbors import subsample_neighbors
-from genome_sampler.subsample_diversity import subsample_diversity
+from genome_sampler.sample_random import sample_random
+from genome_sampler.sample_longitudinal import sample_longitudinal
+from genome_sampler.sample_neighbors import sample_neighbors
+from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
 
 plugin = Plugin(
@@ -113,7 +113,7 @@ def _3(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
 
 
 plugin.methods.register_function(
-    function=subsample_random,
+    function=sample_random,
     inputs={},
     parameters={
         'ids': Metadata,
@@ -138,7 +138,7 @@ plugin.methods.register_function(
 
 
 plugin.methods.register_function(
-    function=subsample_longitudinal,
+    function=sample_longitudinal,
     inputs={},
     parameters={
         'dates': MetadataColumn[Categorical],
@@ -174,7 +174,7 @@ plugin.methods.register_function(
 
 
 plugin.methods.register_function(
-    function=subsample_neighbors,
+    function=sample_neighbors,
     inputs={'focal_seqs': FeatureData[Sequence],
             'context_seqs': FeatureData[Sequence]},
     parameters={
@@ -223,7 +223,7 @@ plugin.methods.register_function(
 
 
 plugin.methods.register_function(
-    function=subsample_diversity,
+    function=sample_diversity,
     inputs={'context_seqs': FeatureData[Sequence]},
     parameters={
         'percent_id': Float % Range(0, 1, inclusive_end=True),

@@ -6,8 +6,8 @@ import qiime2
 from qiime2.plugin.testing import TestPluginBase
 from q2_types.feature_data import DNAFASTAFormat
 
-from genome_sampler.subsample_neighbors import (
-    subsample_neighbors, _clusters_from_vsearch_out, _sample_cluster)
+from genome_sampler.sample_neighbors import (
+    sample_neighbors, _clusters_from_vsearch_out, _sample_cluster)
 
 
 class TestSubsampleNeighbors(TestPluginBase):
@@ -34,11 +34,11 @@ class TestSubsampleNeighbors(TestPluginBase):
         context_md2 = self.get_data_path('context-metadata-2.tsv')
         self.context_md2 = qiime2.Metadata.load(context_md2)
 
-    def test_subsample_neighbors_no_locale(self):
-        sel = subsample_neighbors(self.focal_seqs1,
-                                  self.context_seqs1,
-                                  percent_id=0.98,
-                                  samples_per_cluster=2)
+    def test_sample_neighbors_no_locale(self):
+        sel = sample_neighbors(self.focal_seqs1,
+                               self.context_seqs1,
+                               percent_id=0.98,
+                               samples_per_cluster=2)
 
         exp_inclusion = pd.Series([True, True, False, False, True, False],
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
@@ -49,13 +49,13 @@ class TestSubsampleNeighbors(TestPluginBase):
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
         self.assertEqual(sel.metadata, exp_metadata)
-        self.assertEqual(sel.label, 'subsample_neighbors')
+        self.assertEqual(sel.label, 'sample_neighbors')
 
-    def test_subsample_neighbors_no_locale_alt_percent_id(self):
-        sel = subsample_neighbors(self.focal_seqs1,
-                                  self.context_seqs1,
-                                  percent_id=1.0,
-                                  samples_per_cluster=2)
+    def test_sample_neighbors_no_locale_alt_percent_id(self):
+        sel = sample_neighbors(self.focal_seqs1,
+                               self.context_seqs1,
+                               percent_id=1.0,
+                               samples_per_cluster=2)
 
         exp_inclusion = pd.Series([True, True, False, False, False, False],
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
@@ -66,13 +66,13 @@ class TestSubsampleNeighbors(TestPluginBase):
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
         self.assertEqual(sel.metadata, exp_metadata)
-        self.assertEqual(sel.label, 'subsample_neighbors')
+        self.assertEqual(sel.label, 'sample_neighbors')
 
-    def test_subsample_neighbors_no_locale_alt_samples_per_cluster(self):
-        sel = subsample_neighbors(self.focal_seqs1,
-                                  self.context_seqs1,
-                                  percent_id=0.98,
-                                  samples_per_cluster=3)
+    def test_sample_neighbors_no_locale_alt_samples_per_cluster(self):
+        sel = sample_neighbors(self.focal_seqs1,
+                               self.context_seqs1,
+                               percent_id=0.98,
+                               samples_per_cluster=3)
 
         exp_inclusion = pd.Series([True, True, True, False, True, False],
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
@@ -83,9 +83,9 @@ class TestSubsampleNeighbors(TestPluginBase):
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
         self.assertEqual(sel.metadata, exp_metadata)
-        self.assertEqual(sel.label, 'subsample_neighbors')
+        self.assertEqual(sel.label, 'sample_neighbors')
 
-    def test_subsample_neighbors_locale(self):
+    def test_sample_neighbors_locale(self):
         count_obs_c2 = 0
         count_obs_c3 = 0
         count_obs_c4 = 0
@@ -96,11 +96,11 @@ class TestSubsampleNeighbors(TestPluginBase):
         exp_metadata = qiime2.Metadata(exp_metadata)
 
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = subsample_neighbors(self.focal_seqs1,
-                                      self.context_seqs1,
-                                      percent_id=0.98,
-                                      samples_per_cluster=2,
-                                      locale=self.context_md1.get_column('x'))
+            sel = sample_neighbors(self.focal_seqs1,
+                                   self.context_seqs1,
+                                   percent_id=0.98,
+                                   samples_per_cluster=2,
+                                   locale=self.context_md1.get_column('x'))
 
             obs_sampled_context_seqs = sel.inclusion[sel.inclusion].keys()
             self.assertTrue('c1' in set(obs_sampled_context_seqs))
@@ -108,7 +108,7 @@ class TestSubsampleNeighbors(TestPluginBase):
             self.assertEqual(len(sel.inclusion), 6)
 
             self.assertEqual(sel.metadata, exp_metadata)
-            self.assertEqual(sel.label, 'subsample_neighbors')
+            self.assertEqual(sel.label, 'sample_neighbors')
 
             if 'c2' in obs_sampled_context_seqs:
                 count_obs_c2 += 1
@@ -125,44 +125,44 @@ class TestSubsampleNeighbors(TestPluginBase):
         self.assertTrue(count_obs_c4 > count_obs_c3)
         self.assertTrue(count_obs_c4 > count_obs_c5)
 
-    def test_subsample_neighbors_locale_w_seed(self):
+    def test_sample_neighbors_locale_w_seed(self):
         exp_metadata = self.context_md1
 
         # since we're setting a random seed, the result we get the first
         # time is our expected every time
-        exp_sel = subsample_neighbors(self.focal_seqs1,
-                                      self.context_seqs1,
-                                      percent_id=0.98,
-                                      samples_per_cluster=2,
-                                      locale=self.context_md1.get_column('x'),
-                                      seed=0)
+        exp_sel = sample_neighbors(self.focal_seqs1,
+                                   self.context_seqs1,
+                                   percent_id=0.98,
+                                   samples_per_cluster=2,
+                                   locale=self.context_md1.get_column('x'),
+                                   seed=0)
         self.assertTrue(exp_sel.inclusion['c1'])
         self.assertEqual(exp_sel.inclusion.sum(), 3)
         self.assertEqual(exp_sel.metadata, exp_metadata)
 
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = subsample_neighbors(self.focal_seqs1,
-                                      self.context_seqs1,
-                                      percent_id=0.98,
-                                      samples_per_cluster=2,
-                                      locale=self.context_md1.get_column('x'),
-                                      seed=0)
+            sel = sample_neighbors(self.focal_seqs1,
+                                   self.context_seqs1,
+                                   percent_id=0.98,
+                                   samples_per_cluster=2,
+                                   locale=self.context_md1.get_column('x'),
+                                   seed=0)
 
             pdt.assert_series_equal(sel.inclusion,
                                     exp_sel.inclusion)
 
-    def test_subsample_neighbors_invalid_max_accepts(self):
+    def test_sample_neighbors_invalid_max_accepts(self):
         with self.assertRaisesRegex(ValueError, 'obtained per cluster'):
-            subsample_neighbors(self.focal_seqs1,
-                                self.context_seqs1,
-                                percent_id=0.98,
-                                samples_per_cluster=11)
+            sample_neighbors(self.focal_seqs1,
+                             self.context_seqs1,
+                             percent_id=0.98,
+                             samples_per_cluster=11)
 
-    def test_subsample_neighbors_terminal_gaps_ignored(self):
-        sel = subsample_neighbors(self.focal_seqs2,
-                                  self.context_seqs2,
-                                  percent_id=1.0,
-                                  samples_per_cluster=2)
+    def test_sample_neighbors_terminal_gaps_ignored(self):
+        sel = sample_neighbors(self.focal_seqs2,
+                               self.context_seqs2,
+                               percent_id=1.0,
+                               samples_per_cluster=2)
 
         exp_inclusion = pd.Series([True],
                                   index=['c1'],
@@ -173,17 +173,17 @@ class TestSubsampleNeighbors(TestPluginBase):
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
         self.assertEqual(sel.metadata, exp_metadata)
-        self.assertEqual(sel.label, 'subsample_neighbors')
+        self.assertEqual(sel.label, 'sample_neighbors')
 
-    def test_subsample_neighbors_metadata_superset(self):
+    def test_sample_neighbors_metadata_superset(self):
         context_md = self.get_data_path('context-metadata-2-extra-ids.tsv')
         context_md = qiime2.Metadata.load(context_md)
 
-        sel = subsample_neighbors(self.focal_seqs2,
-                                  self.context_seqs2,
-                                  percent_id=1.0,
-                                  samples_per_cluster=2,
-                                  locale=context_md.get_column('x'))
+        sel = sample_neighbors(self.focal_seqs2,
+                               self.context_seqs2,
+                               percent_id=1.0,
+                               samples_per_cluster=2,
+                               locale=context_md.get_column('x'))
 
         exp_inclusion = pd.Series([True],
                                   index=['c1'],
@@ -192,18 +192,18 @@ class TestSubsampleNeighbors(TestPluginBase):
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
         self.assertEqual(sel.metadata, exp_metadata)
-        self.assertEqual(sel.label, 'subsample_neighbors')
+        self.assertEqual(sel.label, 'sample_neighbors')
 
-    def test_subsample_neighbors_metadata_subset(self):
+    def test_sample_neighbors_metadata_subset(self):
         context_md = self.get_data_path('context-metadata-1-missing-id.tsv')
         context_md = qiime2.Metadata.load(context_md)
 
         with self.assertRaisesRegex(ValueError, 'not present in the metadata'):
-            subsample_neighbors(self.focal_seqs1,
-                                self.context_seqs1,
-                                percent_id=0.98,
-                                samples_per_cluster=1,
-                                locale=context_md.get_column('x'))
+            sample_neighbors(self.focal_seqs1,
+                             self.context_seqs1,
+                             percent_id=0.98,
+                             samples_per_cluster=1,
+                             locale=context_md.get_column('x'))
 
     def test_clusters_from_vsearch_out_no_locale(self):
         vsearch_out = pd.DataFrame(

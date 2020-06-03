@@ -5,7 +5,7 @@ import qiime2
 from qiime2.plugin.testing import TestPluginBase
 from q2_types.feature_data import DNAFASTAFormat
 
-from genome_sampler.subsample_diversity import subsample_diversity
+from genome_sampler.sample_diversity import sample_diversity
 
 
 class TestSubsampleDiversity(TestPluginBase):
@@ -14,12 +14,12 @@ class TestSubsampleDiversity(TestPluginBase):
     def setUp(self):
         super().setUp()
 
-    def test_subsample_diversity(self):
+    def test_sample_diversity(self):
         context_seqs1 = self.get_data_path('context-seqs-1.fasta')
         context_seqs1 = DNAFASTAFormat(context_seqs1, 'r')
 
-        sel = subsample_diversity(context_seqs1,
-                                  percent_id=0.98)
+        sel = sample_diversity(context_seqs1,
+                               percent_id=0.98)
 
         exp_inclusion = pd.Series([True, True, False, False, False, True],
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
@@ -30,14 +30,14 @@ class TestSubsampleDiversity(TestPluginBase):
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
         self.assertEqual(sel.metadata, exp_metadata)
-        self.assertEqual(sel.label, 'subsample_diversity')
+        self.assertEqual(sel.label, 'sample_diversity')
 
-    def test_subsample_diversity_alt_percent_id(self):
+    def test_sample_diversity_alt_percent_id(self):
         context_seqs1 = self.get_data_path('context-seqs-1.fasta')
         context_seqs1 = DNAFASTAFormat(context_seqs1, 'r')
 
-        sel = subsample_diversity(context_seqs1,
-                                  percent_id=0.99)
+        sel = sample_diversity(context_seqs1,
+                               percent_id=0.99)
 
         exp_inclusion = pd.Series([True, True, False, False, True, True],
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
@@ -48,14 +48,14 @@ class TestSubsampleDiversity(TestPluginBase):
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
         self.assertEqual(sel.metadata, exp_metadata)
-        self.assertEqual(sel.label, 'subsample_diversity')
+        self.assertEqual(sel.label, 'sample_diversity')
 
-    def test_subsample_diversity_terminal_gaps_ignored(self):
+    def test_sample_diversity_terminal_gaps_ignored(self):
         context_seqs3 = self.get_data_path('context-seqs-3.fasta')
         context_seqs3 = DNAFASTAFormat(context_seqs3, 'r')
 
-        sel = subsample_diversity(context_seqs3,
-                                  percent_id=1.0)
+        sel = sample_diversity(context_seqs3,
+                               percent_id=1.0)
 
         exp_inclusion = pd.Series([True, False],
                                   index=['c1', 'c2'],
@@ -66,4 +66,4 @@ class TestSubsampleDiversity(TestPluginBase):
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
         self.assertEqual(sel.metadata, exp_metadata)
-        self.assertEqual(sel.label, 'subsample_diversity')
+        self.assertEqual(sel.label, 'sample_diversity')
