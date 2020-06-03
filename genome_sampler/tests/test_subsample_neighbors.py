@@ -44,9 +44,11 @@ class TestSubsampleNeighbors(TestPluginBase):
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
                                   name='inclusion')
         exp_metadata = pd.DataFrame(index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'])
+        exp_metadata.index.name = 'id'
+        exp_metadata = qiime2.Metadata(exp_metadata)
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
-        pdt.assert_frame_equal(sel.metadata, exp_metadata)
+        self.assertEqual(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_no_locale_alt_percent_id(self):
@@ -59,9 +61,11 @@ class TestSubsampleNeighbors(TestPluginBase):
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
                                   name='inclusion')
         exp_metadata = pd.DataFrame(index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'])
+        exp_metadata.index.name = 'id'
+        exp_metadata = qiime2.Metadata(exp_metadata)
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
-        pdt.assert_frame_equal(sel.metadata, exp_metadata)
+        self.assertEqual(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_no_locale_alt_samples_per_cluster(self):
@@ -74,9 +78,11 @@ class TestSubsampleNeighbors(TestPluginBase):
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
                                   name='inclusion')
         exp_metadata = pd.DataFrame(index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'])
+        exp_metadata.index.name = 'id'
+        exp_metadata = qiime2.Metadata(exp_metadata)
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
-        pdt.assert_frame_equal(sel.metadata, exp_metadata)
+        self.assertEqual(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_locale(self):
@@ -86,6 +92,8 @@ class TestSubsampleNeighbors(TestPluginBase):
         count_obs_c5 = 0
 
         exp_metadata = self.context_md1.to_dataframe()
+        exp_metadata.index.name = 'id'
+        exp_metadata = qiime2.Metadata(exp_metadata)
 
         for _ in range(self._N_TEST_ITERATIONS):
             sel = subsample_neighbors(self.focal_seqs1,
@@ -99,7 +107,7 @@ class TestSubsampleNeighbors(TestPluginBase):
             self.assertEqual(sel.inclusion.sum(), 3)
             self.assertEqual(len(sel.inclusion), 6)
 
-            pdt.assert_frame_equal(sel.metadata, exp_metadata)
+            self.assertEqual(sel.metadata, exp_metadata)
             self.assertEqual(sel.label, 'subsample_neighbors')
 
             if 'c2' in obs_sampled_context_seqs:
@@ -118,7 +126,8 @@ class TestSubsampleNeighbors(TestPluginBase):
         self.assertTrue(count_obs_c4 > count_obs_c5)
 
     def test_subsample_neighbors_locale_w_seed(self):
-        exp_metadata = self.context_md1.to_dataframe()
+        exp_metadata = self.context_md1
+
         # since we're setting a random seed, the result we get the first
         # time is our expected every time
         exp_sel = subsample_neighbors(self.focal_seqs1,
@@ -129,7 +138,7 @@ class TestSubsampleNeighbors(TestPluginBase):
                                       seed=0)
         self.assertTrue(exp_sel.inclusion['c1'])
         self.assertEqual(exp_sel.inclusion.sum(), 3)
-        pdt.assert_frame_equal(exp_sel.metadata, exp_metadata)
+        self.assertEqual(exp_sel.metadata, exp_metadata)
 
         for _ in range(self._N_TEST_ITERATIONS):
             sel = subsample_neighbors(self.focal_seqs1,
@@ -159,9 +168,11 @@ class TestSubsampleNeighbors(TestPluginBase):
                                   index=['c1'],
                                   name='inclusion')
         exp_metadata = pd.DataFrame(index=['c1'])
+        exp_metadata.index.name = 'id'
+        exp_metadata = qiime2.Metadata(exp_metadata)
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
-        pdt.assert_frame_equal(sel.metadata, exp_metadata)
+        self.assertEqual(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_metadata_superset(self):
@@ -177,10 +188,10 @@ class TestSubsampleNeighbors(TestPluginBase):
         exp_inclusion = pd.Series([True],
                                   index=['c1'],
                                   name='inclusion')
-        exp_metadata = context_md.filter_ids(['c1']).to_dataframe()
+        exp_metadata = context_md.filter_ids(['c1'])
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
-        pdt.assert_frame_equal(sel.metadata, exp_metadata)
+        self.assertEqual(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_neighbors')
 
     def test_subsample_neighbors_metadata_subset(self):

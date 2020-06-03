@@ -3,6 +3,7 @@ import tempfile
 import pandas as pd
 import numpy as np
 
+import qiime2
 from qiime2.metadata import CategoricalMetadataColumn
 from q2_types.feature_data import DNAFASTAFormat
 
@@ -100,7 +101,8 @@ def subsample_neighbors(focal_seqs: DNAFASTAFormat,
         locale = locale.filter_ids(inclusion.index).to_series()
         metadata = pd.DataFrame(locale)
     else:
-        metadata = pd.DataFrame(index=inclusion.index)
+        metadata = pd.DataFrame(index=pd.Index(inclusion.index))
+    metadata.index.name = 'id'
 
     with tempfile.NamedTemporaryFile() as vsearch_out_f:
         command = ['vsearch',
@@ -124,4 +126,6 @@ def subsample_neighbors(focal_seqs: DNAFASTAFormat,
             _sample_clusters(clusters, samples_per_cluster, seed=seed)
         inclusion[context_seqs_to_keep] = True
 
-    return IDSelection(inclusion, metadata, "subsample_neighbors")
+    return IDSelection(inclusion,
+                       qiime2.Metadata(metadata),
+                       "subsample_neighbors")

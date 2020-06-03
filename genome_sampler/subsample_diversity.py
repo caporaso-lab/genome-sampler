@@ -2,6 +2,7 @@ import tempfile
 
 import pandas as pd
 
+import qiime2
 from q2_types.feature_data import DNAFASTAFormat
 
 from genome_sampler.common import IDSelection, run_command, ids_from_fasta
@@ -16,7 +17,8 @@ def subsample_diversity(context_seqs: DNAFASTAFormat,
 
     context_ids = ids_from_fasta(str(context_seqs))
     inclusion = pd.Series(False, index=context_ids, name='inclusion')
-    metadata = pd.DataFrame(index=inclusion.index)
+    metadata = pd.DataFrame(index=pd.Index(inclusion.index))
+    metadata.index.name = 'id'
 
     with tempfile.NamedTemporaryFile() as uc_out_f:
         command = ['vsearch',
@@ -38,4 +40,6 @@ def subsample_diversity(context_seqs: DNAFASTAFormat,
     context_seqs_to_keep = uc[uc['type'] == 'S'].index
     inclusion[context_seqs_to_keep] = True
 
-    return IDSelection(inclusion, metadata, "subsample_diversity")
+    return IDSelection(inclusion,
+                       qiime2.Metadata(metadata),
+                       "subsample_diversity")

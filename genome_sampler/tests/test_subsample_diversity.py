@@ -1,6 +1,7 @@
 import pandas as pd
 import pandas.testing as pdt
 
+import qiime2
 from qiime2.plugin.testing import TestPluginBase
 from q2_types.feature_data import DNAFASTAFormat
 
@@ -24,9 +25,11 @@ class TestSubsampleDiversity(TestPluginBase):
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
                                   name='inclusion')
         exp_metadata = pd.DataFrame(index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'])
+        exp_metadata.index.name = 'id'
+        exp_metadata = qiime2.Metadata(exp_metadata)
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
-        pdt.assert_frame_equal(sel.metadata, exp_metadata)
+        self.assertEqual(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_diversity')
 
     def test_subsample_diversity_alt_percent_id(self):
@@ -40,9 +43,11 @@ class TestSubsampleDiversity(TestPluginBase):
                                   index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'],
                                   name='inclusion')
         exp_metadata = pd.DataFrame(index=['c1', 'c2', 'c3', 'c4', 'c5', 'c6'])
+        exp_metadata.index.name = 'id'
+        exp_metadata = qiime2.Metadata(exp_metadata)
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
-        pdt.assert_frame_equal(sel.metadata, exp_metadata)
+        self.assertEqual(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_diversity')
 
     def test_subsample_diversity_terminal_gaps_ignored(self):
@@ -56,7 +61,9 @@ class TestSubsampleDiversity(TestPluginBase):
                                   index=['c1', 'c2'],
                                   name='inclusion')
         exp_metadata = pd.DataFrame(index=['c1', 'c2'])
+        exp_metadata.index.name = 'id'
+        exp_metadata = qiime2.Metadata(exp_metadata)
 
         pdt.assert_series_equal(sel.inclusion, exp_inclusion)
-        pdt.assert_frame_equal(sel.metadata, exp_metadata)
+        self.assertEqual(sel.metadata, exp_metadata)
         self.assertEqual(sel.label, 'subsample_diversity')
