@@ -84,7 +84,7 @@ jobs:
   doc-publish:
     needs: doc-build
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     steps:
     - name: fetch built docs
       uses: actions/download-artifact@v1
