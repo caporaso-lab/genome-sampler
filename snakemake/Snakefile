@@ -50,7 +50,8 @@ rule all:
         diversity_selection = OUTPUT_DIR + 'diversity-selection.qza',
         subsampled_selection = OUTPUT_DIR + 'neighbor-selection.qza',
         subsampled_context = OUTPUT_DIR + 'subsampled-context-seqs.qza',
-        terminal_qza = TERMINAL_SUBSAMPLED_SEQS_QZA
+        terminal_qza = TERMINAL_SUBSAMPLED_SEQS_QZA,
+        terminal_fasta = TERMINAL_SUBSAMPLED_SEQS_FASTA
 
 rule import_context_seqs:
     input:
