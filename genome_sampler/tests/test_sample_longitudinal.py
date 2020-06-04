@@ -176,7 +176,7 @@ class TestSubsampleLongitudinal(unittest.TestCase):
 
     def test_seed(self):
         sel1 = sample_longitudinal(self.md2, samples_per_interval=1,
-                                   tart_date='2019-12-26', seed=1)
+                                   start_date='2019-12-26', seed=1)
         for _ in range(self._N_TEST_ITERATIONS):
             sel2 = sample_longitudinal(self.md2, samples_per_interval=1,
                                        start_date='2019-12-26', seed=1)
