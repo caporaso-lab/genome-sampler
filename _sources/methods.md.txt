@@ -1,5 +1,7 @@
 # Supplementary Bioinformatics Methods
 
+**NOTE: this is a work in progress**
+
 ## Environment setup
 
 ```
