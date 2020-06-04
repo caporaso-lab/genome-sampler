@@ -79,14 +79,14 @@ def _sample_clusters(clusters, samples_per_cluster, seed):
 
 # According to the vsearch 2.14.2 documentation, percent_id is defined as:
 #  (matching columns) / (alignment length - terminal gaps)
-def subsample_neighbors(focal_seqs: DNAFASTAFormat,
-                        context_seqs: DNAFASTAFormat,
-                        percent_id: float,
-                        samples_per_cluster: int,
-                        locale: CategoricalMetadataColumn = None,
-                        max_accepts: int = 10,
-                        n_threads: int = 1,
-                        seed: int = None) -> IDSelection:
+def sample_neighbors(focal_seqs: DNAFASTAFormat,
+                     context_seqs: DNAFASTAFormat,
+                     percent_id: float,
+                     samples_per_cluster: int,
+                     locale: CategoricalMetadataColumn = None,
+                     max_accepts: int = 10,
+                     n_threads: int = 1,
+                     seed: int = None) -> IDSelection:
 
     if max_accepts < samples_per_cluster:
         raise ValueError('max_accepts (%d) must be greater than or equal to '
@@ -129,4 +129,4 @@ def subsample_neighbors(focal_seqs: DNAFASTAFormat,
 
     return IDSelection(inclusion,
                        qiime2.Metadata(metadata),
-                       "subsample_neighbors")
+                       "sample_neighbors")

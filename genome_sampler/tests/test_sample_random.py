@@ -3,7 +3,7 @@ import unittest
 import pandas as pd
 import qiime2
 
-from genome_sampler.subsample_random import subsample_random
+from genome_sampler.sample_random import sample_random
 
 
 class TestSubsampleRandom(unittest.TestCase):
@@ -16,34 +16,34 @@ class TestSubsampleRandom(unittest.TestCase):
     def test_n_works(self):
         n = 15
 
-        sel = subsample_random(self.md, n)
+        sel = sample_random(self.md, n)
 
         self.assertEqual(sel.inclusion.sum(), n)
         self.assertEqual(sel.metadata, self.md)
-        self.assertEqual(sel.label, 'subsample_random')
+        self.assertEqual(sel.label, 'sample_random')
 
     def test_n_too_large(self):
         n = 27
 
         with self.assertRaisesRegex(ValueError, 'larger than'):
-            subsample_random(self.md, n)
+            sample_random(self.md, n)
 
     def test_n_matches(self):
         n = self.md.id_count
 
-        sel = subsample_random(self.md, n)
+        sel = sample_random(self.md, n)
 
         self.assertEqual(sel.inclusion.sum(), n)
 
     def test_seed_works(self):
         n = 15
         seed = 123
-        sel = subsample_random(self.md, n, seed=seed)
+        sel = sample_random(self.md, n, seed=seed)
 
         exp = list(sel.inclusion.items())
 
         for _ in range(50):
-            sel = subsample_random(self.md, n, seed=seed)
+            sel = sample_random(self.md, n, seed=seed)
             self.assertEqual(list(sel.inclusion.items()), exp)
 
 

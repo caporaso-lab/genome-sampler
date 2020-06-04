@@ -19,11 +19,11 @@ def _sample_group(samples_per_interval, seed):
     return _sampler
 
 
-def subsample_longitudinal(dates: qiime2.CategoricalMetadataColumn,
-                           start_date: str = None,
-                           samples_per_interval: int = 7,
-                           days_per_interval: int = 7,
-                           seed: int = None) -> IDSelection:
+def sample_longitudinal(dates: qiime2.CategoricalMetadataColumn,
+                        start_date: str = None,
+                        samples_per_interval: int = 7,
+                        days_per_interval: int = 7,
+                        seed: int = None) -> IDSelection:
 
     window_size = '%dD' % days_per_interval
 
@@ -50,4 +50,4 @@ def subsample_longitudinal(dates: qiime2.CategoricalMetadataColumn,
     selection[filtered_df['ids']] = True
 
     md = qiime2.Metadata(dates.to_dataframe())
-    return IDSelection(selection, md, 'subsample_longitudinal')
+    return IDSelection(selection, md, 'sample_longitudinal')

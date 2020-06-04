@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import qiime2
 
-from genome_sampler.subsample_longitudinal import subsample_longitudinal
+from genome_sampler.sample_longitudinal import sample_longitudinal
 
 
 class TestSubsampleLongitudinal(unittest.TestCase):
@@ -33,46 +33,46 @@ class TestSubsampleLongitudinal(unittest.TestCase):
         self.md2 = qiime2.CategoricalMetadataColumn(s2)
 
     def test_default(self):
-        sel = subsample_longitudinal(self.md1)
+        sel = sample_longitudinal(self.md1)
 
         self.assertEqual(sel.inclusion.sum(), 9)
         self.assertEqual(sel.metadata.get_column('date-md'), self.md1)
-        self.assertEqual(sel.label, 'subsample_longitudinal')
+        self.assertEqual(sel.label, 'sample_longitudinal')
 
     def test_start_date_in_data(self):
-        sel = subsample_longitudinal(self.md1, start_date='2019-12-31')
+        sel = sample_longitudinal(self.md1, start_date='2019-12-31')
 
         self.assertEqual(sel.inclusion.sum(), 8)
         self.assertEqual(sel.metadata.get_column('date-md'), self.md1)
-        self.assertEqual(sel.label, 'subsample_longitudinal')
+        self.assertEqual(sel.label, 'sample_longitudinal')
         self.assertFalse(np.nan in list(sel.inclusion.index))
 
     def test_start_date_not_in_data(self):
-        sel = subsample_longitudinal(self.md1, start_date='2019-12-30')
+        sel = sample_longitudinal(self.md1, start_date='2019-12-30')
 
         self.assertEqual(sel.inclusion.sum(), 8)
         self.assertEqual(sel.metadata.get_column('date-md'), self.md1)
-        self.assertEqual(sel.label, 'subsample_longitudinal')
+        self.assertEqual(sel.label, 'sample_longitudinal')
         self.assertFalse(np.nan in list(sel.inclusion.index))
 
     def test_one_sample_per_interval(self):
-        sel = subsample_longitudinal(self.md1, samples_per_interval=1)
+        sel = sample_longitudinal(self.md1, samples_per_interval=1)
 
         self.assertEqual(sel.inclusion.sum(), 6)
         self.assertEqual(sel.metadata.get_column('date-md'), self.md1)
-        self.assertEqual(sel.label, 'subsample_longitudinal')
+        self.assertEqual(sel.label, 'sample_longitudinal')
 
     def test_two_sample_per_interval(self):
-        sel = subsample_longitudinal(self.md1, samples_per_interval=2)
+        sel = sample_longitudinal(self.md1, samples_per_interval=2)
 
         self.assertEqual(sel.inclusion.sum(), 8)
         self.assertEqual(sel.metadata.get_column('date-md'), self.md1)
-        self.assertEqual(sel.label, 'subsample_longitudinal')
+        self.assertEqual(sel.label, 'sample_longitudinal')
 
     def test_interval_bounds1(self):
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = subsample_longitudinal(self.md2, samples_per_interval=1,
-                                         start_date='2019-12-26')
+            sel = sample_longitudinal(self.md2, samples_per_interval=1,
+                                      start_date='2019-12-26')
 
             exp_int1_dates = ['2020-01-02', '2020-01-03', '2020-01-04',
                               '2020-01-05', '2020-01-06', '2020-01-07',
@@ -86,7 +86,7 @@ class TestSubsampleLongitudinal(unittest.TestCase):
 
             self.assertEqual(sel.inclusion.sum(), 5)
             self.assertEqual(sel.metadata.get_column('date-md'), self.md2)
-            self.assertEqual(sel.label, 'subsample_longitudinal')
+            self.assertEqual(sel.label, 'sample_longitudinal')
 
             sampled_dates = set(self.md2.to_series()[sel.inclusion].values)
             self.assertEqual(len(sampled_dates & set(exp_int1_dates)), 1)
@@ -97,8 +97,8 @@ class TestSubsampleLongitudinal(unittest.TestCase):
 
     def test_interval_bounds2(self):
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = subsample_longitudinal(self.md2, samples_per_interval=1,
-                                         start_date='2019-12-27')
+            sel = sample_longitudinal(self.md2, samples_per_interval=1,
+                                      start_date='2019-12-27')
 
             exp_int1_dates = ['2020-01-02']
             exp_int2_dates = ['2020-01-03', '2020-01-04', '2020-01-05',
@@ -113,7 +113,7 @@ class TestSubsampleLongitudinal(unittest.TestCase):
 
             self.assertEqual(sel.inclusion.sum(), 6)
             self.assertEqual(sel.metadata.get_column('date-md'), self.md2)
-            self.assertEqual(sel.label, 'subsample_longitudinal')
+            self.assertEqual(sel.label, 'sample_longitudinal')
 
             sampled_dates = set(self.md2.to_series()[sel.inclusion].values)
             self.assertEqual(len(sampled_dates & set(exp_int1_dates)), 1)
@@ -125,8 +125,8 @@ class TestSubsampleLongitudinal(unittest.TestCase):
 
     def test_interval_bounds3(self):
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = subsample_longitudinal(self.md2, samples_per_interval=1,
-                                         start_date='2019-12-28')
+            sel = sample_longitudinal(self.md2, samples_per_interval=1,
+                                      start_date='2019-12-28')
 
             exp_int1_dates = ['2020-01-02', '2020-01-03']
             exp_int2_dates = ['2020-01-04', '2020-01-05',
@@ -140,7 +140,7 @@ class TestSubsampleLongitudinal(unittest.TestCase):
 
             self.assertEqual(sel.inclusion.sum(), 5)
             self.assertEqual(sel.metadata.get_column('date-md'), self.md2)
-            self.assertEqual(sel.label, 'subsample_longitudinal')
+            self.assertEqual(sel.label, 'sample_longitudinal')
 
             sampled_dates = set(self.md2.to_series()[sel.inclusion].values)
             self.assertEqual(len(sampled_dates & set(exp_int1_dates)), 1)
@@ -151,9 +151,9 @@ class TestSubsampleLongitudinal(unittest.TestCase):
 
     def test_interval_size(self):
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = subsample_longitudinal(self.md2, start_date='2019-12-19',
-                                         samples_per_interval=1,
-                                         days_per_interval=14)
+            sel = sample_longitudinal(self.md2, start_date='2019-12-19',
+                                      samples_per_interval=1,
+                                      days_per_interval=14)
 
             exp_int1_dates = ['2020-01-02', '2020-01-03', '2020-01-04',
                               '2020-01-05', '2020-01-06', '2020-01-07',
@@ -166,7 +166,7 @@ class TestSubsampleLongitudinal(unittest.TestCase):
 
             self.assertEqual(sel.inclusion.sum(), 4)
             self.assertEqual(sel.metadata.get_column('date-md'), self.md2)
-            self.assertEqual(sel.label, 'subsample_longitudinal')
+            self.assertEqual(sel.label, 'sample_longitudinal')
 
             sampled_dates = set(self.md2.to_series()[sel.inclusion].values)
             self.assertEqual(len(sampled_dates & set(exp_int1_dates)), 1)
@@ -175,10 +175,10 @@ class TestSubsampleLongitudinal(unittest.TestCase):
             self.assertEqual(len(sampled_dates & set(exp_int4_dates)), 1)
 
     def test_seed(self):
-        sel1 = subsample_longitudinal(self.md2, samples_per_interval=1,
-                                      start_date='2019-12-26', seed=1)
+        sel1 = sample_longitudinal(self.md2, samples_per_interval=1,
+                                   start_date='2019-12-26', seed=1)
         for _ in range(self._N_TEST_ITERATIONS):
-            sel2 = subsample_longitudinal(self.md2, samples_per_interval=1,
-                                          start_date='2019-12-26', seed=1)
+            sel2 = sample_longitudinal(self.md2, samples_per_interval=1,
+                                       start_date='2019-12-26', seed=1)
             self.assertEqual(list(sel1.inclusion.items()),
                              list(sel2.inclusion.items()))
