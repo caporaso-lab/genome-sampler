@@ -12,22 +12,25 @@ FOCAL_METADATA_FP = 'focal-metadata.tsv'
 #
 # OUTPUT FILEPATHS:
 OUTPUT_DIR = ''
-TERMINAL_SUBSAMPLED_SEQS_FILEPATH = OUTPUT_DIR + 'sequences.qza'
+TERMINAL_SUBSAMPLED_SEQS_QZA = OUTPUT_DIR + 'sequences.qza'
+TERMINAL_SUBSAMPLED_SEQS_FASTA = OUTPUT_DIR + 'sequences.fasta'
 #
 # PARAMETERS:
 # Filter settings
 # Max ambiguous sequences as fraction of total number of seqs in input
-MAX_AMBIGUOUS = 0.01
+MAX_AMBIGUOUS = 0.05
 # Whether to filter focal seqs. Will use same MAX_AMBIGUOUS setting
 FILTER_FOCAL_SEQS = True
 #
-# Subsampling parameters
-# Dates and locale column names for longitudinal + spatial subsampling
+# Longitudinal sampling parameters
 DATES_COLUMN_NAME = 'date'
+SAMPLES_PER_INTERVAL = 7
+DAYS_PER_INTERVAL = 7
+START_DATE = ''
+# Neighbor sampling parameters
 LOCALE_COLUMN_NAME = 'location'
-# Percent identity for diversity subsampling
-PERCENT_ID = 0.9999
-# Samples per cluster
+# Diversity sampling parameters
+PERCENT_ID = 0.9995
 SAMPLES_PER_CLUSTER = 3
 #
 # Resources specs
@@ -43,12 +46,11 @@ rule all:
         context_visualization = OUTPUT_DIR + 'context-seqs.qzv',
         filtered_context = OUTPUT_DIR + 'filtered-context-seqs.qza',
         focal_seqs = OUTPUT_DIR + ('filtered-' if FILTER_FOCAL_SEQS else '') + 'focal-seqs.qza',
-        dates_selection = OUTPUT_DIR + 'date-selection.qza',
-        subsample_visualization = OUTPUT_DIR + 'date-selection.qzv',
+        date_selection = OUTPUT_DIR + 'date-selection.qza',
         diversity_selection = OUTPUT_DIR + 'diversity-selection.qza',
         subsampled_selection = OUTPUT_DIR + 'neighbor-selection.qza',
         subsampled_context = OUTPUT_DIR + 'subsampled-context-seqs.qza',
-        terminal_out = TERMINAL_SUBSAMPLED_SEQS_FILEPATH
+        terminal_qza = TERMINAL_SUBSAMPLED_SEQS_QZA
 
 rule import_context_seqs:
     input:
@@ -80,7 +82,6 @@ rule filter_seqs:
     output:
         filtered_context = OUTPUT_DIR + 'filtered-context-seqs.qza'
     shell:
-        # 1% is more stringent than we usually do, but 5% results in no sequences being filtered with this data.
         "qiime genome-sampler filter-seqs --i-sequences {input.context_seqs_qza} --p-max-proportion-ambiguous {MAX_AMBIGUOUS} --o-filtered-sequences {output.filtered_context}"
 
 if FILTER_FOCAL_SEQS:
@@ -105,17 +106,9 @@ rule sample_longitudinal:
     input:
         dates_file = CONTEXT_METADATA_FP
     output:
-        dates_selection = OUTPUT_DIR + 'date-selection.qza',
+        date_selection = OUTPUT_DIR + 'date-selection.qza',
     shell:
-        "qiime genome-sampler subsample-longitudinal --m-dates-file {input.dates_file} --m-dates-column {DATES_COLUMN_NAME} --o-selection {output.dates_selection}"
-
-rule view_subsample:
-    input:
-        dates_selection = OUTPUT_DIR + 'date-selection.qza',
-    output:
-        subsample_visualization = OUTPUT_DIR + 'date-selection.qzv'
-    shell:
-        "qiime metadata tabulate --m-input-file {input.dates_selection} --o-visualization {output.subsample_visualization}"
+        "qiime genome-sampler sample-longitudinal" + (" --p-start-date {START_DATE} " if START_DATE else " ") + "--p-samples-per-interval {SAMPLES_PER_INTERVAL} --p-days-per-interval {DAYS_PER_INTERVAL} --m-dates-file {input.dates_file} --m-dates-column {DATES_COLUMN_NAME} --o-selection {output.date_selection}"
 
 rule subsample_diversity:
     input:
@@ -123,7 +116,7 @@ rule subsample_diversity:
     output:
         diversity_selection = OUTPUT_DIR + 'diversity-selection.qza',
     shell:
-        "qiime genome-sampler subsample-diversity --i-context-seqs {input.filtered_context} --p-percent-id {PERCENT_ID} --o-selection {output.diversity_selection} --p-n-threads {N_THREADS}"
+        "qiime genome-sampler sample-diversity --i-context-seqs {input.filtered_context} --p-percent-id {PERCENT_ID} --o-selection {output.diversity_selection} --p-n-threads {N_THREADS}"
 
 rule subsample_neighbors:
     input:
@@ -132,24 +125,32 @@ rule subsample_neighbors:
     output:
         subsampled_selection = OUTPUT_DIR + 'neighbor-selection.qza',
     shell:
-        "qiime genome-sampler subsample-neighbors --i-focal-seqs {input.focal_seqs} --i-context-seqs {input.filtered_context} --m-locale-file {CONTEXT_METADATA_FP} --m-locale-column {LOCALE_COLUMN_NAME} --p-percent-id {PERCENT_ID} --p-samples-per-cluster {SAMPLES_PER_CLUSTER} --o-selection {output.subsampled_selection} --p-n-threads {N_THREADS}"
+        "qiime genome-sampler sample-neighbors --i-focal-seqs {input.focal_seqs} --i-context-seqs {input.filtered_context} --m-locale-file {CONTEXT_METADATA_FP} --m-locale-column {LOCALE_COLUMN_NAME} --p-percent-id {PERCENT_ID} --p-samples-per-cluster {SAMPLES_PER_CLUSTER} --o-selection {output.subsampled_selection} --p-n-threads {N_THREADS}"
 
 rule filter_to_subsample:
     input:
         filtered_context = OUTPUT_DIR + 'filtered-context-seqs.qza',
-        dates_selection = OUTPUT_DIR + 'date-selection.qza',
+        date_selection = OUTPUT_DIR + 'date-selection.qza',
         diversity_selection = OUTPUT_DIR + 'diversity-selection.qza',
         subsampled_selection = OUTPUT_DIR + 'neighbor-selection.qza'
     output:
         subsampled_context = OUTPUT_DIR + 'subsampled-context-seqs.qza'
     shell:
-        "qiime feature-table filter-seqs --i-data {input.filtered_context} --m-metadata-file {input.subsampled_selection} --m-metadata-file {input.diversity_selection} --m-metadata-file {input.dates_selection} --o-filtered-data {output.subsampled_context}"
+        "qiime feature-table filter-seqs --i-data {input.filtered_context} --m-metadata-file {input.subsampled_selection} --m-metadata-file {input.diversity_selection} --m-metadata-file {input.date_selection} --o-filtered-data {output.subsampled_context}"
 
 rule merge_seqs:
     input:
         focal_seqs = OUTPUT_DIR + ('filtered-' if FILTER_FOCAL_SEQS else '') + 'focal-seqs.qza',
         subsampled_context = OUTPUT_DIR + 'subsampled-context-seqs.qza'
     output:
-        terminal_out = TERMINAL_SUBSAMPLED_SEQS_FILEPATH
+        terminal_qza = TERMINAL_SUBSAMPLED_SEQS_QZA
     shell:
         "qiime feature-table merge-seqs --i-data {input.subsampled_context} --i-data {input.focal_seqs} --o-merged-data {output}"
+
+rule export:
+    input:
+        terminal_qza = TERMINAL_SUBSAMPLED_SEQS_QZA
+    output:
+        terminal_fasta = TERMINAL_SUBSAMPLED_SEQS_FASTA
+    shell:
+        "qiime tools export --input-path {input.terminal_qza} --output-path {output.terminal_fasta} --output-format DNAFASTAFormat"
