@@ -28,7 +28,7 @@ def _combine_df_error_if_not_equal(a, b):
     return a
 
 
-def combine_selections(selections: IDSelection):
+def combine_selections(selections: IDSelection) -> IDSelection:
     output_label = "combined_selections"
     if len(selections) == 1:
         return IDSelection(selections[0].inclusion,
