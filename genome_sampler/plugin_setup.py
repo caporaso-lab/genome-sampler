@@ -36,6 +36,7 @@ from genome_sampler.sample_neighbors import sample_neighbors
 from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
 from genome_sampler.combine import combine_selections
+from genome_sampler.summarize import summarize_selection
 
 citations = Citations.load('citations.bib', package='genome_sampler')
 
@@ -311,4 +312,15 @@ plugin.methods.register_function(
     output_descriptions={'combined_selection': 'The combined id selection.'},
     name='Combine id selections.',
     description='Combine list of id selections into single id selection.'
+)
+
+plugin.visualizers.register_function(
+    function=summarize_selection,
+    inputs={'selections': List[FeatureData[Selection]]},
+    parameters={},
+    input_descriptions={'selections': 'Selections to summarize.'},
+    parameter_descriptions={},
+    name='Summarize one or more selections.',
+    description='Provide basic summary statistics on the number of IDs'
+                ' selected by the provided selections.'
 )
