@@ -149,7 +149,9 @@ plugin.methods.register_function(
     },
     outputs=[('selection', FeatureData[Selection])],
     input_descriptions={
-        'context_seqs': 'The context sequences to be sampled from.'
+        'context_seqs': ('The context sequences to be sampled from. Providing '
+                         'this will restrict the IDs sampled to only those '
+                         'which have an associated sequence.')
     },
     parameter_descriptions={
         'dates': 'Dates to sample from.',
