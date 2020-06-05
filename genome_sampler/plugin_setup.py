@@ -296,6 +296,7 @@ plugin.methods.register_function(
     description='Filter sequences based on their length and ambiguity.',
 )
 
+
 plugin.methods.register_function(
     function=combine_selections,
     inputs={'selections': List[FeatureData[Selection]]},

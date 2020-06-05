@@ -17,7 +17,7 @@ setup(
         ['genome-sampler=genome_sampler.plugin_setup:plugin']
     },
     package_data={
-        'genome_sampler': ['citations.bib', 'assets/*'],
+        'genome_sampler': ['citations.bib', 'assets/summarize/*'],
         'genome_sampler.tests': ['data/*'],
     },
     zip_safe=False,
