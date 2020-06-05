@@ -13,7 +13,7 @@ SUMMARY_TEMPLATE = pkg_resources.resource_filename(
 
 def _build_summary_table(selections):
     table = pd.DataFrame({}, columns=['action', 'included', 'total'])
-    for selection in sorted(selections, key=lambda x: x.label):
+    for selection in selections:
         table = table.append({'action': selection.label,
                               'included': selection.inclusion.sum(),
                               'total': len(selection.inclusion)},
