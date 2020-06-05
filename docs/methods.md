@@ -52,7 +52,7 @@ Place the resulting Snakemake file in the same folder as the sequence and metada
 Snakemake
 ```
 
-When this workflow completes, there will be two primary output files that you'll use. `sequences.fasta` will contain your subsampled context sequences and your focal sequences. You should use this file for downstream analyses, such as alignment and phylogenetic analyses. `selection-summary.qzv` will provide a summary of the sampling run. You can view this file at https://view.qiime2.org. Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed.
+When this workflow completes, there will be two primary output files that you'll use. `sequences.fasta` will contain your subsampled context sequences and your focal sequences. You should use this file for downstream analyses, such as alignment and phylogenetic analyses. `selection-summary.qzv` will provide a summary of the sampling run. You can view this file using [QIIME 2 View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed.
 
 You should now be able to move on to analysis of your own data. If you'd like to modify parameters of the workflow, you can do so by opening the Snakemake file in a text editor and editing the values in the `CONFIGS` section.
 
@@ -68,7 +68,7 @@ qiime tools import --input-path context-seqs.fasta --output-path context-seqs.qz
 qiime tools import --input-path focal-seqs.fasta --output-path focal-seqs.qza --input-format GISAIDDNAFASTAFormat --type FeatureData[Sequence]
 ```
 
-Next, you can apply a quality filter to the sequence data. This is an optional step, but highly recommended. You can use this to remove sequences based on their length, and based on the proportion of ambiguous (e.g., `N`) nucleotide characters that they contain. Here we'll apply this both to the context sequences and the focal sequences. We'll remove sequences with a proportion of 1% or more ambiguous characters.
+Next, we'll apply a quality filter to the sequence data. Technically this is an optional step for both the context and focal sequences, but in practice if you obtain your context sequences from a public repository you should consider the context sequence filtering to be essential. You can use this to remove sequences based on their length (if they're too short or too long), and based on the proportion of ambiguous (e.g., `N`) nucleotide characters that they contain. Here we'll apply this both to the context sequences and the focal sequences. We'll remove sequences with a proportion of 1% or more ambiguous characters.
 
 ```
 qiime genome-sampler filter-seqs --i-sequences context-seqs.qza --p-max-proportion-ambiguous 0.01 --o-filtered-sequences filtered-context-seqs.qza
@@ -76,43 +76,51 @@ qiime genome-sampler filter-seqs --i-sequences context-seqs.qza --p-max-proporti
 qiime genome-sampler filter-seqs --i-sequences focal-seqs.qza --p-max-proportion-ambiguous 0.01 --o-filtered-sequences filtered-focal-seqs.qza
 ```
 
+If you'd like to see what other options you can control during this filtering step, you can run:
+
+```
+qiime genome-sampler filter-seqs --help
+```
+
+The `--help` parameter can be provided to any of the commands that are used in this tutorial.
+
 At any time, you could get some summary information about your sequences using the following command:
 
 ```
-qiime feature-table tabulate-seqs --i-data filtered-context-seqs.qza --o-visualization filtered-context-seqs.qzv
+qiime feature-table tabulate-seqs --i-data filtered-focal-seqs.qza --o-visualization filtered-focal-seqs.qza
 ```
 
-That command will create a QIIME 2 visualization that you can view at https://view.qiime2.org. Try viewing this file and finding information such as the number of context sequences present in this file and the median length of the sequences.
+That command will create a QIIME 2 visualization that you can view using [QIIME 2 View](https://view.qiime2.org). Try viewing that file and finding information such as the number of sequences present in this file and the median length of the sequences. (Your data is not uploaded to a server when you visit [QIIME 2 View](https://view.qiime2.org), so you don't need to be conerned about exposing sensitive research data.)
 
 We're now ready to start sampling our data, and we'll do this in three steps. These subsampling steps are independent, so can be run in any order.
 
 First, we'll sample across time. By default, this will select seven genomes per seven day period. The file that gets generated as a result here isn't something that is very useful to view directly, but we'll use it in a few minutes to see how many sequences were retained at this step.
 
 ```
-qiime genome-sampler subsample-longitudinal --i-context-seqs filtered-context-seqs.qza --m-dates-file context-metadata.tsv --m-dates-column date --o-selection date-selection.qza
+qiime genome-sampler sample-longitudinal --i-context-seqs filtered-context-seqs.qza --m-dates-file context-metadata.tsv --m-dates-column date --o-selection date-selection.qza
 ```
 
-Next, we'll sample across viral diversity. This will cluster sequences at a percent identity threshold of 99.99%, and select the centroid sequence from each cluster to include in downstream analyses.
+Next, we'll sample across viral diversity. This will cluster sequences at a percent identity threshold of 99.95%, and select the centroid sequence from each cluster to include in downstream analyses.
 
 ```
-qiime genome-sampler subsample-diversity --i-context-seqs filtered-context-seqs.qza --p-percent-id 0.9999 --o-selection diversity-selection.qza --p-n-threads 4
+qiime genome-sampler sample-diversity --i-context-seqs filtered-context-seqs.qza --p-percent-id 0.9995 --o-selection diversity-selection.qza
 ```
 
 Last, we'll sample near neighbors of the focal sequences from the context sequences. Of the near-neighbor sequences that are identified for each focal sequence (up to 10 by default), 3 sequences will be selected at random such that each `location` (defined in the `context-metadata.tsv` file) has an equal probability of being selected for inclusion in downstream analysis.
 
 ```
-qiime genome-sampler subsample-neighbors --i-focal-seqs filtered-focal-seqs.qza --i-context-seqs filtered-context-seqs.qza --m-locale-file context-metadata.tsv --m-locale-column location --p-percent-id 0.9999 --p-samples-per-cluster 3 --o-selection neighbor-selection.qza --p-n-threads 4
+qiime genome-sampler sample-neighbors --i-focal-seqs filtered-focal-seqs.qza --i-context-seqs filtered-context-seqs.qza --m-locale-file context-metadata.tsv --m-locale-column location --p-percent-id 0.9999 --p-samples-per-cluster 3 --o-selection neighbor-selection.qza
 ```
 
-Now, we'll combine the results of the three sampling approaches and then generate a summary of the full selection process.
+Now, we'll combine the results of the three sampling approaches and generate a summary of the full selection process.
 
 ```
 qiime genome-sampler combine-selections --i-selections date-selection.qza --i-selections diversity-selection.qza --i-selections neighbor-selection.qza --o-combined-selection master-selection.qza
 
-qiime genome-sampler summarize-selection --i-selections date-selection.qza --i-selections diversity-selection.qza --i-selections neighbor-selection.qza --o-visualization selections.qzv
+qiime genome-sampler summarize-selection --i-selections date-selection.qza --i-selections diversity-selection.qza --i-selections neighbor-selection.qza --o-visualization master-selection.qzv
 ```
 
-The `selection.qzv` file provides a summary of the sampling run. You can view this file at https://view.qiime2.org. Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed. How many sequences were retained by each sampling step?
+The `master-selection.qzv` file provides a summary of the sampling run. You can view this file using [QIIME 2 View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed. How many sequences were retained by each sampling step?
 
 We're now ready to start compiling our final data set. To do this, we'll use the `master-selection.qza` file to select specific context sequences from the `filtered-context-seqs.qza` file that was generated earlier.
 
@@ -124,7 +132,7 @@ Next, merge the resulting subsampled context sequences with the focal sequences 
 
 ```
 qiime feature-table merge-seqs --i-data subsampled-context-seqs.qza --i-data filtered-focal-seqs.qza --o-merged-data sequences.qza
-qiime tools export --input-path sequences.qza --output-path sequences.fasta
+qiime tools export --input-path sequences.qza --output-path sequences.fasta --output-format DNAFASTAFormat
 ```
 
 **Optional**: QIIME 2 contains some tools for sequence alignment and phylogenetic reconstruction in the [q2-alignment](https://docs.qiime2.org/2020.2/plugins/available/alignment/) and [q2-phylogeny](https://docs.qiime2.org/2020.2/plugins/available/phylogeny/) plugins. If you'd like, you can use these for the next steps of your analyses. These would take the `sequences.qza` file as input, so you could just postpone the export step that you ran above. For example, you could align and build a tree as follows. Note however that usually you would perform some filtering between these two steps, so these two commands likely won't get you a publication quality phylogeny.
