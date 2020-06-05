@@ -139,7 +139,7 @@ plugin.methods.register_function(
 
 plugin.methods.register_function(
     function=sample_longitudinal,
-    inputs={},
+    inputs={'context_seqs': FeatureData[Sequence]},
     parameters={
         'dates': MetadataColumn[Categorical],
         'start_date': Str,
@@ -148,7 +148,9 @@ plugin.methods.register_function(
         'seed': Int % Range(0, None),
     },
     outputs=[('selection', FeatureData[Selection])],
-    input_descriptions={},
+    input_descriptions={
+        'context_seqs': 'The context sequences to be sampled from.'
+    },
     parameter_descriptions={
         'dates': 'Dates to sample from.',
         'start_date': 'Start date of first interval. Dates before this date '

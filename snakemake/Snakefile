@@ -30,7 +30,7 @@ START_DATE = ''
 # Neighbor sampling parameters
 LOCALE_COLUMN_NAME = 'location'
 # Diversity sampling parameters
-PERCENT_ID = 0.9995
+PERCENT_ID = 0.9999
 SAMPLES_PER_CLUSTER = 3
 #
 # Resources specs
@@ -105,11 +105,12 @@ if FILTER_FOCAL_SEQS:
 
 rule sample_longitudinal:
     input:
-        dates_file = CONTEXT_METADATA_FP
+        dates_file = CONTEXT_METADATA_FP,
+        filtered_context = OUTPUT_DIR + 'filtered-context-seqs.qza'
     output:
         date_selection = OUTPUT_DIR + 'date-selection.qza',
     shell:
-        "qiime genome-sampler sample-longitudinal" + (" --p-start-date {START_DATE} " if START_DATE else " ") + "--p-samples-per-interval {SAMPLES_PER_INTERVAL} --p-days-per-interval {DAYS_PER_INTERVAL} --m-dates-file {input.dates_file} --m-dates-column {DATES_COLUMN_NAME} --o-selection {output.date_selection}"
+        "qiime genome-sampler sample-longitudinal --i-context-seqs {input.filtered_context} " + (" --p-start-date {START_DATE} " if START_DATE else " ") + "--p-samples-per-interval {SAMPLES_PER_INTERVAL} --p-days-per-interval {DAYS_PER_INTERVAL} --m-dates-file {input.dates_file} --m-dates-column {DATES_COLUMN_NAME} --o-selection {output.date_selection}"
 
 rule subsample_diversity:
     input:
