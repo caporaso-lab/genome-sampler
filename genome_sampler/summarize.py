@@ -27,7 +27,7 @@ def summarize_selection(output_dir: str, selections: IDSelection):
     html_table = q2templates.df_to_html(table, index=False)
 
     table_fn = 'table.tsv'
-    # Note using qiime2.Metadata b/c we don't have a meaningful ID col
+    # Not using qiime2.Metadata b/c we don't have a meaningful ID col
     table.to_csv(
         os.path.join(output_dir, table_fn), sep='\t', encoding='utf-8')
 
