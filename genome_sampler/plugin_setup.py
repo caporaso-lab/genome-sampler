@@ -12,6 +12,7 @@ from qiime2.plugin import (
     Categorical,
     Float,
     List,
+    Citations,
 )
 from q2_types.feature_data import (
     FeatureData,
@@ -35,6 +36,8 @@ from genome_sampler.sample_neighbors import sample_neighbors
 from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
 from genome_sampler.combine import combine_selections
+
+citations = Citations.load('citations.bib', package='genome_sampler')
 
 plugin = Plugin(
     name='genome-sampler',
@@ -234,6 +237,7 @@ plugin.methods.register_function(
                  'sequences, including sampling over locales if provided. '
                  'This is useful for avoiding apparent monophylies of '
                  'focal sequences.'),
+    citations=[citations['rognes2016vsearch']],
 )
 
 
@@ -266,6 +270,7 @@ plugin.methods.register_function(
                  'sequences. This is useful for retaining the diversity of '
                  'the context sequences in a smaller data set, and for '
                  'downsampling abundant lineages.'),
+    citations=[citations['rognes2016vsearch']],
 )
 
 
