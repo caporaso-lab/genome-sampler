@@ -30,7 +30,8 @@ START_DATE = ''
 # Neighbor sampling parameters
 LOCALE_COLUMN_NAME = 'location'
 # Diversity sampling parameters
-PERCENT_ID = 0.999
+DIVERSITY_PERCENT_ID = 0.999
+NEIGHBORS_PERCENT_ID = 0.9999
 SAMPLES_PER_CLUSTER = 3
 #
 # Resources specs
@@ -50,6 +51,7 @@ rule all:
         diversity_selection = OUTPUT_DIR + 'diversity-selection.qza',
         neighbor_selection = OUTPUT_DIR + 'neighbor-selection.qza',
         combined_selection = OUTPUT_DIR + 'combined-selection.qza',
+        summary_visualization = OUTPUT_DIR + 'selection-summary.qzv',
         subsampled_context = OUTPUT_DIR + 'subsampled-context-seqs.qza',
         terminal_qza = TERMINAL_SUBSAMPLED_SEQS_QZA,
         terminal_fasta = TERMINAL_SUBSAMPLED_SEQS_FASTA
@@ -119,7 +121,7 @@ rule sample_diversity:
     output:
         diversity_selection = OUTPUT_DIR + 'diversity-selection.qza',
     shell:
-        "qiime genome-sampler sample-diversity --i-context-seqs {input.filtered_context} --p-percent-id {PERCENT_ID} --o-selection {output.diversity_selection} --p-n-threads {N_THREADS}"
+        "qiime genome-sampler sample-diversity --i-context-seqs {input.filtered_context} --p-percent-id {DIVERSITY_PERCENT_ID} --o-selection {output.diversity_selection} --p-n-threads {N_THREADS}"
 
 rule sample_neighbors:
     input:
@@ -128,7 +130,17 @@ rule sample_neighbors:
     output:
         neighbor_selection = OUTPUT_DIR + 'neighbor-selection.qza',
     shell:
-        "qiime genome-sampler sample-neighbors --i-focal-seqs {input.focal_seqs} --i-context-seqs {input.filtered_context} --m-locale-file {CONTEXT_METADATA_FP} --m-locale-column {LOCALE_COLUMN_NAME} --p-percent-id {PERCENT_ID} --p-samples-per-cluster {SAMPLES_PER_CLUSTER} --o-selection {output.neighbor_selection} --p-n-threads {N_THREADS}"
+        "qiime genome-sampler sample-neighbors --i-focal-seqs {input.focal_seqs} --i-context-seqs {input.filtered_context} --m-locale-file {CONTEXT_METADATA_FP} --m-locale-column {LOCALE_COLUMN_NAME} --p-percent-id {NEIGHBORS_PERCENT_ID} --p-samples-per-cluster {SAMPLES_PER_CLUSTER} --o-selection {output.neighbor_selection} --p-n-threads {N_THREADS}"
+
+rule summarize_selection:
+    input:
+        date_selection = OUTPUT_DIR + 'date-selection.qza',
+        diversity_selection = OUTPUT_DIR + 'diversity-selection.qza',
+        neighbor_selection = OUTPUT_DIR + 'neighbor-selection.qza'
+    output:
+        summary_visualization = OUTPUT_DIR + 'selection-summary.qzv'
+    shell:
+        "qiime genome-sampler summarize-selection --i-selections {input.date_selection} {input.diversity_selection} {input.neighbor_selection} --o-visualization {output.summary_visualization}"
 
 rule combine_selections:
     input:
@@ -138,7 +150,7 @@ rule combine_selections:
     output:
         combined_selection = OUTPUT_DIR + 'combined-selection.qza'
     shell:
-        "qiime genome-sampler combine-selections --i-selections {input.date_selection} --i-selections {input.diversity_selection} --i-selections {input.neighbor_selection} --o-combined-selection {output.combined_selection}"
+        "qiime genome-sampler combine-selections --i-selections {input.date_selection} {input.diversity_selection} {input.neighbor_selection} --o-combined-selection {output.combined_selection}"
 
 rule filter_to_subsample:
     input:
