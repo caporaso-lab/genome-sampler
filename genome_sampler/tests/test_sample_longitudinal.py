@@ -200,11 +200,11 @@ class TestSubsampleLongitudinal(TestPluginBase):
     def test_seqs_restrict_metadata(self):
         context_seqs = self.get_data_path('context-seqs-4.fasta')
         context_seqs = DNAFASTAFormat(context_seqs, 'r')
-        s2 = pd.Series(['2019-11-01', '2020-01-17'],
-                       index=['B', 'U'])
-        s2.index.name = 'id'
-        s2.name = 'date-md'
-        exp_md = qiime2.CategoricalMetadataColumn(s2)
+        s = pd.Series(['2019-11-01', '2020-01-17'],
+                      index=['B', 'U'])
+        s.index.name = 'id'
+        s.name = 'date-md'
+        exp_md = qiime2.CategoricalMetadataColumn(s)
 
         for _ in range(self._N_TEST_ITERATIONS):
             sel = sample_longitudinal(self.md2, context_seqs)
