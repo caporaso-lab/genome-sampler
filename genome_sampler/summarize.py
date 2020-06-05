@@ -22,7 +22,7 @@ def _build_summary_table(selections):
     return table
 
 
-def summarize_selection(output_dir: str, selections: IDSelection):
+def summarize_selections(output_dir: str, selections: IDSelection):
     table = _build_summary_table(selections)
     html_table = q2templates.df_to_html(table, index=False)
 
