@@ -21,15 +21,19 @@ def _sample_group(samples_per_interval, seed):
 
 
 def sample_longitudinal(dates: qiime2.CategoricalMetadataColumn,
-                        context_seqs: DNAFASTAFormat,
+                        context_seqs: DNAFASTAFormat = None,
                         start_date: str = None,
                         samples_per_interval: int = 7,
                         days_per_interval: int = 7,
                         seed: int = None) -> IDSelection:
 
     window_size = '%dD' % days_per_interval
-    ids_to_include = ids_from_fasta(str(context_seqs))
-    dates = dates.filter_ids(ids_to_include)
+
+    if context_seqs is not None:
+        # filter dates to only include the ids that sequence data is
+        # available for
+        ids_to_include = ids_from_fasta(str(context_seqs))
+        dates = dates.filter_ids(ids_to_include)
 
     dt_series = pd.to_datetime(dates.to_series(), errors='coerce')
     df = pd.DataFrame({'ids': dates.to_series().index}, index=dt_series)

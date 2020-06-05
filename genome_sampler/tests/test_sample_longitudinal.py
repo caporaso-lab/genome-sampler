@@ -23,11 +23,6 @@ class TestSubsampleLongitudinal(TestPluginBase):
         s1.index.name = 'id'
         s1.name = 'date-md'
         self.md1 = qiime2.CategoricalMetadataColumn(s1)
-        # calling context-seqs-4.fasta context_seqs1 here, because that
-        # aligns with the other variable names in these tests and the file
-        # won't be reference again
-        context_seqs1 = self.get_data_path('context-seqs-4.fasta')
-        self.context_seqs_1 = DNAFASTAFormat(context_seqs1, 'r')
 
         s2 = pd.Series(['2020-01-02', '2019-11-01', '2020-02-21',
                         '2020-02-21', '2020-02-21', '2020-03-15',
@@ -40,21 +35,16 @@ class TestSubsampleLongitudinal(TestPluginBase):
         s2.index.name = 'id'
         s2.name = 'date-md'
         self.md2 = qiime2.CategoricalMetadataColumn(s2)
-        # calling context-seqs-5.fasta context_seqs2 here, because that
-        # aligns with the other variable names in these tests and the file
-        # won't be reference again
-        context_seqs2 = self.get_data_path('context-seqs-5.fasta')
-        self.context_seqs_2 = DNAFASTAFormat(context_seqs2, 'r')
 
     def test_default(self):
-        sel = sample_longitudinal(self.md1, self.context_seqs_1)
+        sel = sample_longitudinal(self.md1)
 
         self.assertEqual(sel.inclusion.sum(), 9)
         self.assertEqual(sel.metadata.get_column('date-md'), self.md1)
         self.assertEqual(sel.label, 'sample_longitudinal')
 
     def test_start_date_in_data(self):
-        sel = sample_longitudinal(self.md1, self.context_seqs_1,
+        sel = sample_longitudinal(self.md1,
                                   start_date='2019-12-31')
 
         self.assertEqual(sel.inclusion.sum(), 8)
@@ -63,7 +53,7 @@ class TestSubsampleLongitudinal(TestPluginBase):
         self.assertFalse(np.nan in list(sel.inclusion.index))
 
     def test_start_date_not_in_data(self):
-        sel = sample_longitudinal(self.md1, self.context_seqs_1,
+        sel = sample_longitudinal(self.md1,
                                   start_date='2019-12-30')
 
         self.assertEqual(sel.inclusion.sum(), 8)
@@ -72,7 +62,7 @@ class TestSubsampleLongitudinal(TestPluginBase):
         self.assertFalse(np.nan in list(sel.inclusion.index))
 
     def test_one_sample_per_interval(self):
-        sel = sample_longitudinal(self.md1, self.context_seqs_1,
+        sel = sample_longitudinal(self.md1,
                                   samples_per_interval=1)
 
         self.assertEqual(sel.inclusion.sum(), 6)
@@ -80,7 +70,7 @@ class TestSubsampleLongitudinal(TestPluginBase):
         self.assertEqual(sel.label, 'sample_longitudinal')
 
     def test_two_sample_per_interval(self):
-        sel = sample_longitudinal(self.md1, self.context_seqs_1,
+        sel = sample_longitudinal(self.md1,
                                   samples_per_interval=2)
 
         self.assertEqual(sel.inclusion.sum(), 8)
@@ -89,7 +79,7 @@ class TestSubsampleLongitudinal(TestPluginBase):
 
     def test_interval_bounds1(self):
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = sample_longitudinal(self.md2, self.context_seqs_2,
+            sel = sample_longitudinal(self.md2,
                                       samples_per_interval=1,
                                       start_date='2019-12-26')
 
@@ -116,7 +106,7 @@ class TestSubsampleLongitudinal(TestPluginBase):
 
     def test_interval_bounds2(self):
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = sample_longitudinal(self.md2, self.context_seqs_2,
+            sel = sample_longitudinal(self.md2,
                                       samples_per_interval=1,
                                       start_date='2019-12-27')
 
@@ -145,7 +135,7 @@ class TestSubsampleLongitudinal(TestPluginBase):
 
     def test_interval_bounds3(self):
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = sample_longitudinal(self.md2, self.context_seqs_2,
+            sel = sample_longitudinal(self.md2,
                                       samples_per_interval=1,
                                       start_date='2019-12-28')
 
@@ -172,7 +162,7 @@ class TestSubsampleLongitudinal(TestPluginBase):
 
     def test_interval_size(self):
         for _ in range(self._N_TEST_ITERATIONS):
-            sel = sample_longitudinal(self.md2, self.context_seqs_2,
+            sel = sample_longitudinal(self.md2,
                                       start_date='2019-12-19',
                                       samples_per_interval=1,
                                       days_per_interval=14)
@@ -197,18 +187,18 @@ class TestSubsampleLongitudinal(TestPluginBase):
             self.assertEqual(len(sampled_dates & set(exp_int4_dates)), 1)
 
     def test_seed(self):
-        sel1 = sample_longitudinal(self.md2, self.context_seqs_2,
+        sel1 = sample_longitudinal(self.md2,
                                    samples_per_interval=1,
                                    start_date='2019-12-26', seed=1)
         for _ in range(self._N_TEST_ITERATIONS):
-            sel2 = sample_longitudinal(self.md2, self.context_seqs_2,
+            sel2 = sample_longitudinal(self.md2,
                                        samples_per_interval=1,
                                        start_date='2019-12-26', seed=1)
             self.assertEqual(list(sel1.inclusion.items()),
                              list(sel2.inclusion.items()))
 
     def test_seqs_restrict_metadata(self):
-        context_seqs = self.get_data_path('context-seqs-6.fasta')
+        context_seqs = self.get_data_path('context-seqs-4.fasta')
         context_seqs = DNAFASTAFormat(context_seqs, 'r')
         s2 = pd.Series(['2019-11-01', '2020-01-17'],
                        index=['B', 'U'])
