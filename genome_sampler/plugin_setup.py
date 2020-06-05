@@ -115,7 +115,7 @@ def _read_gisaid_dna_fasta(path):
 
 
 @plugin.register_transformer
-def _3(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
+def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
     data = _read_gisaid_dna_fasta(str(fmt))
     df = DNASequencesDirectoryFormat()
     ff = DNAFASTAFormat()

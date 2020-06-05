@@ -4,7 +4,6 @@ import numpy as np
 
 import qiime2
 from qiime2.plugin.testing import TestPluginBase
-from q2_types.feature_data import DNAFASTAFormat
 
 from genome_sampler.combine import combine_selections
 from genome_sampler.common import IDSelection
@@ -91,7 +90,7 @@ class TestCombineSelections(TestPluginBase):
         sel4 = IDSelection(self.sel3.inclusion, alt_md, 'abc')
 
         with self.assertRaisesRegex(ValueError, 'inconsistent metadata'):
-            sel = combine_selections([self.sel1, self.sel2, sel4])
+            combine_selections([self.sel1, self.sel2, sel4])
 
     def test_error_on_non_equal_inclusion_id_sets(self):
         bad_sel1 = IDSelection(pd.Series([False, False, True],
@@ -100,16 +99,13 @@ class TestCombineSelections(TestPluginBase):
                                self.md1,
                                label='somthing')
         with self.assertRaisesRegex(ValueError, "id sets are not equal"):
-            sel = combine_selections([self.sel1, bad_sel1])
+            combine_selections([self.sel1, bad_sel1])
 
         with self.assertRaisesRegex(ValueError, "id sets are not equal"):
-            sel = combine_selections([bad_sel1, self.sel1])
+            combine_selections([bad_sel1, self.sel1])
 
         with self.assertRaisesRegex(ValueError, "id sets are not equal"):
-            sel = combine_selections([self.sel1,
-                                      self.sel2,
-                                      self.sel3,
-                                      bad_sel1])
+            combine_selections([self.sel1, self.sel2, self.sel3, bad_sel1])
 
     def test_error_on_non_equal_metadata_id_sets(self):
         df = pd.DataFrame([['x'], ['y'], ['z']],
@@ -123,13 +119,10 @@ class TestCombineSelections(TestPluginBase):
                                label='somthing')
 
         with self.assertRaisesRegex(ValueError, "id sets are not equal"):
-            sel = combine_selections([self.sel1, bad_sel1])
+            combine_selections([self.sel1, bad_sel1])
 
         with self.assertRaisesRegex(ValueError, "id sets are not equal"):
-            sel = combine_selections([bad_sel1, self.sel1])
+            combine_selections([bad_sel1, self.sel1])
 
         with self.assertRaisesRegex(ValueError, "id sets are not equal"):
-            sel = combine_selections([self.sel1,
-                                      self.sel2,
-                                      self.sel3,
-                                      bad_sel1])
+            combine_selections([self.sel1, self.sel2, self.sel3, bad_sel1])

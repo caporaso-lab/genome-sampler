@@ -1,8 +1,5 @@
 import operator
 
-import pandas as pd
-import numpy as np
-
 import qiime2
 
 from genome_sampler.common import IDSelection
@@ -14,11 +11,11 @@ def _combine_df_error_if_not_equal(a, b):
 
     # if column isn't in a, return b
     if a.dropna().empty:
-            return b
+        return b
 
     # if column isn't in b, return a
     if b.dropna().empty:
-            return a
+        return a
 
     # if column is in both but aren't equal, error
     if not (a == b).all():
