@@ -76,6 +76,17 @@ def _2(fmt: IDSelectionDirFmt) -> qiime2.Metadata:
     return md.filter_ids(fmt.included.view(UNIXListFormat).to_list())
 
 
+@plugin.register_transformer
+def _3(fmt: IDSelectionDirFmt) -> IDSelection:
+    md = fmt.metadata.view(IDMetadataFormat).to_metadata()
+    inclusion = pd.Series(False, index=md.to_dataframe().index)
+    included = fmt.included.view(UNIXListFormat).to_list()
+    inclusion[included] = True
+    with fmt.label.view(UNIXListFormat).open() as fh:
+        label = fh.read().strip()
+    return IDSelection(inclusion, md, label)
+
+
 def _read_gisaid_dna_fasta(path):
     def _cleanup_gen():
         with open(path) as input_f:
