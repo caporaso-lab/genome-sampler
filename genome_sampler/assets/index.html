@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ table }}
+
+{% if longitudinal_plot %}
+<iframe src='longitudinal.html'></iframe>
+{% endif %}
+
+{% endblock %}

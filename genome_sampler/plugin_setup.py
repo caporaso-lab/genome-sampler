@@ -1,4 +1,5 @@
 import skbio
+import pandas as pd
 import qiime2
 from qiime2.plugin import (
     Plugin,
@@ -9,6 +10,7 @@ from qiime2.plugin import (
     MetadataColumn,
     Categorical,
     Float,
+    List,
 )
 from q2_types.feature_data import (
     FeatureData,
@@ -31,6 +33,7 @@ from genome_sampler.sample_longitudinal import sample_longitudinal
 from genome_sampler.sample_neighbors import sample_neighbors
 from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
+from genome_sampler.summarize import summarize_selection
 
 plugin = Plugin(
     name='genome-sampler',
@@ -76,6 +79,20 @@ def _2(fmt: IDSelectionDirFmt) -> qiime2.Metadata:
     return md.filter_ids(fmt.included.view(UNIXListFormat).to_list())
 
 
+@plugin.register_transformer
+def _3(fmt: IDSelectionDirFmt) -> IDSelection:
+    md = fmt.metadata.view(IDMetadataFormat).to_metadata()
+    inclusion = pd.Series(False, index=md.to_dataframe().index)
+
+    included = fmt.included.view(UNIXListFormat).to_list()
+    inclusion[included] = True
+
+    with fmt.label.view(UNIXListFormat).open() as fh:
+        label = fh.read().strip()
+
+    return IDSelection(inclusion, md, label)
+
+
 def _read_gisaid_dna_fasta(path):
     def _cleanup_gen():
         with open(path) as input_f:
@@ -100,7 +117,7 @@ def _read_gisaid_dna_fasta(path):
 
 
 @plugin.register_transformer
-def _3(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
+def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
     data = _read_gisaid_dna_fasta(str(fmt))
     df = DNASequencesDirectoryFormat()
     ff = DNAFASTAFormat()
@@ -278,4 +295,16 @@ plugin.methods.register_function(
     },
     name='Filter sequences.',
     description='Filter sequences based on their length and ambiguity.',
+)
+
+
+plugin.visualizers.register_function(
+    function=summarize_selection,
+    inputs={'selections': List[FeatureData[Selection]]},
+    parameters={},
+    input_descriptions={'selections': 'Selections to summarize.'},
+    parameter_descriptions={},
+    name='Summarize one or more selections.',
+    description='Provide basic summary statistics on the number of IDs'
+                ' selected by the provided selections.'
 )
