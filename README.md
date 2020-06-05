@@ -21,7 +21,7 @@ conda activate genome-sampler
 Next install dependencies:
 ```
 conda install -c conda-forge -c bioconda -c qiime2 -c defaults \
-  qiime2 q2cli q2templates q2-types q2-feature-table q2-metadata vsearch
+  qiime2 q2cli q2templates q2-types q2-feature-table q2-metadata vsearch snakemake
 ```
 
 Finally install from source:
