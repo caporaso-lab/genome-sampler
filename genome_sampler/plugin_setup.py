@@ -1,4 +1,6 @@
 import skbio
+import pandas as pd
+
 import qiime2
 from qiime2.plugin import (
     Plugin,
@@ -9,6 +11,7 @@ from qiime2.plugin import (
     MetadataColumn,
     Categorical,
     Float,
+    List,
 )
 from q2_types.feature_data import (
     FeatureData,
@@ -31,10 +34,11 @@ from genome_sampler.sample_longitudinal import sample_longitudinal
 from genome_sampler.sample_neighbors import sample_neighbors
 from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
+from genome_sampler.combine import combine_selections
 
 plugin = Plugin(
     name='genome-sampler',
-    website='https://github.com/caporaso-lab/genome-sampler',
+    website='https://caporasolab.us/genome-sampler',
     package='genome_sampler',
     version=genome_sampler.__version__,
     description='Tools for sampling from collections of genomes.',
@@ -76,6 +80,17 @@ def _2(fmt: IDSelectionDirFmt) -> qiime2.Metadata:
     return md.filter_ids(fmt.included.view(UNIXListFormat).to_list())
 
 
+@plugin.register_transformer
+def _3(fmt: IDSelectionDirFmt) -> IDSelection:
+    md = fmt.metadata.view(IDMetadataFormat).to_metadata()
+    inclusion = pd.Series(False, index=md.to_dataframe().index)
+    included = fmt.included.view(UNIXListFormat).to_list()
+    inclusion[included] = True
+    with fmt.label.view(UNIXListFormat).open() as fh:
+        label = fh.read().strip()
+    return IDSelection(inclusion, md, label)
+
+
 def _read_gisaid_dna_fasta(path):
     def _cleanup_gen():
         with open(path) as input_f:
@@ -100,7 +115,7 @@ def _read_gisaid_dna_fasta(path):
 
 
 @plugin.register_transformer
-def _3(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
+def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
     data = _read_gisaid_dna_fasta(str(fmt))
     df = DNASequencesDirectoryFormat()
     ff = DNAFASTAFormat()
@@ -278,4 +293,17 @@ plugin.methods.register_function(
     },
     name='Filter sequences.',
     description='Filter sequences based on their length and ambiguity.',
+)
+
+
+plugin.methods.register_function(
+    function=combine_selections,
+    inputs={'selections': List[FeatureData[Selection]]},
+    parameters={},
+    outputs=[('combined_selection', FeatureData[Selection])],
+    parameter_descriptions={},
+    input_descriptions={'selections': 'The id selections to be combined.'},
+    output_descriptions={'combined_selection': 'The combined id selection.'},
+    name='Combine id selections.',
+    description='Combine list of id selections into single id selection.'
 )
