@@ -49,7 +49,7 @@ curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/sn
 Place the resulting Snakemake file in the same folder as the sequence and metadata files that you downloaded above. Then run:
 
 ```
-Snakemake
+snakemake
 ```
 
 When this workflow completes, there will be two primary output files that you'll use. `sequences.fasta` will contain your subsampled context sequences and your focal sequences. You should use this file for downstream analyses, such as alignment and phylogenetic analyses. `selection-summary.qzv` will provide a summary of the sampling run. You can view this file using [QIIME 2 View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed.
@@ -115,12 +115,12 @@ qiime genome-sampler sample-neighbors --i-focal-seqs filtered-focal-seqs.qza --i
 Now, we'll combine the results of the three sampling approaches and generate a summary of the full selection process.
 
 ```
-qiime genome-sampler combine-selections --i-selections date-selection.qza --i-selections diversity-selection.qza --i-selections neighbor-selection.qza --o-combined-selection master-selection.qza
+qiime genome-sampler combine-selections --i-selections date-selection.qza diversity-selection.qza neighbor-selection.qza --o-combined-selection master-selection.qza
 
-qiime genome-sampler summarize-selection --i-selections date-selection.qza --i-selections diversity-selection.qza --i-selections neighbor-selection.qza --o-visualization master-selection.qzv
+qiime genome-sampler summarize-selection --i-selections date-selection.qza diversity-selection.qza neighbor-selection.qza --o-visualization selection-summary.qzv
 ```
 
-The `master-selection.qzv` file provides a summary of the sampling run. You can view this file using [QIIME 2 View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed. How many sequences were retained by each sampling step?
+The `selection-summary.qzv` file provides a summary of the sampling run. You can view this file using [QIIME 2 View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed. How many sequences were retained by each sampling step?
 
 We're now ready to start compiling our final data set. To do this, we'll use the `master-selection.qza` file to select specific context sequences from the `filtered-context-seqs.qza` file that was generated earlier.
 
@@ -135,7 +135,7 @@ qiime feature-table merge-seqs --i-data subsampled-context-seqs.qza --i-data fil
 qiime tools export --input-path sequences.qza --output-path sequences.fasta --output-format DNAFASTAFormat
 ```
 
-**Optional**: QIIME 2 contains some tools for sequence alignment and phylogenetic reconstruction in the [q2-alignment](https://docs.qiime2.org/2020.2/plugins/available/alignment/) and [q2-phylogeny](https://docs.qiime2.org/2020.2/plugins/available/phylogeny/) plugins. If you'd like, you can use these for the next steps of your analyses. These would take the `sequences.qza` file as input, so you could just postpone the export step that you ran above. For example, you could align and build a tree as follows. Note however that usually you would perform some filtering between these two steps, so these two commands likely won't get you a publication quality phylogeny.
+**Optional**: QIIME 2 contains some tools for sequence alignment and phylogenetic reconstruction in the [q2-alignment](https://docs.qiime2.org/2020.2/plugins/available/alignment/) and [q2-phylogeny](https://docs.qiime2.org/2020.2/plugins/available/phylogeny/) plugins. If you'd like, you can use these for the next steps of your analyses. These would take the `sequences.qza` file as input, so you could just postpone the export step that you ran above. For example, you could align and build a tree as follows. Note however that usually you would perform some manual filtering and trimming between these two steps, so these two commands likely won't get you a publication quality phylogeny.
 
 ```
 qiime alignment mafft --i-sequences sequences.qza --o-aligned-sequences aligned-sequences.qza
