@@ -139,7 +139,7 @@ qiime tools export --input-path sequences.qza --output-path sequences.fasta --ou
 
 ```
 qiime alignment mafft --i-sequences sequences.qza --o-aligned-sequences aligned-sequences.qza
-qiime phylogeny iqtree / raxml / fasttree (maybe worth just noting the presence of all three of these in our tutorial)
+qiime phylogeny fasttree --i-alignment aligned-sequences.qza --o-tree tree.qza
 ```
 
 
