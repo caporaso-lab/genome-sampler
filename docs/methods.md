@@ -117,7 +117,7 @@ Now, we'll combine the results of the three sampling approaches and generate a s
 ```
 qiime genome-sampler combine-selections --i-selections date-selection.qza diversity-selection.qza neighbor-selection.qza --o-combined-selection master-selection.qza
 
-qiime genome-sampler summarize-selection --i-selections date-selection.qza diversity-selection.qza neighbor-selection.qza --o-visualization selection-summary.qzv
+qiime genome-sampler summarize-selections --i-selections date-selection.qza diversity-selection.qza neighbor-selection.qza --o-visualization selection-summary.qzv
 ```
 
 The `selection-summary.qzv` file provides a summary of the sampling run. You can view this file using [QIIME 2 View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed. How many sequences were retained by each sampling step?
