@@ -1,155 +1,152 @@
-# Supplementary Bioinformatics Methods
+# `genome-sampler` installation and usage tutorial
 
-**NOTE: this is a work in progress**
+This document provides instructions for installing and using genome-sampler.
 
-## Environment setup
+## Installation instructions
 
+### Install Miniconda
+[Miniconda](https://conda.io/miniconda.html) provides the conda environment and package manager, and is the recommended way to install `genome-sampler`. Follow the instructions for downloading and installing Miniconda. You may choose either Miniconda2 or Miniconda3 (i.e. Miniconda Python 2 or 3). `genome-sampler` will work with either version of Miniconda.
+
+### Install `genome-sampler` from source
+A conda package will be available in the near future. For the moment we only a source installation.
+
+First create a suitable conda environment:
 ```
-conda env create -n az-covid-1 --file environment.yml
-```
-
-## Sequence data preparation
-
-```
-$ md5sum Global_allsequences_2020-04-16.fasta
-98834fc11a1de1f2ce265c4f36b8531b  Global_allsequences_2020-04-16.fasta
-
-$ md5sum nextstrain-metadata.tsv
-1751d2b16e5fa9d62b7f8f8e17bd68dc  nextstrain-metadata.tsv
+conda create -y -n genome-sampler
+conda activate genome-sampler
 ```
 
-Clean up GISAID sequences
+Next install dependencies:
 ```
-$ az-covid-1/gisaid-cleanup.py Global_allsequences_2020-04-16.fasta gisaid-unaligned.fasta
-Count read: 9230
-Count discarded (contains spaces): 408
-Count discarded (>10% N): 163
-Count written: 8659
+conda install -c conda-forge -c bioconda -c qiime2 -c defaults \
+  qiime2 q2cli q2templates q2-types q2-feature-table q2-metadata vsearch snakemake
 ```
 
-Sample GISAID sequences over time
+Finally install from source:
 ```
-$ az-covid-1/subsample-time.py --rate 7,7 --hist time-hist.pdf nextstrain-metadata.tsv time-sampled.tsv
-Subsampled 9841 down to 106 samples.
-
-$ az-covid-1/filter-seqs.py --tsv time-sampled.tsv gisaid-unaligned.fasta time-sampled.fasta
-For 106 ids to keep, 97 were found out of 8659 total samples
+pip install git+https://github.com/caporaso-lab/genome-sampler.git
 ```
 
-Create a single file containing the TGEN/AZ sequences, the Genbank reference
-sequence (NC_045512.2), and the time-sampled GISAID sequences to create our
-“reference set” of sequences we know we want to include.
-```
-$ cat tgen-unaligned.fasta reference-genome.fasta time-sampled.fasta > reference-centroids.fasta
-```
+## Usage instructions
 
-Search GISAID sequences against the “reference set”, to identify close
-matches for all reference sequences. This ensures that for all sequences that
-we plan to include, we have their nearest neighbors. This protects against
-artificial monophylies. Store the unmatched GISAID sequences from this step
-for de novo clustering.
-```
-$ vsearch --threads 28 --usearch_global gisaid-unaligned.fasta --id 0.9999 --db reference-centroids.fasta --uc reference-search-results-0.9999.uc --qmask none --output_no_hits --notmatched unmatched-0.9999.fasta
-```
+### Download tutorial data
+The tutorial data set used here is intended for educational purposes only. If you're interested in using these sequences for other analyses, we recommend starting with sequence repositories such as GISAID or NCBI Genbank, which may have updated versions.
 
-Cluster the unmatched GISAID sequences de novo at multiple different percent
-identity thresholds. This allows us to sample the diversity of the SARS-CoV-2
-genomes. We will identify the output that we want to use based on the number
-of sequences obtained from that search. Note that the 2nd through 5th de novo
-clustering commands are clustering the output of the 1st de novo clustering
-command to reduce runtime of each.
-```
-$ vsearch --threads 28 --cluster_fast unmatched-0.9999.fasta --id 0.9999 --qmask none --xsize --uc unmatched-0.9999.uc --centroids denovo-centroids-0.9999.fasta
+Download metadata as tsv from the two tabs in [this spreadsheet](https://docs.google.com/spreadsheets/d/18IyZK6gvwcqKrl2U1FnucrC71Q5VSy_qFTz4ktffNK4/edit#gid=0). Name the file downloaded from the `context-metadata` tab `context-metadata.tsv` and the file downloaded from the `focal-metadata` tab `focal-metadata.tsv`.
 
-$ vsearch --threads 28 --cluster_fast denovo-centroids-0.9999.fasta --id 0.9995 --qmask none --xsize --uc unmatched-0.9995.uc --centroids denovo-centroids-0.9995.fasta
+Download the two fasta files from [this Dropbox folder](https://www.dropbox.com/sh/tkb0c4snk5zodj8/AABLCykSiEe5zqv8gTeOSegna?dl=0).
 
-$ vsearch --threads 28 --cluster_fast denovo-centroids-0.9999.fasta --id 0.9990 --qmask none --xsize --uc unmatched-0.9990.uc --centroids denovo-centroids-0.9990.fasta
+### Using `genome-sampler` (Snakemake workflow)
 
-$ vsearch --threads 28 --cluster_fast denovo-centroids-0.9999.fasta --id 0.9950 --qmask none --xsize --uc unmatched-0.9950.uc --centroids denovo-centroids-0.9950.fasta
+The full `genome-sampler` workflow can be run using Snakemake. If you'd like to get started quickly and use default parameters, start here. If you'd like more control over your analysis or want to work through the steps individually, move on to the next section.
 
-$ vsearch --threads 28 --cluster_fast denovo-centroids-0.9999.fasta --id 0.9900 --qmask none --xsize --uc unmatched-0.9900.uc --centroids denovo-centroids-0.9900.fasta
-```
-
-We will sample the remaining SARS-CoV-2 diversity at 99.9% identity threshold
-as 48 sequences were obtained at that threshold, which is about the number we
-expect will be reasonable to use with BEAST.
+Download the Snakemake file using `curl` as follows:
 
 ```
-$ grep -c '^>' denovo-centroids-0.99*.fasta
-denovo-centroids-0.9900.fasta:9
-denovo-centroids-0.9950.fasta:11
-denovo-centroids-0.9990.fasta:48
-denovo-centroids-0.9995.fasta:106
-denovo-centroids-0.9999.fasta:1869
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/Snakefile
 ```
 
-For each TGEN/AZ sequence, select up to its three closest matches based on
-the global alignment search.
-```
-$ az-covid-1/sample-clusters.py --query gisaid-unaligned.fasta --uc reference-search-results-0.9999.uc --target tgen-unaligned.fasta --n 3 --tsv nextstrain-metadata.tsv tgen-unaligned-sampled-clusters.tsv
-
-$ az-covid-1/filter-seqs.py --tsv tgen-unaligned-sampled-clusters.tsv gisaid-unaligned.fasta mrca-centroids-siblings.fasta
-```
-
-Count the number of sequences in each of our sequence collections. Then merge
-them to create the sequence collection we plan to use for this analysis.
-```
-$ grep -c "^>" reference-centroids.fasta mrca-centroids-siblings.fasta denovo-centroids-0.9990.fasta
-reference-centroids.fasta:174
-mrca-centroids-siblings.fasta:244
-denovo-centroids-0.9990.fasta:48
-```
+Place the resulting Snakemake file in the same folder as the sequence and metadata files that you downloaded above. Then run:
 
 ```
-$ cat reference-centroids.fasta mrca-centroids-siblings.fasta denovo-centroids-0.9990.fasta > unaligned-preprint-seqs.fasta
+snakemake
 ```
 
-```
-$ grep -c "^>" unaligned-preprint-seqs.fasta
-466
-```
+When this workflow completes, there will be two primary output files that you'll use. `sequences.fasta` will contain your subsampled context sequences and your focal sequences. You should use this file for downstream analyses, such as alignment and phylogenetic analyses. `selection-summary.qzv` will provide a summary of the sampling run. You can view this file using [QIIME 2 View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed.
+
+You should now be able to move on to analysis of your own data. If you'd like to modify parameters of the workflow, you can do so by opening the Snakemake file in a text editor and editing the values in the `CONFIGS` section.
+
+🐍
+
+### Using `genome-sampler` (step-by-step instructions)
+
+You'll begin the workflow by importing the fasta files into QIIME 2 Artifacts. QIIME 2 Artifacts are structured zip files which will contain the data (still in fasta format), but also some QIIME 2-specific information that (among other things) automates your method recording so you don't have to do that.
 
 ```
-$ md5sum unaligned-preprint-seqs.fasta*
-6506af95df6c4c3b8671489418b6773f  unaligned-preprint-seqs.fasta
-e801322e946c1b81782a2d6b962be15e  unaligned-preprint-seqs.fasta.gz
+qiime tools import --input-path context-seqs.fasta --output-path context-seqs.qza --input-format GISAIDDNAFASTAFormat --type FeatureData[Sequence]
+
+qiime tools import --input-path focal-seqs.fasta --output-path focal-seqs.qza --input-format GISAIDDNAFASTAFormat --type FeatureData[Sequence]
 ```
 
-Brendan identified sequences to exclude based on low quality alignments or
-missing metadata. He also requested some specific sequences be added. These
-additions and subtractions result in the data used for our analyses.
-```
-$ az-covid-1/clean-seqs.py --remove brendans-ids-to-drop.tsv --fix-date True unaligned-preprint-seqs.fasta unaligned-cleaned-preprint-seqs-2020-04-28.fasta
-54 sequences were duplicated, 37 were removed, and 71 were renamed out of 466 total.
-
-$ grep -c '^>' unaligned-cleaned-preprint-seqs-2020-04-28.fasta
-375
-
-$ grep -A 1 EPI_ISL_407215 gisaid-unaligned.fasta >> unaligned-cleaned-preprint-seqs-2020-04-28.fasta
-
-$ grep -A 1 EPI_ISL_406223 gisaid-unaligned.fasta >> unaligned-cleaned-preprint-seqs-2020-04-28.fasta
-
-$ grep -A 1 EPI_ISL_424671 gisaid-unaligned.fasta >> unaligned-cleaned-preprint-seqs-2020-04-28.fasta
-
-$ grep -A 1 EPI_ISL_424668 gisaid-unaligned.fasta >> unaligned-cleaned-preprint-seqs-2020-04-28.fasta
-
-$ grep -c '^>' unaligned-cleaned-preprint-seqs-2020-04-28.fasta
-379
-```
+Next, we'll apply a quality filter to the sequence data. Technically this is an optional step for both the context and focal sequences, but in practice if you obtain your context sequences from a public repository you should consider the context sequence filtering to be essential. You can use this to remove sequences based on their length (if they're too short or too long), and based on the proportion of ambiguous (e.g., `N`) nucleotide characters that they contain. Here we'll apply this both to the context sequences and the focal sequences. We'll remove sequences with a proportion of 1% or more ambiguous characters.
 
 ```
-$ gzip -c unaligned-cleaned-preprint-seqs-2020-04-28.fasta > unaligned-cleaned-preprint-seqs-2020-04-28.fasta.gz
+qiime genome-sampler filter-seqs --i-sequences context-seqs.qza --p-max-proportion-ambiguous 0.01 --o-filtered-sequences filtered-context-seqs.qza
 
-$ md5sum unaligned-cleaned-preprint-seqs-2020-04-28.fasta*
-07bce6efa67969113c46dc91597e367b unaligned-cleaned-preprint-seqs-2020-04-28.fasta
-8bef74159d699415023b829efbd6670d unaligned-cleaned-preprint-seqs-2020-04-28.fasta.gz
+qiime genome-sampler filter-seqs --i-sequences focal-seqs.qza --p-max-proportion-ambiguous 0.01 --o-filtered-sequences filtered-focal-seqs.qza
 ```
 
-An additional five genomes sequenced at TGEN were added following this
-workflow as these were assembled following the execution of this workflow.
-These sequences are ids:
-TGEN-CoV-AZ-WMTS-TG268002|Coconino|2020-03-16
-TGEN-CoV-AZ-WMTS-TG271878|UNKNOWN|2020-03-20
-TGEN-CoV-AZ-WMTS-TG268099|Coconino|2020-03-17
-TGEN-CoV-AZ-WMTS-TG271862|Cochise|2020-03-22
-TGEN-CoV-AZ-WMTS-TG271435|Coconino|2020-03-2
+If you'd like to see what other options you can control during this filtering step, you can run:
+
+```
+qiime genome-sampler filter-seqs --help
+```
+
+The `--help` parameter can be provided to any of the commands that are used in this tutorial.
+
+At any time, you could get some summary information about your sequences using the following command:
+
+```
+qiime feature-table tabulate-seqs --i-data filtered-focal-seqs.qza --o-visualization filtered-focal-seqs.qza
+```
+
+That command will create a QIIME 2 visualization that you can view using [QIIME 2 View](https://view.qiime2.org). Try viewing that file and finding information such as the number of sequences present in this file and the median length of the sequences. (Your data is not uploaded to a server when you visit [QIIME 2 View](https://view.qiime2.org), so you don't need to be conerned about exposing sensitive research data.)
+
+We're now ready to start sampling our data, and we'll do this in three steps. These subsampling steps are independent, so can be run in any order.
+
+First, we'll sample across time. By default, this will select seven genomes per seven day period. The file that gets generated as a result here isn't something that is very useful to view directly, but we'll use it in a few minutes to see how many sequences were retained at this step.
+
+```
+qiime genome-sampler sample-longitudinal --i-context-seqs filtered-context-seqs.qza --m-dates-file context-metadata.tsv --m-dates-column date --o-selection date-selection.qza
+```
+
+Next, we'll sample across viral diversity. This will cluster sequences at a percent identity threshold of 99.95%, and select the centroid sequence from each cluster to include in downstream analyses.
+
+```
+qiime genome-sampler sample-diversity --i-context-seqs filtered-context-seqs.qza --p-percent-id 0.9995 --o-selection diversity-selection.qza
+```
+
+Last, we'll sample near neighbors of the focal sequences from the context sequences. Of the near-neighbor sequences that are identified for each focal sequence (up to 10 by default), 3 sequences will be selected at random such that each `location` (defined in the `context-metadata.tsv` file) has an equal probability of being selected for inclusion in downstream analysis.
+
+```
+qiime genome-sampler sample-neighbors --i-focal-seqs filtered-focal-seqs.qza --i-context-seqs filtered-context-seqs.qza --m-locale-file context-metadata.tsv --m-locale-column location --p-percent-id 0.9999 --p-samples-per-cluster 3 --o-selection neighbor-selection.qza
+```
+
+Now, we'll combine the results of the three sampling approaches and generate a summary of the full selection process.
+
+```
+qiime genome-sampler combine-selections --i-selections date-selection.qza diversity-selection.qza neighbor-selection.qza --o-combined-selection master-selection.qza
+
+qiime genome-sampler summarize-selections --i-selections date-selection.qza diversity-selection.qza neighbor-selection.qza --o-visualization selection-summary.qzv
+```
+
+The `selection-summary.qzv` file provides a summary of the sampling run. You can view this file using [QIIME 2 View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after loading the file on that page - that will provide full details on the workflow that was executed. How many sequences were retained by each sampling step?
+
+We're now ready to start compiling our final data set. To do this, we'll use the `master-selection.qza` file to select specific context sequences from the `filtered-context-seqs.qza` file that was generated earlier.
+
+```
+qiime feature-table filter-seqs --i-data filtered-context-seqs.qza --m-metadata-file master-selection.qza --o-filtered-data subsampled-context-seqs.qza
+```
+
+Next, merge the resulting subsampled context sequences with the focal sequences to create the final QIIME 2 artifact. Then, export that to generate a fasta file that you can use in downstream analysis.
+
+```
+qiime feature-table merge-seqs --i-data subsampled-context-seqs.qza --i-data filtered-focal-seqs.qza --o-merged-data sequences.qza
+qiime tools export --input-path sequences.qza --output-path sequences.fasta --output-format DNAFASTAFormat
+```
+
+**Optional**: QIIME 2 contains some tools for sequence alignment and phylogenetic reconstruction in the [q2-alignment](https://docs.qiime2.org/2020.2/plugins/available/alignment/) and [q2-phylogeny](https://docs.qiime2.org/2020.2/plugins/available/phylogeny/) plugins. If you'd like, you can use these for the next steps of your analyses. These would take the `sequences.qza` file as input, so you could just postpone the export step that you ran above. For example, you could align and build a tree as follows. Note however that usually you would perform some manual filtering and trimming between these two steps, so these two commands likely won't get you a publication quality phylogeny.
+
+```
+qiime alignment mafft --i-sequences sequences.qza --o-aligned-sequences aligned-sequences.qza
+qiime phylogeny iqtree / raxml / fasttree (maybe worth just noting the presence of all three of these in our tutorial)
+```
+
+
+## Getting help, contributing, etc
+`genome-sampler` is open source and free for all use. Software and unit tests are available at https://github.com/caporaso-lab/genome-sampler under the BSD 3-clause license. Documentation, written using [Myst](https://myst-parser.readthedocs.io/en/latest) and rendered using [Jupyter Book](https://jupyterbook.org/), is available at http://caporasolab.us/genome-sampler/.
+
+If you need technical support, please post a question to the QIIME 2 Forum at https://forum.qiime2.org. We are very interested in contributions to genome-sampler from the community - please get in touch via the GitHub issue tracker or the QIIME 2 Forum if you’re interested in contributing. Before getting in touch, please review the software project's [code of conduct](https://github.com/caporaso-lab/code-of-conduct/blob/master/code-of-conduct.md), which is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 1.4.
+
+## Citing `genome-sampler`
+If you use `genome-sampler` in published work, please cite our pre-print (link to follow when available).
