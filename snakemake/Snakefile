@@ -8,7 +8,6 @@
 CONTEXT_SEQS_FP = 'context-seqs.fasta'
 FOCAL_SEQS_FP = 'focal-seqs.fasta'
 CONTEXT_METADATA_FP = 'context-metadata.tsv'
-FOCAL_METADATA_FP = 'focal-metadata.tsv'
 #
 # OUTPUT FILEPATHS:
 OUTPUT_DIR = ''

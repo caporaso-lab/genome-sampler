@@ -60,7 +60,7 @@ individually, move on to the next section.
 Download the Snakemake file using `curl` as follows:
 
 ```
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/Snakefile
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/Snakefile --output Snakefile
 ```
 
 Place the resulting Snakemake file in the same folder as the sequence and
