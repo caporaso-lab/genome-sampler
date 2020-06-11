@@ -225,7 +225,9 @@ plugin.methods.register_function(
         'locale': ('The metadata column that contains locale '
                    'data. If provided, sampling will be performed across '
                    'locales. (While this was designed for locale sampling, '
-                   'any categorical metadata column could be provided.)'),
+                   'any categorical metadata column could be provided.) '
+                   'Each occurrence of missing data will be treated as a '
+                   'unique locale/category.'),
         'max_accepts': ('The maximum number of context sequences that match '
                         'a focal sequence at `percent_id` or higher that '
                         'will be identified. Up to `samples_per_cluster` of '
@@ -251,7 +253,6 @@ plugin.methods.register_function(
     inputs={'context_seqs': FeatureData[Sequence]},
     parameters={
         'percent_id': Float % Range(0, 1, inclusive_end=True),
-        'max_accepts': Int % Range(1, None),
         'n_threads': Int % Range(1, None)
     },
     outputs=[('selection', FeatureData[Selection])],
@@ -262,8 +263,6 @@ plugin.methods.register_function(
                        'Context sequences will be dereplicated such that no '
                        'pair of retained sequences will have a percent '
                        'identity to one another that is this high.'),
-        'max_accepts': ('The maximum number of context sequences that will '
-                        'be queried before a new cluster is defned.'),
         'n_threads': 'The number of threads to use for processing.',
     },
     output_descriptions={
