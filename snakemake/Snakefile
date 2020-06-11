@@ -27,7 +27,7 @@ SAMPLES_PER_INTERVAL = 7
 DAYS_PER_INTERVAL = 7
 START_DATE = ''
 # Neighbor sampling parameters
-LOCALE_COLUMN_NAME = 'location'
+LOCALE_COLUMN_NAME = 'division'
 # Diversity sampling parameters
 DIVERSITY_PERCENT_ID = 0.999
 NEIGHBORS_PERCENT_ID = 0.9999
