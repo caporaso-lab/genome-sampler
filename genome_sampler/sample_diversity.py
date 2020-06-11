@@ -12,7 +12,6 @@ from genome_sampler.common import IDSelection, run_command, ids_from_fasta
 #  (matching columns) / (alignment length - terminal gaps)
 def sample_diversity(context_seqs: DNAFASTAFormat,
                      percent_id: float,
-                     max_accepts: int = 10,
                      n_threads: int = 1) -> IDSelection:
 
     context_ids = ids_from_fasta(str(context_seqs))
@@ -27,7 +26,6 @@ def sample_diversity(context_seqs: DNAFASTAFormat,
                    '--id', str(percent_id),
                    '--uc', uc_out_f.name,
                    '--qmask', 'none',
-                   '--maxaccepts', str(max_accepts),
                    ]
         run_command(command)
 

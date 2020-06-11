@@ -30,6 +30,21 @@ def _clusters_from_vsearch_out(vsearch_out, locale):
             for focal_id, hits in clusters.items()}
 
 
+def _generate_weights(loc):
+    # convert locations into number of obs, take the inverse, then scale by
+    # number of unique locations so it all sums to 1. Infrequent location obs
+    # will have a high weight, frequent location obs will have an individually
+    # lower weight, but collectively all locations have the same weight when
+    # all obs are summed within a location class.
+    n_missing = loc.isna().sum()
+    total_classes = loc.nunique() + n_missing
+    weights = (1 / loc.map(loc.value_counts())) / total_classes
+    # weights may still have NaN
+    weights.fillna(1 / total_classes, inplace=True)
+
+    return weights
+
+
 def _sample_cluster(cluster, samples_per_cluster, random_state):
     len_cluster = cluster.shape[0]
     if len_cluster == 0:
@@ -47,19 +62,13 @@ def _sample_cluster(cluster, samples_per_cluster, random_state):
         idx = np.linspace(0, len_cluster-1, samples_per_cluster).astype(int)
         return sorted_cluster['context_id'].iloc[idx].tolist()
 
-    # convert locations into number of obs, take the inverse, then scale by
-    # number of unique locations so it all sums to 1. Infrequent location obs
-    # will have a high weight, frequent location obs will have an individually
-    # lower weight, but collectively all locations have the same weight when
-    # all obs are summed within a location class.
-    loc = cluster['locale']
-    weights = ((1 / loc.map(loc.value_counts())) / len(loc.unique()))
     # TODO: if multiple samples are being selected from the same locale, it
     # would be good to sample across the number of mismatches to the focal
     # sequence, as we're doing where there is only a single locale. To do that,
     # I think we'd need to get the count of how many of each locale we want
     # at random (like the rarefaction algorithm) and then use the approach
     # above (which would then generalize to one or more locales).
+    weights = _generate_weights(cluster['locale'])
     result = cluster.sample(samples_per_cluster,
                             weights=weights,
                             random_state=random_state)

@@ -7,7 +7,8 @@ from qiime2.plugin.testing import TestPluginBase
 from q2_types.feature_data import DNAFASTAFormat
 
 from genome_sampler.sample_neighbors import (
-    sample_neighbors, _clusters_from_vsearch_out, _sample_cluster)
+    sample_neighbors, _clusters_from_vsearch_out, _sample_cluster,
+    _generate_weights)
 
 
 class TestSubsampleNeighbors(TestPluginBase):
@@ -351,3 +352,56 @@ class TestSubsampleNeighbors(TestPluginBase):
         self.assertTrue(count_obs_c99 > count_obs_c4)
         self.assertTrue(count_obs_c99 > count_obs_c2)
         self.assertTrue(count_obs_c99 > count_obs_c42)
+
+    def test_sample_cluster_missing_locales(self):
+        columns = ['context_id', 'n_mismatches', 'locale']
+        cluster = pd.DataFrame([['c4', 5, 'abc'],
+                                ['c2', 0, float('nan')],
+                                ['c99', 1, float('nan')],
+                                ['c42', 2, 'abc']],
+                               columns=columns)
+
+        count_obs_c4 = 0
+        count_obs_c2 = 0
+        count_obs_c99 = 0
+        count_obs_c42 = 0
+
+        for _ in range(self._N_TEST_ITERATIONS):
+            obs = _sample_cluster(cluster, 3, np.random.RandomState())
+            self.assertEqual(len(obs), 3)
+            if 'c4' in obs:
+                count_obs_c4 += 1
+            if 'c2' in obs:
+                count_obs_c2 += 1
+            if 'c99' in obs:
+                count_obs_c99 += 1
+            if 'c42' in obs:
+                count_obs_c42 += 1
+
+        # c4 and c42 all have locale "abc" and c99 and c2 have unknown locale,
+        # so we expect to see c99 amd c2 more frequently
+        self.assertTrue(count_obs_c99 > count_obs_c4)
+        self.assertTrue(count_obs_c99 > count_obs_c42)
+        self.assertTrue(count_obs_c2 > count_obs_c4)
+        self.assertTrue(count_obs_c2 > count_obs_c42)
+
+    def test_generate_weights_single_class(self):
+        loc = pd.Series(['A'] * 4)
+
+        results = _generate_weights(loc)
+
+        self.assertEqual([1/4] * 4, list(results))
+
+    def test_generate_weights_multiple_classes(self):
+        loc = pd.Series(['A', 'B', 'A', 'B', 'C', 'D'])
+
+        results = _generate_weights(loc)
+
+        self.assertEqual([1/8, 1/8, 1/8, 1/8, 2/8, 2/8], list(results))
+
+    def test_generate_weights_missing_data(self):
+        loc = pd.Series(['A', 'B', 'A', 'B', float('nan'), float('nan')])
+
+        results = _generate_weights(loc)
+
+        self.assertEqual([1/8, 1/8, 1/8, 1/8, 2/8, 2/8], list(results))
