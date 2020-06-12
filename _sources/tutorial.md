@@ -13,7 +13,7 @@ choose either Miniconda2 or Miniconda3 (i.e. Miniconda Python 2 or 3).
 
 ### Install `genome-sampler` from source
 A conda package will be available in the near future. For the moment we only
-a source installation.
+provide a source installation.
 
 First create a suitable conda environment:
 ```

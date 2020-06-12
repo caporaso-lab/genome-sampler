@@ -25,7 +25,7 @@
     <script src="_static/copybutton.js"></script>
     <script src="_static/mystnb.js"></script>
     <script src="_static/sphinx-book-theme.js"></script>
-    <script >var togglebuttonSelector = '.toggle, .secondtoggle, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -98,7 +98,7 @@
                 <!-- ipynb file if we had a myst markdown file -->
                 
                 <!-- Download raw file -->
-                <a class="dropdown-buttons" href="_sources/tutorial.md.txt"><button type="button" class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip" data-placement="left">.md</button></a>
+                <a class="dropdown-buttons" href="_sources/tutorial.md"><button type="button" class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip" data-placement="left">.md</button></a>
                 <!-- Download PDF via print -->
                 <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF" onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
             </div>
@@ -189,7 +189,7 @@ choose either Miniconda2 or Miniconda3 (i.e. Miniconda Python 2 or 3).
 <div class="section" id="install-genome-sampler-from-source">
 <h3>Install <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> from source<a class="headerlink" href="#install-genome-sampler-from-source" title="Permalink to this headline">¶</a></h3>
 <p>A conda package will be available in the near future. For the moment we only
-a source installation.</p>
+provide a source installation.</p>
 <p>First create a suitable conda environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">y</span> <span class="o">-</span><span class="n">n</span> <span class="n">genome</span><span class="o">-</span><span class="n">sampler</span>
 <span class="n">conda</span> <span class="n">activate</span> <span class="n">genome</span><span class="o">-</span><span class="n">sampler</span>
@@ -445,6 +445,8 @@ Covenant</a>, version 1.4.</p>
     <footer class="footer mt-5 mt-md-0">
     <div class="container">
       <p>
+        
+          By The Jupyter Book community<br/>
         
             &copy; Copyright 2020.<br/>
       </p>
