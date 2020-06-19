@@ -19,10 +19,19 @@ def sample_diversity(context_seqs: DNAFASTAFormat,
     metadata = pd.DataFrame(index=pd.Index(inclusion.index))
     metadata.index.name = 'id'
 
-    with tempfile.NamedTemporaryFile() as uc_out_f:
+    with tempfile.NamedTemporaryFile() as uc_out_f,\
+         tempfile.NamedTemporaryFile() as derep_out_f:
+
         command = ['vsearch',
                    '--threads', str(n_threads),
-                   '--cluster_fast', str(context_seqs),
+                   '--derep_fulllength', str(context_seqs),
+                   '--output', derep_out_f.name
+                   ]
+        run_command(command)
+
+        command = ['vsearch',
+                   '--threads', str(n_threads),
+                   '--cluster_fast', derep_out_f.name,
                    '--id', str(percent_id),
                    '--uc', uc_out_f.name,
                    '--qmask', 'none',
