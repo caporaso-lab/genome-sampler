@@ -1,4 +1,3 @@
-import re
 import subprocess
 
 import pandas as pd
@@ -54,13 +53,6 @@ Selection = SemanticType('Selection', variant_of=FeatureData.field['type'])
 # https://github.com/qiime2/q2-types/blob/058ee0e40e38edaa02b1aad034df37456aeb4ddf/q2_types/feature_data/_format.py#L146
 class GISAIDDNAFASTAFormat(model.TextFileFormat):
     def _validate_lines(self, max_lines):
-        FASTADNAValidator = re.compile(
-            r'[ACGTURYKMSWBDHVNacgturykmswbdhvn\-\. ]+\r?\n?')
-        ValidationSet = frozenset(('A', 'C', 'G', 'T', 'U', 'R', 'Y', 'K', 'M',
-                                   'S', 'W', 'B', 'D', 'H', 'V', 'N', 'a', 'c',
-                                   'g', 't', 'u', 'r', 'y', 'k', 'm', 's', 'w',
-                                   'b', 'd', 'h', 'v', 'n', '-', '.', ' '))
-
         last_line_was_ID = False
         ids = {}
 
@@ -103,16 +95,8 @@ class GISAIDDNAFASTAFormat(model.TextFileFormat):
                                 f'another ID on line {ids[line[0]]}.')
                         ids[line[0]] = line_number
                         last_line_was_ID = True
-                    elif re.fullmatch(FASTADNAValidator, line):
-                        last_line_was_ID = False
                     else:
-                        for position, character in enumerate(line):
-                            if character not in ValidationSet:
-                                raise ValidationError(
-                                    f"Invalid character '{character}' at "
-                                    f"position {position} on line "
-                                    f"{line_number} (does not match IUPAC "
-                                    "characters for a DNA sequence).")
+                        last_line_was_ID = False
             except UnicodeDecodeError as e:
                 raise ValidationError(f'utf-8 cannot decode byte on line '
                                       f'{line_number}') from e

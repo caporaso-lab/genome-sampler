@@ -1,3 +1,4 @@
+import sys
 import skbio
 import pandas as pd
 
@@ -98,20 +99,43 @@ def _3(fmt: IDSelectionDirFmt) -> IDSelection:
 def _read_gisaid_dna_fasta(path):
     def _cleanup_gen():
         with open(path) as input_f:
+            lines = None
             for line in input_f:
                 if line.startswith('>'):
-                    yield line
-                else:
+                    if lines is not None:
+                        print(lines)
+                        yield from lines
+                    lines = [line]
+                elif lines is not None:
                     # Due to a bug in skbio 0.5.5, the lowercase option can't
                     # be used with skbio.io.read for reading DNA sequences.
                     # Convert sequences to uppercase here.
                     line = line.upper()
                     # Spaces and gap characters can appear in unaligned GISAID
-                    # sequence records, so we strip those.
+                    # sequence records, so we strip those. U characters are
+                    # additionally replaced with T characters.
                     line = line.replace('-', '')
                     line = line.replace('.', '')
                     line = line.replace(' ', '')
-                    yield line
+                    line = line.replace('U', 'T')
+
+                    observed_chars = set(line.strip())
+                    disallowed_chars = observed_chars - skbio.DNA.alphabet
+                    if disallowed_chars:
+                        print('Note: Non-IUPAC DNA characters (%s) in '
+                              'sequence record %s. This record will be '
+                              'excluded from the output.' %
+                              (' '.join(disallowed_chars),
+                               lines[0][1:].split()[0]),
+                              file=sys.stderr)
+                        lines = None
+                    else:
+                        lines.append(line)
+                else:
+                    continue
+
+            if lines is not None:
+                yield from lines
 
     result = skbio.io.read(_cleanup_gen(), verify=False,
                            format='fasta', constructor=skbio.DNA)
