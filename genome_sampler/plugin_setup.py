@@ -103,7 +103,6 @@ def _read_gisaid_dna_fasta(path):
             for line in input_f:
                 if line.startswith('>'):
                     if lines is not None:
-                        print(lines)
                         yield from lines
                     lines = [line]
                 elif lines is not None:
