@@ -107,6 +107,19 @@ qiime tools import \
   --type FeatureData[Sequence]
 ```
 
+If you're obtaining context sequences from a public repository, you may
+encounter context sequences that don't have associated metadata records. Steps
+in this workflow that require context sequence metadata would fail as a
+result. At this stage we therefore filter any context sequences that don't
+have metadata records.
+
+```
+qiime feature-table filter-seqs \
+  --i-data context-seqs.qza \
+  --m-metadata-file context-metadata.tsv \
+  --o-filtered-data context-seqs-w-metadata.qza
+```
+
 Next, we'll apply a quality filter to the sequence data. Technically this is
 an optional step for both the context and focal sequences, but in practice if
 you obtain your context sequences from a public repository you should
@@ -119,7 +132,7 @@ ambiguous characters.
 
 ```
 qiime genome-sampler filter-seqs \
-  --i-sequences context-seqs.qza \
+  --i-sequences context-seqs-w-metadata.qza \
   --p-max-proportion-ambiguous 0.01 \
   --o-filtered-sequences filtered-context-seqs.qza
 
