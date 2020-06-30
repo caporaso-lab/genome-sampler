@@ -47,7 +47,8 @@ plugin = Plugin(
     package='genome_sampler',
     version=genome_sampler.__version__,
     description='Tools for sampling from collections of genomes.',
-    short_description='Genome sampler.'
+    short_description='Genome sampler.',
+    citations=[citations['genomesampler']]
 )
 
 plugin.register_formats(IDSelectionDirFmt)
