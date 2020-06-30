@@ -297,4 +297,4 @@ which is adapted from the [Contributor
 Covenant](https://www.contributor-covenant.org), version 1.4.
 
 ## Citing `genome-sampler`
-If you use `genome-sampler` in published work, please cite our pre-print (link to follow when available).
+If you use `genome-sampler` in published work, please cite [our paper](https://f1000research.com/articles/9-657).
