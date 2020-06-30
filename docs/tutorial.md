@@ -262,7 +262,8 @@ phylogenetic reconstruction in the
 [q2-alignment](https://docs.qiime2.org/2020.2/plugins/available/alignment/)
 and
 [q2-phylogeny](https://docs.qiime2.org/2020.2/plugins/available/phylogeny/)
-plugins. If you'd like, you can use these for the next steps of your
+plugins (which are not installed by default with genome-sampler). If you'd
+like, you can use these for the next steps of your
 analyses. These would take the `sequences.qza` file as input, so you could
 just postpone the export step that you ran above. For example, you could
 align and build a tree as follows. Note however that usually you would
