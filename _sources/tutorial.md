@@ -107,6 +107,19 @@ qiime tools import \
   --type FeatureData[Sequence]
 ```
 
+If you're obtaining context sequences from a public repository, you may
+encounter context sequences that don't have associated metadata records. Steps
+in this workflow that require context sequence metadata would fail as a
+result. At this stage we therefore filter any context sequences that don't
+have metadata records.
+
+```
+qiime feature-table filter-seqs \
+  --i-data context-seqs.qza \
+  --m-metadata-file context-metadata.tsv \
+  --o-filtered-data context-seqs-w-metadata.qza
+```
+
 Next, we'll apply a quality filter to the sequence data. Technically this is
 an optional step for both the context and focal sequences, but in practice if
 you obtain your context sequences from a public repository you should
@@ -119,7 +132,7 @@ ambiguous characters.
 
 ```
 qiime genome-sampler filter-seqs \
-  --i-sequences context-seqs.qza \
+  --i-sequences context-seqs-w-metadata.qza \
   --p-max-proportion-ambiguous 0.01 \
   --o-filtered-sequences filtered-context-seqs.qza
 
@@ -249,7 +262,8 @@ phylogenetic reconstruction in the
 [q2-alignment](https://docs.qiime2.org/2020.2/plugins/available/alignment/)
 and
 [q2-phylogeny](https://docs.qiime2.org/2020.2/plugins/available/phylogeny/)
-plugins. If you'd like, you can use these for the next steps of your
+plugins (which are not installed by default with genome-sampler). If you'd
+like, you can use these for the next steps of your
 analyses. These would take the `sequences.qza` file as input, so you could
 just postpone the export step that you ran above. For example, you could
 align and build a tree as follows. Note however that usually you would
@@ -284,4 +298,4 @@ which is adapted from the [Contributor
 Covenant](https://www.contributor-covenant.org), version 1.4.
 
 ## Citing `genome-sampler`
-If you use `genome-sampler` in published work, please cite our pre-print (link to follow when available).
+If you use `genome-sampler` in published work, please cite [our paper](https://f1000research.com/articles/9-657).
