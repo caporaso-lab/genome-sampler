@@ -44,6 +44,7 @@ rule all:
         context_seqs_qza = OUTPUT_DIR + 'context-seqs.qza',
         focal_seqs_qza = OUTPUT_DIR + 'focal-seqs.qza',
         context_visualization = OUTPUT_DIR + 'context-seqs.qzv',
+        context_seqs_w_metadata_qza = OUTPUT_DIR + 'context-seqs-w-metadata.qza',
         filtered_context = OUTPUT_DIR + 'filtered-context-seqs.qza',
         focal_seqs = OUTPUT_DIR + ('filtered-' if FILTER_FOCAL_SEQS else '') + 'focal-seqs.qza',
         date_selection = OUTPUT_DIR + 'date-selection.qza',
@@ -79,13 +80,22 @@ rule view_context:
     shell:
         "qiime feature-table tabulate-seqs --i-data {input.context_seqs_qza} --o-visualization {output.context_visualization}"
 
+rule filter_context_missing_metadata:
+    input:
+        context_seqs_qza = OUTPUT_DIR + 'context-seqs.qza',
+        context_metadata = CONTEXT_METADATA_FP
+    output:
+        context_seqs_w_metadata_qza = OUTPUT_DIR + 'context-seqs-w-metadata.qza'
+    shell:
+        "qiime feature-table filter-seqs --i-data {input.context_seqs_qza} --m-metadata-file {input.context_metadata} --o-filtered-data {output.context_seqs_w_metadata_qza}"
+
 rule filter_seqs:
     input:
-        context_seqs_qza = OUTPUT_DIR + 'context-seqs.qza'
+        context_seqs_w_metadata_qza = OUTPUT_DIR + 'context-seqs-w-metadata.qza'
     output:
         filtered_context = OUTPUT_DIR + 'filtered-context-seqs.qza'
     shell:
-        "qiime genome-sampler filter-seqs --i-sequences {input.context_seqs_qza} --p-max-proportion-ambiguous {MAX_AMBIGUOUS} --o-filtered-sequences {output.filtered_context}"
+        "qiime genome-sampler filter-seqs --i-sequences {input.context_seqs_w_metadata_qza} --p-max-proportion-ambiguous {MAX_AMBIGUOUS} --o-filtered-sequences {output.filtered_context}"
 
 if FILTER_FOCAL_SEQS:
     rule filter_focal_seqs:
