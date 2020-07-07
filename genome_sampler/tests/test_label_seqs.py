@@ -31,3 +31,11 @@ class TestLabelSeqs(TestPluginBase):
         obs_series = label_seqs(self.labeled_seqs, '+')
 
         pdt.assert_series_equal(obs_series, self.seqs)
+
+    def test_label_works_one_column(self):
+        exp_series = pd.Series(['ACGT', 'ACGT', 'ACGT'],
+                               index=['id1+A', 'id2+B', 'id3+C'])
+
+        obs_series = label_seqs(self.seqs, '+', self.md, ['COL1'])
+
+        pdt.assert_series_equal(obs_series, exp_series)
