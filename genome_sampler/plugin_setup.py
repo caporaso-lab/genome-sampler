@@ -8,18 +8,21 @@ from qiime2.plugin import (
     Metadata,
     Int,
     Range,
+    Choices,
     Str,
     MetadataColumn,
     Categorical,
     Float,
     List,
     Citations,
+    TypeMatch,
 )
 from q2_types.feature_data import (
     FeatureData,
     DNAFASTAFormat,
     DNASequencesDirectoryFormat,
     Sequence,
+    AlignedSequence,
 )
 
 import genome_sampler
@@ -38,6 +41,7 @@ from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
 from genome_sampler.combine import combine_selections
 from genome_sampler.summarize import summarize_selections
+from genome_sampler.label_seqs import label_seqs
 
 citations = Citations.load('citations.bib', package='genome_sampler')
 
@@ -340,6 +344,25 @@ plugin.methods.register_function(
     name='Combine id selections.',
     description='Combine list of id selections into single id selection.'
 )
+
+
+T = TypeMatch([Sequence, AlignedSequence])
+plugin.methods.register_function(
+    function=label_seqs,
+    inputs={'seqs': FeatureData[T]},
+    parameters={
+        'metadata': Metadata,
+        'columns': List[Str],
+        'delimiter': Str % Choices('|', ',', '+', ':', ';'),
+    },
+    outputs=[('labeled_seqs', FeatureData[T])],
+    input_descriptions={},
+    parameter_descriptions={},
+    output_descriptions={},
+    name='',
+    description=''
+)
+
 
 plugin.visualizers.register_function(
     function=summarize_selections,
