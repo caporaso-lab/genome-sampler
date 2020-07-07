@@ -18,16 +18,18 @@ class TestLabelSeqs(TestPluginBase):
                           index=['id1', 'id2', 'id3'])
         df.index.name = 'id'
         self.md = qiime2.Metadata(df)
-        self.seqs = pd.Series([skbio.DNA('ACGT', metadata={'id': 'id1'}),
-                               skbio.DNA('ACGT', metadata={'id': 'id2'}),
-                               skbio.DNA('ACGT', metadata={'id': 'id3'})],
+        self.seqs = pd.Series(['ACGT', 'ACGT', 'ACGT'],
                               index=['id1', 'id2', 'id3'])
+        self.labeled_seqs = pd.Series(['ACGT', 'ACGT', 'ACGT'],
+                                      index=['id1+A+1', 'id2+B+2', 'id3+C+3'])
 
     def test_label_works(self):
-        exp_series = \
-            pd.Series(['ACGT', 'ACGT', 'ACGT'],
-                      index=['id1+A+1', 'id2+B+2', 'id3+C+3'])
+        obs_series = label_seqs(self.seqs, '+', self.md, ['COL1', 'COL2'])
 
-        obs_series = label_seqs(self.seqs, self.md, ['COL1', 'COL2'], '+')
+        pdt.assert_series_equal(obs_series, self.labeled_seqs)
 
-        pdt.assert_series_equal(obs_series, exp_series)
+    def test_delabel_works(self):
+        obs_series = label_seqs(self.labeled_seqs, '+')
+
+        pdt.assert_series_equal(obs_series, self.seqs)
+
