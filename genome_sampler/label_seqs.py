@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 import qiime2
 
 
@@ -12,7 +11,7 @@ def label_seqs(seqs: pd.Series, delimiter: str,
 
     seqs = seqs.apply(str)
     seqs.index = seqs.index.map(lambda x: x.split(delimiter)[0])
-    
+
     if metadata is not None:
         md_df = metadata.to_dataframe()
     else:
