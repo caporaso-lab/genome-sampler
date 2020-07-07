@@ -32,4 +32,3 @@ class TestLabelSeqs(TestPluginBase):
         obs_series = label_seqs(self.labeled_seqs, '+')
 
         pdt.assert_series_equal(obs_series, self.seqs)
-
