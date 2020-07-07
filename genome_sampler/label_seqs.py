@@ -6,6 +6,11 @@ import qiime2
 def label_seqs(seqs: pd.Series, delimiter: str,
                metadata: qiime2.Metadata = None, columns: str = None) \
                    -> pd.Series:
+    if columns is not None and metadata is None \
+            or metadata is not None and columns is None:
+        raise ValueError('Columns and metadata must be passed or not passed '
+                         'together.')
+
     # This is necessary because QIIME 2 will not accept an empty list as an
     # argument of type List[str]
     if columns is None:

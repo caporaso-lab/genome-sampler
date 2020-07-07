@@ -39,3 +39,11 @@ class TestLabelSeqs(TestPluginBase):
         obs_series = label_seqs(self.seqs, '+', self.md, ['COL1'])
 
         pdt.assert_series_equal(obs_series, exp_series)
+
+    def test_md_no_columns(self):
+        with self.assertRaisesRegex(ValueError, 'Columns and metadata'):
+            label_seqs(self.seqs, '+', self.md)
+
+    def test_columns_no_md(self):
+        with self.assertRaisesRegex(ValueError, 'Columns and metadata'):
+            label_seqs(self.seqs, '+', columns=['COL1', 'COL2'])
