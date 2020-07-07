@@ -1,4 +1,3 @@
-import skbio
 import pandas as pd
 import pandas.testing as pdt
 
