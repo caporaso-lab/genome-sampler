@@ -36,7 +36,7 @@ def label_seqs(seqs: pd.Series, delimiter: str,
             additional_missing = len(missing_ids.values[10:])
 
             error_message = ('The following ids are present in the sequences '
-                             f'but not the metadata {repr(difference)}')
+                             f'but not the metadata {difference}')
 
             if additional_missing:
                 error_message += f' ({additional_missing} omitted)'

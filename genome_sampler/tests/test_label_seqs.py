@@ -51,9 +51,21 @@ class TestLabelSeqs(TestPluginBase):
             label_seqs(self.seqs, '+', columns=['COL1', 'COL2'])
 
     def test_md_missing_id(self):
-        with self.assertRaisesRegex(ValueError, "The following.*\"'id4'\""):
+        with self.assertRaisesRegex(ValueError, "The following.*'id4'"):
             label_seqs(self.four_seqs, '+', self.md, ['COL1', 'COL2'])
 
     def test_requested_col_not_present(self):
         with self.assertRaisesRegex(ValueError, "The column 'COL3' is not"):
             label_seqs(self.seqs, '+', self.md, ['COL3'])
+
+    def test_more_than_ten_missing(self):
+        seqs = ['ACGT'] * 11
+        index = ['id%d' % d for d in range(11)]
+        eleven_seqs = pd.Series(seqs, index=index)
+
+        df = pd.DataFrame({'COL': [1]}, index=['x'])
+        df.index.name = 'id'
+        empty_md = qiime2.Metadata(df)
+
+        with self.assertRaisesRegex(ValueError, 'omitted'):
+            label_seqs(eleven_seqs, '+', empty_md, ['COL'])
