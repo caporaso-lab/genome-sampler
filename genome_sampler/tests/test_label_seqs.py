@@ -21,6 +21,8 @@ class TestLabelSeqs(TestPluginBase):
                               index=['id1', 'id2', 'id3'])
         self.labeled_seqs = pd.Series(['ACGT', 'ACGT', 'ACGT'],
                                       index=['id1+A+1', 'id2+B+2', 'id3+C+3'])
+        self.four_seqs = pd.Series(['ACGT', 'ACGT', 'ACGT', 'ACGT'],
+                                   index=['id1', 'id2', 'id3', 'id4'])
 
     def test_label_works(self):
         obs_series = label_seqs(self.seqs, '+', self.md, ['COL1', 'COL2'])
@@ -47,3 +49,11 @@ class TestLabelSeqs(TestPluginBase):
     def test_columns_no_md(self):
         with self.assertRaisesRegex(ValueError, 'Columns and metadata'):
             label_seqs(self.seqs, '+', columns=['COL1', 'COL2'])
+
+    def test_md_missing_id(self):
+        with self.assertRaisesRegex(ValueError, "The following.*\"'id4'\""):
+            label_seqs(self.four_seqs, '+', self.md, ['COL1', 'COL2'])
+
+    def test_requested_col_not_present(self):
+        with self.assertRaisesRegex(ValueError, "The column 'COL3' is not"):
+            label_seqs(self.seqs, '+', self.md, ['COL3'])

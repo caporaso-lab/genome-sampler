@@ -23,13 +23,23 @@ def label_seqs(seqs: pd.Series, delimiter: str,
 
     if metadata is not None:
         md_df = metadata.to_dataframe()
+
+        for column in columns:
+            if column not in md_df.columns:
+                raise ValueError(f'The column {repr(column)} is not present '
+                                 'in the metadata')
+
+        missing_ids = seqs.index.difference(md_df.index)
+        if missing_ids.values.size != 0:
+            difference = ' '.join(repr(value) for value in missing_ids.values)
+            raise ValueError('The following ids are present in the sequences '
+                             f'but not the metadata {repr(difference)}')
     else:
         md_df = pd.DataFrame({}, index=seqs.index)
 
     selected = md_df[columns]
     rename = pd.Series([delimiter.join(row) for row in selected.itertuples()],
                        index=selected.index)
-
     seqs.index = seqs.index.map(rename)
 
     return seqs
