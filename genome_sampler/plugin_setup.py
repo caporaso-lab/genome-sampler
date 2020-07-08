@@ -356,22 +356,22 @@ plugin.methods.register_function(
     outputs=[('labeled_seqs', FeatureData[AlignedSequence])],
     input_descriptions={'seqs': 'The sequences to be re-labeled.'},
     parameter_descriptions={
-        'delimiter': 'The delimiter separating the ids and the added'
-                     ' metadata.',
+        'delimiter': 'The delimiter between the sequence id and each metadata'
+                     ' entry.',
         'metadata': 'The metadata to embed in the header.',
-        'columns': 'The columns in the metadata to be used.'
+        'columns': 'The columns in the metadata to be used.',
     },
     output_descriptions={
-        'labeled_seqs': 'The input sequences with metadata embedded (or'
-                        ' removed).'
+        'labeled_seqs': 'The re-labeled sequences.'
     },
-    name='Re-label sequences using metadata',
-    description='Treat the header as a delimiter-seperated format. The first'
-                ' field of the delimiter-seperated header will be treated as'
-                ' the id to lookup in the metadata. If no metadata is'
-                ' provided, then the header will contain only the id (fields'
-                ' other than the first one will be removed.)'
-
+    name='Re-label sequences',
+    description='Modifies sequence identifiers either by adding or removing'
+                ' metadata. If metadata and one or more columns are provided,'
+                ' the specified metadata columns will be added to the sequence'
+                ' id following the original sequence id and separated by'
+                ' delimiter. If metadata and columns are not provided, the'
+                ' first occurrence of delimiter and any characters following'
+                ' that will be removed from all sequence ids.'
 )
 
 

@@ -38,8 +38,10 @@ def label_seqs(seqs: pd.Series, delimiter: str,
             error_message = ('The following ids are present in the sequences '
                              f'but not the metadata {difference}')
 
-            if additional_missing:
-                error_message += f' ({additional_missing} omitted)'
+            if additional_missing > 0:
+                error_message += (f' ({additional_missing} additional ids are'
+                                  ' missing from metadata but omitted from'
+                                  ' this list)')
 
             raise ValueError(error_message)
     else:
