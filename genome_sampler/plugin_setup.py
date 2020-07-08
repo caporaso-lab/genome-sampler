@@ -15,14 +15,12 @@ from qiime2.plugin import (
     Float,
     List,
     Citations,
-    TypeMatch,
 )
 from q2_types.feature_data import (
     FeatureData,
     DNAFASTAFormat,
     DNASequencesDirectoryFormat,
     Sequence,
-    AlignedSequence,
 )
 
 import genome_sampler
@@ -346,16 +344,15 @@ plugin.methods.register_function(
 )
 
 
-T = TypeMatch([Sequence, AlignedSequence])
 plugin.methods.register_function(
     function=label_seqs,
-    inputs={'seqs': FeatureData[T]},
+    inputs={'seqs': FeatureData[Sequence]},
     parameters={
         'delimiter': Str % Choices('|', ',', '+', ':', ';'),
         'metadata': Metadata,
         'columns': List[Str],
     },
-    outputs=[('labeled_seqs', FeatureData[T])],
+    outputs=[('labeled_seqs', FeatureData[Sequence])],
     input_descriptions={'seqs': 'The sequences to be re-labeled.'},
     parameter_descriptions={
         'delimiter': 'The delimiter separating the ids and the added'
