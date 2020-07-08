@@ -30,10 +30,18 @@ def label_seqs(seqs: pd.Series, delimiter: str,
                                  'in the metadata')
 
         missing_ids = seqs.index.difference(md_df.index)
-        if missing_ids.values.size != 0:
-            difference = ' '.join(repr(value) for value in missing_ids.values)
-            raise ValueError('The following ids are present in the sequences '
+        if len(missing_ids):
+            difference = \
+                ' '.join(repr(value) for value in missing_ids.values[0:10])
+            additional_missing = len(missing_ids.values[10:])
+
+            error_message = ('The following ids are present in the sequences '
                              f'but not the metadata {repr(difference)}')
+
+            if additional_missing:
+                error_message += f' ({additional_missing} omitted)'
+
+            raise ValueError(error_message)
     else:
         md_df = pd.DataFrame({}, index=seqs.index)
 
