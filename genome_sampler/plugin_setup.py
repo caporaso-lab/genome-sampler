@@ -8,6 +8,7 @@ from qiime2.plugin import (
     Metadata,
     Int,
     Range,
+    Choices,
     Str,
     MetadataColumn,
     Categorical,
@@ -20,6 +21,7 @@ from q2_types.feature_data import (
     DNAFASTAFormat,
     DNASequencesDirectoryFormat,
     Sequence,
+    AlignedSequence,
 )
 
 import genome_sampler
@@ -38,6 +40,7 @@ from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
 from genome_sampler.combine import combine_selections
 from genome_sampler.summarize import summarize_selections
+from genome_sampler.label_seqs import label_seqs
 
 citations = Citations.load('citations.bib', package='genome_sampler')
 
@@ -340,6 +343,37 @@ plugin.methods.register_function(
     name='Combine id selections.',
     description='Combine list of id selections into single id selection.'
 )
+
+
+plugin.methods.register_function(
+    function=label_seqs,
+    inputs={'seqs': FeatureData[AlignedSequence]},
+    parameters={
+        'delimiter': Str % Choices('|', ',', '+', ':', ';'),
+        'metadata': Metadata,
+        'columns': List[Str],
+    },
+    outputs=[('labeled_seqs', FeatureData[AlignedSequence])],
+    input_descriptions={'seqs': 'The sequences to be re-labeled.'},
+    parameter_descriptions={
+        'delimiter': 'The delimiter between the sequence id and each metadata'
+                     ' entry.',
+        'metadata': 'The metadata to embed in the header.',
+        'columns': 'The columns in the metadata to be used.',
+    },
+    output_descriptions={
+        'labeled_seqs': 'The re-labeled sequences.'
+    },
+    name='Re-label sequences',
+    description='Modifies sequence identifiers either by adding or removing'
+                ' metadata. If metadata and one or more columns are provided,'
+                ' the specified metadata columns will be added to the sequence'
+                ' id following the original sequence id and separated by'
+                ' `delimiter`. If metadata and columns are not provided, the'
+                ' first occurrence of delimiter and any characters following'
+                ' that will be removed from all sequence ids.'
+)
+
 
 plugin.visualizers.register_function(
     function=summarize_selections,
