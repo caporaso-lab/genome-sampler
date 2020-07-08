@@ -21,6 +21,7 @@ from q2_types.feature_data import (
     DNAFASTAFormat,
     DNASequencesDirectoryFormat,
     Sequence,
+    AlignedSequence,
 )
 
 import genome_sampler
@@ -346,13 +347,13 @@ plugin.methods.register_function(
 
 plugin.methods.register_function(
     function=label_seqs,
-    inputs={'seqs': FeatureData[Sequence]},
+    inputs={'seqs': FeatureData[AlignedSequence]},
     parameters={
         'delimiter': Str % Choices('|', ',', '+', ':', ';'),
         'metadata': Metadata,
         'columns': List[Str],
     },
-    outputs=[('labeled_seqs', FeatureData[Sequence])],
+    outputs=[('labeled_seqs', FeatureData[AlignedSequence])],
     input_descriptions={'seqs': 'The sequences to be re-labeled.'},
     parameter_descriptions={
         'delimiter': 'The delimiter separating the ids and the added'
