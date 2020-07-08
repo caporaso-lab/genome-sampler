@@ -369,7 +369,7 @@ plugin.methods.register_function(
                 ' metadata. If metadata and one or more columns are provided,'
                 ' the specified metadata columns will be added to the sequence'
                 ' id following the original sequence id and separated by'
-                ' delimiter. If metadata and columns are not provided, the'
+                ' `delimiter`. If metadata and columns are not provided, the'
                 ' first occurrence of delimiter and any characters following'
                 ' that will be removed from all sequence ids.'
 )
