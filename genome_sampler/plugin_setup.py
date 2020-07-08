@@ -351,16 +351,29 @@ plugin.methods.register_function(
     function=label_seqs,
     inputs={'seqs': FeatureData[T]},
     parameters={
+        'delimiter': Str % Choices('|', ',', '+', ':', ';'),
         'metadata': Metadata,
         'columns': List[Str],
-        'delimiter': Str % Choices('|', ',', '+', ':', ';'),
     },
     outputs=[('labeled_seqs', FeatureData[T])],
-    input_descriptions={},
-    parameter_descriptions={},
-    output_descriptions={},
-    name='',
-    description=''
+    input_descriptions={'seqs': 'The sequences to be re-labeled.'},
+    parameter_descriptions={
+        'delimiter': 'The delimiter separating the ids and the added'
+                     ' metadata.',
+        'metadata': 'The metadata to embed in the header.',
+        'columns': 'The columns in the metadata to be used.'
+    },
+    output_descriptions={
+        'labeled_seqs': 'The input sequences with metadata embedded (or'
+                        ' removed).'
+    },
+    name='Re-label sequences using metadata',
+    description='Treat the header as a delimiter-seperated format. The first'
+                ' field of the delimiter-seperated header will be treated as'
+                ' the id to lookup in the metadata. If no metadata is'
+                ' provided, then the header will contain only the id (fields'
+                ' other than the first one will be removed.)'
+
 )
 
 
