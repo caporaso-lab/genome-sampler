@@ -28,9 +28,9 @@ conda install \
   qiime2 q2cli q2templates q2-types q2-feature-table q2-metadata vsearch snakemake
 ```
 
-Finally install from source:
+Finally install the latest release from source:
 ```
-pip install git+https://github.com/caporaso-lab/genome-sampler.git
+pip install https://github.com/caporaso-lab/genome-sampler/archive/2020.6.1.zip
 ```
 
 ## Usage instructions
