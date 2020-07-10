@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pandas.testing as pdt
 
@@ -17,6 +18,13 @@ class TestLabelSeqs(TestPluginBase):
                           index=['id1', 'id2', 'id3'])
         df.index.name = 'id'
         self.md = qiime2.Metadata(df)
+
+        df = pd.DataFrame({'COL1': ['A', np.nan, 'C'],
+                           'COL2': ['1', '2', '3']},
+                          index=['id1', 'id2', 'id3'])
+        df.index.name = 'id'
+        self.missing_md = qiime2.Metadata(df)
+
         self.seqs = pd.Series(['ACGT', 'ACGT', 'ACGT'],
                               index=['id1', 'id2', 'id3'])
         self.labeled_seqs = pd.Series(['ACGT', 'ACGT', 'ACGT'],
@@ -39,6 +47,15 @@ class TestLabelSeqs(TestPluginBase):
                                index=['id1+A', 'id2+B', 'id3+C'])
 
         obs_series = label_seqs(self.seqs, '+', self.md, ['COL1'])
+
+        pdt.assert_series_equal(obs_series, exp_series)
+
+    def test_column_missing_value(self):
+        exp_series = pd.Series(['ACGT', 'ACGT', 'ACGT'],
+                               index=['id1+A+1', 'id2+missing+2', 'id3+C+3'])
+
+        obs_series = label_seqs(self.seqs, '+', self.missing_md,
+                                ['COL1', 'COL2'])
 
         pdt.assert_series_equal(obs_series, exp_series)
 
@@ -69,3 +86,8 @@ class TestLabelSeqs(TestPluginBase):
 
         with self.assertRaisesRegex(ValueError, 'omitted'):
             label_seqs(eleven_seqs, '+', empty_md, ['COL'])
+
+    def test_column_missing_value_contains_delimiter(self):
+        with self.assertRaisesRegex(ValueError, ':.*mis:sing.*not allowed'):
+            label_seqs(self.seqs, ':', self.missing_md, ['COL1', 'COL2'],
+                       'mis:sing')

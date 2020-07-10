@@ -352,6 +352,7 @@ plugin.methods.register_function(
         'delimiter': Str % Choices('|', ',', '+', ':', ';'),
         'metadata': Metadata,
         'columns': List[Str],
+        'missing_value': Str,
     },
     outputs=[('labeled_seqs', FeatureData[AlignedSequence])],
     input_descriptions={'seqs': 'The sequences to be re-labeled.'},
@@ -360,6 +361,9 @@ plugin.methods.register_function(
                      ' entry.',
         'metadata': 'The metadata to embed in the header.',
         'columns': 'The columns in the metadata to be used.',
+        'missing_value': "A dummy value to be used as a placeholder if any "
+                         "ids are missing a value in a column you're using "
+                         "as a label."
     },
     output_descriptions={
         'labeled_seqs': 'The re-labeled sequences.'

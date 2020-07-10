@@ -4,12 +4,18 @@ import qiime2
 
 
 def label_seqs(seqs: pd.Series, delimiter: str,
-               metadata: qiime2.Metadata = None, columns: str = None) \
+               metadata: qiime2.Metadata = None, columns: str = None,
+               missing_value: str = 'missing') \
                    -> pd.Series:
     if columns is not None and metadata is None \
             or metadata is not None and columns is None:
         raise ValueError('Columns and metadata must be passed or not passed '
                          'together.')
+
+    if delimiter in missing_value:
+        raise ValueError(f'The given delimiter {repr(delimiter)} is contained '
+                         'within your missing value placeholer '
+                         f'{repr(missing_value)}. This is not allowed.')
 
     # This is necessary because QIIME 2 will not accept an empty list as an
     # argument of type List[str]
@@ -47,6 +53,7 @@ def label_seqs(seqs: pd.Series, delimiter: str,
     else:
         md_df = pd.DataFrame({}, index=seqs.index)
 
+    md_df = md_df.fillna(missing_value)
     selected = md_df[columns]
     rename = pd.Series([delimiter.join(row) for row in selected.itertuples()],
                        index=selected.index)
