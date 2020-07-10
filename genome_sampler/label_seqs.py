@@ -14,7 +14,7 @@ def label_seqs(seqs: pd.Series, delimiter: str,
 
     if delimiter in missing_value:
         raise ValueError(f'The given delimiter {repr(delimiter)} is contained '
-                         'within your missing value placeholer '
+                         'within your missing value placeholder '
                          f'{repr(missing_value)}. This is not allowed.')
 
     # This is necessary because QIIME 2 will not accept an empty list as an
@@ -53,8 +53,8 @@ def label_seqs(seqs: pd.Series, delimiter: str,
     else:
         md_df = pd.DataFrame({}, index=seqs.index)
 
-    md_df = md_df.fillna(missing_value)
     selected = md_df[columns]
+    selected = selected.fillna(missing_value)
     rename = pd.Series([delimiter.join(row) for row in selected.itertuples()],
                        index=selected.index)
     seqs.index = seqs.index.map(rename)
