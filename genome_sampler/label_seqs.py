@@ -13,9 +13,9 @@ def label_seqs(seqs: pd.Series, delimiter: str,
                          'together.')
 
     if delimiter in missing_value:
-        raise ValueError(f'The given delimiter {repr(delimiter)} is contained '
-                         'within your missing value placeholder '
-                         f'{repr(missing_value)}. This is not allowed.')
+        raise ValueError(f'The provided delimiter ({repr(delimiter)}) cannot '
+                         'be contained in the missing value placeholder '
+                         f'({repr(missing_value)}).')
 
     # This is necessary because QIIME 2 will not accept an empty list as an
     # argument of type List[str]

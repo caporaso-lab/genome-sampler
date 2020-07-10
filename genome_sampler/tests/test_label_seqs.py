@@ -88,6 +88,7 @@ class TestLabelSeqs(TestPluginBase):
             label_seqs(eleven_seqs, '+', empty_md, ['COL'])
 
     def test_column_missing_value_contains_delimiter(self):
-        with self.assertRaisesRegex(ValueError, ':.*mis:sing.*not allowed'):
+        with self.assertRaisesRegex(ValueError,
+                                    ':.*cannot be contained.*mis:sing.*'):
             label_seqs(self.seqs, ':', self.missing_md, ['COL1', 'COL2'],
                        'mis:sing')
