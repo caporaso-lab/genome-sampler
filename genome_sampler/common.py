@@ -56,7 +56,7 @@ class GISAIDDNAFASTAFormat(model.TextFileFormat):
         last_line_was_ID = False
         ids = {}
 
-        with open(str(self), 'rb') as fh:
+        with skbio.io.util.open(str(self), 'rb') as fh:
             try:
                 first = fh.read(6)
                 if first[:3] == b'\xEF\xBB\xBF':
