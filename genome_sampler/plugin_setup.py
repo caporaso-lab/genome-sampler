@@ -32,6 +32,7 @@ from genome_sampler.common import (
     IDMetadataFormat,
     UNIXListFormat,
     GISAIDDNAFASTAFormat,
+    BrokenVCFFormat,
 )
 from genome_sampler.sample_random import sample_random
 from genome_sampler.sample_longitudinal import sample_longitudinal
@@ -56,6 +57,7 @@ plugin = Plugin(
 
 plugin.register_formats(IDSelectionDirFmt)
 plugin.register_formats(GISAIDDNAFASTAFormat)
+plugin.register_formats(BrokenVCFFormat)
 plugin.register_semantic_types(Selection)
 plugin.register_semantic_type_to_format(FeatureData[Selection],
                                         artifact_format=IDSelectionDirFmt)
@@ -155,6 +157,13 @@ def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
         skbio.io.write(data, format='fasta', into=file)
 
     df.file.write_data(ff, DNAFASTAFormat)
+    return df
+
+
+@plugin.register_transformer
+def _5(fmt: BrokenVCFFormat) -> pd.DataFrame:
+    df = pd.read_csv(str(fmt), sep='\t')
+    df = df.rename(columns={'#CHROM': 'CHROM'})
     return df
 
 

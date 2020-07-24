@@ -1,0 +1,3 @@
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	EXC	SRC_COUNTRY	SRC_LAB	GENE	AAPOS	REFAA	ALTAA
+s3	1	.	C	.	.	caution	NDM	seq_end	.	.	.	.	.	.
+s1	4	.	T	.	.	mask	NDM	seq_end	.	.	.	.	.	.

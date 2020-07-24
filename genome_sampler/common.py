@@ -20,6 +20,16 @@ class UNIXListFormat(model.TextFileFormat):
             return [s.strip() for s in fh]
 
 
+class BrokenVCFFormat(model.TextFileFormat):
+    def _validate_(self, level):
+        # any file with lines will be valid
+        return True
+
+    def to_list(self):
+        with self.open() as fh:
+            return [s.strip() for s in fh if not s.startswith('##')]
+
+
 class IDMetadataFormat(model.TextFileFormat):
     def _validate_(self, level):
         try:
