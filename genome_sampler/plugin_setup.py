@@ -15,6 +15,7 @@ from qiime2.plugin import (
     Float,
     List,
     Citations,
+    Bool,
 )
 from q2_types.feature_data import (
     FeatureData,
@@ -32,7 +33,9 @@ from genome_sampler.common import (
     IDMetadataFormat,
     UNIXListFormat,
     GISAIDDNAFASTAFormat,
-    BrokenVCFFormat,
+    VCFLikeMaskFormat,
+    VCFLikeMaskDirFmt,
+    AlignmentMask,
 )
 from genome_sampler.sample_random import sample_random
 from genome_sampler.sample_longitudinal import sample_longitudinal
@@ -42,6 +45,7 @@ from genome_sampler.filter import filter_seqs
 from genome_sampler.combine import combine_selections
 from genome_sampler.summarize import summarize_selections
 from genome_sampler.label_seqs import label_seqs
+from genome_sampler.mask import mask
 
 citations = Citations.load('citations.bib', package='genome_sampler')
 
@@ -57,10 +61,14 @@ plugin = Plugin(
 
 plugin.register_formats(IDSelectionDirFmt)
 plugin.register_formats(GISAIDDNAFASTAFormat)
-plugin.register_formats(BrokenVCFFormat)
+plugin.register_formats(VCFLikeMaskFormat)
+plugin.register_formats(VCFLikeMaskDirFmt)
 plugin.register_semantic_types(Selection)
+plugin.register_semantic_types(AlignmentMask)
 plugin.register_semantic_type_to_format(FeatureData[Selection],
                                         artifact_format=IDSelectionDirFmt)
+plugin.register_semantic_type_to_format(AlignmentMask,
+                                        artifact_format=VCFLikeMaskDirFmt)
 
 
 @plugin.register_transformer
@@ -161,7 +169,7 @@ def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
 
 
 @plugin.register_transformer
-def _5(fmt: BrokenVCFFormat) -> pd.DataFrame:
+def _5(fmt: VCFLikeMaskFormat) -> pd.DataFrame:
     df = pd.read_csv(str(fmt), sep='\t')
     df = df.rename(columns={'#CHROM': 'CHROM'})
     return df
@@ -351,6 +359,42 @@ plugin.methods.register_function(
     output_descriptions={'combined_selection': 'The combined id selection.'},
     name='Combine id selections.',
     description='Combine list of id selections into single id selection.'
+)
+
+
+plugin.methods.register_function(
+    function=mask,
+    inputs={'alignment': FeatureData[AlignedSequence],
+            'mask': AlignmentMask},
+    parameters={
+        'level': Str % Choices('mask', 'caution'),
+        'mask_gapped_ends': Bool,
+    },
+    outputs=[('masked_alignment', FeatureData[AlignedSequence])],
+    input_descriptions={
+        'alignment': 'The alignment to be masked.',
+        'mask': ('Definition of positions to be masked based on one or more '
+                 'sequences in the alignment.')
+    },
+    parameter_descriptions={
+        'level': ('The level that masking should be performed at. "mask" will '
+                  'mask only positions annotated as "mask", while "caution" '
+                  'will mask positions annotated as "mask" or "caution".'),
+        'mask_gapped_ends':
+            ('Mask alignment positions: (1) up to the first masked reference '
+             'sequence position if all of the positions in that reference '
+             'sequence contain gap characters before that position, and (2) '
+             'after the last masked reference sequence position if all of the '
+             'positions in that reference sequence contain gap characters '
+             'after that position. This enables masking alignment ends if '
+             'there are gaps at one or both ends of the refernece sequence(s).'
+             ),
+    },
+    output_descriptions={
+        'masked_alignment': ('The alignment with masked positions removed.')
+    },
+    name='Mask alignment',
+    description='Apply pre-computed alignment mask to filter positions.'
 )
 
 
