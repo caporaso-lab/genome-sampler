@@ -6,7 +6,7 @@ import numpy.testing as npt
 
 from qiime2.plugin.testing import TestPluginBase
 
-from genome_sampler.plugin_setup import BrokenVCFFormat
+from genome_sampler.plugin_setup import VCFLikeMaskFormat
 from genome_sampler.mask import (
     _filter_mask_by_level, _create_position_map, _refseq_to_aln_positions,
     _compute_boolean_mask, _apply_mask, mask)
@@ -17,16 +17,16 @@ class MaskTests(TestPluginBase):
 
     def setUp(self):
         super().setUp()
-        _, self.mask1 = self.transform_format(BrokenVCFFormat,
+        _, self.mask1 = self.transform_format(VCFLikeMaskFormat,
                                               pd.DataFrame,
                                               filename='mask1.tsv')
-        _, self.mask2 = self.transform_format(BrokenVCFFormat,
+        _, self.mask2 = self.transform_format(VCFLikeMaskFormat,
                                               pd.DataFrame,
                                               filename='mask2.tsv')
-        _, self.mask3 = self.transform_format(BrokenVCFFormat,
+        _, self.mask3 = self.transform_format(VCFLikeMaskFormat,
                                               pd.DataFrame,
                                               filename='mask3.tsv')
-        _, self.mask4 = self.transform_format(BrokenVCFFormat,
+        _, self.mask4 = self.transform_format(VCFLikeMaskFormat,
                                               pd.DataFrame,
                                               filename='mask4.tsv')
 
