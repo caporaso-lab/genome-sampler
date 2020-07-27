@@ -60,8 +60,13 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  
-  
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="#">
+   genome-sampler installation and usage tutorial
+  </a>
+ </li>
+</ul>
 </nav>
 
  <!-- To handle the deprecated key -->
@@ -122,58 +127,89 @@
         <!-- Launch buttons -->
 
     </div>
+
+    <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installation-instructions">
+   Installation instructions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-miniconda">
+     Install Miniconda
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-genome-sampler-from-source">
+     Install
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       genome-sampler
+      </span>
+     </code>
+     from source
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#usage-instructions">
+   Usage instructions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#download-tutorial-data">
+     Download tutorial data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-genome-sampler-snakemake-workflow">
+     Using
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       genome-sampler
+      </span>
+     </code>
+     (Snakemake workflow)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-genome-sampler-step-by-step-instructions">
+     Using
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       genome-sampler
+      </span>
+     </code>
+     (step-by-step instructions)
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#getting-help-contributing-etc">
+   Getting help, contributing, etc
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#citing-genome-sampler">
+   Citing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     genome-sampler
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
 
-<nav id="bd-toc-nav">
-    <ul class="nav section-nav flex-column">
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#installation-instructions" class="nav-link">Installation instructions</a><ul class="nav section-nav flex-column">
-                
-        <li class="nav-item toc-entry toc-h3">
-            <a href="#install-miniconda" class="nav-link">Install Miniconda</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h3">
-            <a href="#install-genome-sampler-from-source" class="nav-link">Install genome-sampler from source</a>
-        </li>
-    
-            </ul>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#usage-instructions" class="nav-link">Usage instructions</a><ul class="nav section-nav flex-column">
-                
-        <li class="nav-item toc-entry toc-h3">
-            <a href="#download-tutorial-data" class="nav-link">Download tutorial data</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h3">
-            <a href="#using-genome-sampler-snakemake-workflow" class="nav-link">Using genome-sampler (Snakemake workflow)</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h3">
-            <a href="#using-genome-sampler-step-by-step-instructions" class="nav-link">Using genome-sampler (step-by-step instructions)</a>
-        </li>
-    
-            </ul>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#getting-help-contributing-etc" class="nav-link">Getting help, contributing, etc</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#citing-genome-sampler" class="nav-link">Citing genome-sampler</a>
-        </li>
-    
-    </ul>
-</nav>
-
-
+        </nav>
     </div>
 </div>
     <div id="main-content" class="row">
