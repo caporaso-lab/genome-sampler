@@ -1,4 +1,5 @@
 import sys
+import io
 import skbio
 import pandas as pd
 
@@ -170,7 +171,8 @@ def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
 
 @plugin.register_transformer
 def _5(fmt: VCFLikeMaskFormat) -> pd.DataFrame:
-    df = pd.read_csv(str(fmt), sep='\t')
+    with io.StringIO(''.join(fmt.to_list())) as fh:
+        df = pd.read_csv(fh, sep='\t')
     df = df.rename(columns={'#CHROM': 'CHROM'})
     return df
 
