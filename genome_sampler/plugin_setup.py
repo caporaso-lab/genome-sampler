@@ -381,14 +381,8 @@ plugin.methods.register_function(
                   'mask only positions annotated as "mask", while "caution" '
                   'will mask positions annotated as "mask" or "caution".'),
         'mask_terminal_gaps':
-            ('Mask alignment positions: (1) up to the first masked reference '
-             'sequence position if all of the positions in that reference '
-             'sequence contain gap characters before that position, and (2) '
-             'after the last masked reference sequence position if all of the '
-             'positions in that reference sequence contain gap characters '
-             'after that position. This enables masking alignment ends if '
-             'there are gaps at one or both ends of the refernece sequence(s).'
-             ),
+            ('Mask alignment positions that are terminal (i.e., end) gaps in '
+             'all reference sequences.'),
     },
     output_descriptions={
         'masked_alignment': ('The alignment with masked positions removed.')
