@@ -29,14 +29,14 @@ def _rle(inarray):
         if n == 0:
             return (None, None, None)
         else:
-            y = np.array(ia[1:] != ia[:-1])     # pairwise unequal (string safe)
-            i = np.append(np.where(y), n - 1)   # must include last element posi
-            z = np.diff(np.append(-1, i))       # run lengths
+            y = np.array(ia[1:] != ia[:-1]) # pairwise unequal (string safe)
+            i = np.append(np.where(y), n - 1) # must include last element posi
+            z = np.diff(np.append(-1, i)) # run lengths
             p = np.cumsum(np.append(0, z))[:-1] # positions
             return(z, p, ia[i])
 
 
-def _find_end_gaps(aligned_seq):
+def _find_terminal_gaps(aligned_seq):
     run_len, pos, vals = _rle(aligned_seq.gaps())
 
     output = np.full(len(aligned_seq), False, dtype=bool)
@@ -52,7 +52,7 @@ def _find_end_gaps(aligned_seq):
 def _create_terminal_gap_mask(aln, mask):
     result = np.full(aln.shape[1], True, dtype=bool)
     for chrom in mask['CHROM'].unique():
-        result &= _find_end_gaps(aln.loc[chrom])
+        result &= _find_terminal_gaps(aln.loc[chrom])
     return result
 
 
@@ -71,32 +71,6 @@ def _create_mask(aln, mask):
 
         result[aligned_mask_idx] = True
     return result
-
-
-# def _create_mask(aln, mask):
-#     # positions in mask will be one-indexed
-#     # positions in result will be zero-indexed
-#     result = np.full(aln.shape[1], False, dtype=bool)
-#     position_maps = {}
-#     for e in mask.itertuples():
-#         refseq_id = e.CHROM
-#         refseq_position = e.POS
-
-#         if refseq_id not in position_maps:
-#             # this is a new reference sequence
-#             position_map = _create_position_map(aln, refseq_id)
-#             position_maps[refseq_id] = position_map
-#         else:
-#             position_map = position_maps[refseq_id]
-
-#         try:
-#             aln_position = position_map[refseq_position - 1]
-#         except IndexError:
-#             raise IndexError('Reference sequence position %d is out of range '
-#                              'for sequence %s' % (refseq_position, refseq_id))
-#         result[aln_position] = True
-
-#     return result
 
 
 def _apply_mask(aln, mask):
