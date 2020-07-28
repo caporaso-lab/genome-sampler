@@ -32,6 +32,12 @@ class MaskTests(TestPluginBase):
         _, self.mask5 = self.transform_format(VCFLikeMaskFormat,
                                               pd.DataFrame,
                                               filename='mask5.tsv')
+        _, self.mask6 = self.transform_format(VCFLikeMaskFormat,
+                                              pd.DataFrame,
+                                              filename='mask6.tsv')
+        _, self.mask7 = self.transform_format(VCFLikeMaskFormat,
+                                              pd.DataFrame,
+                                              filename='mask7.tsv')
 
         seqs = [
             skbio.DNA('ACGT'),
@@ -49,26 +55,35 @@ class MaskTests(TestPluginBase):
         self.msa2 = skbio.TabularMSA(
                 seqs, index=['s1', 's2', 's3', 'S_4', 'seq5.555', 's11'])
 
-    def test_find_terminal_gaps(self):
-        aln = skbio.DNA('--ACGTAGTCGA-AGCT----GATCG')
-        exp = np.asarray(([True] * 2) + ([False] * (len(aln) - 2)))
-        obs = _find_terminal_gaps(aln)
+    def test_find_terminal_gaps_5_prime(self):
+        aseq = skbio.DNA('--ACGTAGTCGA-AGCT----GATCG')
+        exp = np.asarray(([True] * 2) + ([False] * (len(aseq) - 2)))
+        obs = _find_terminal_gaps(aseq)
         npt.assert_array_equal(obs, exp)
 
-        aln = skbio.DNA('A---ACGTAGTCGA-AGCT----GATCG')
-        exp = np.asarray([False] * len(aln))
-        obs = _find_terminal_gaps(aln)
+    def test_find_terminal_gaps_none(self):
+        aseq = skbio.DNA('A---ACGTAGTCGA-AGCT----GATCG')
+        exp = np.asarray([False] * len(aseq))
+        obs = _find_terminal_gaps(aseq)
         npt.assert_array_equal(obs, exp)
 
-        aln = skbio.DNA('A---ACGTAGTCGA-AGCT----')
-        exp = np.asarray(([False] * (len(aln) - 4)) + ([True] * 4))
-        obs = _find_terminal_gaps(aln)
+    def test_find_terminal_gaps_3_prime(self):
+        aseq = skbio.DNA('A---ACGTAGTCGA-AGCT----')
+        exp = np.asarray(([False] * (len(aseq) - 4)) + ([True] * 4))
+        obs = _find_terminal_gaps(aseq)
         npt.assert_array_equal(obs, exp)
 
-        aln = skbio.DNA('---ACGTA-----GT-CGA-AGCT----')
-        exp = np.asarray(([True] * 3) + ([False] * (len(aln) - 7))
+    def test_find_terminal_gaps_both_ends(self):
+        aseq = skbio.DNA('---ACGTA-----GT-CGA-AGCT----')
+        exp = np.asarray(([True] * 3) + ([False] * (len(aseq) - 7))
                          + ([True] * 4))
-        obs = _find_terminal_gaps(aln)
+        obs = _find_terminal_gaps(aseq)
+        npt.assert_array_equal(obs, exp)
+
+    def test_find_terminal_gaps_all(self):
+        aseq = skbio.DNA('-------')
+        exp = np.asarray([True] * len(aseq))
+        obs = _find_terminal_gaps(aseq)
         npt.assert_array_equal(obs, exp)
 
     def test_filter_mask_by_level_caution(self):
@@ -110,59 +125,91 @@ class MaskTests(TestPluginBase):
         with self.assertRaisesRegex(KeyError, 'Reference sequence s4 is not'):
             _create_position_map(self.msa1, 's4')
 
-    # def test_refseq_to_aln_positions_wo_mask_terminal_gaps(self):
-    #     obs = _refseq_to_aln_positions(self.msa1, self.mask2, False)
-    #     self.assertEqual(obs, [1, 3])
+    def test_create_terminal_gap_mask_one_chrome(self):
+        obs = _create_terminal_gap_mask(self.msa1, self.mask5)
+        npt.assert_array_equal(obs, [True, False, False, False])
 
-    # def test_refseq_to_aln_positions_w_mask_terminal_gaps(self):
-    #     obs = _refseq_to_aln_positions(self.msa1, self.mask2, True)
-    #     self.assertEqual(obs, [1, 3])
+        seqs = [
+            skbio.DNA('ACG-'),
+            skbio.DNA('AG-T'),
+            skbio.DNA('-C-T')]
+        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+        obs = _create_terminal_gap_mask(msa, self.mask5)
+        npt.assert_array_equal(obs, [True, False, False, False])
 
-    #     seqs = [
-    #         skbio.DNA('ACGTTTT'),
-    #         skbio.DNA('AG-TTTT'),
-    #         skbio.DNA('-C-T---')]
-    #     msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
-    #     obs = _refseq_to_aln_positions(msa, self.mask2, True)
-    #     self.assertEqual(obs, [1, 3])
+    def test_create_terminal_gap_mask_two_chrome(self):
+        obs = _create_terminal_gap_mask(self.msa1, self.mask2)
+        npt.assert_array_equal(obs, [False, False, False, False])
 
-    #     seqs = [
-    #         skbio.DNA('-CGTTTT'),
-    #         skbio.DNA('AG-TTTT'),
-    #         skbio.DNA('-C-T---')]
-    #     msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
-    #     obs = _refseq_to_aln_positions(msa, self.mask2, True)
-    #     self.assertEqual(obs, [0, 1, 4])
+        seqs = [
+            skbio.DNA('-CGT'),
+            skbio.DNA('AG-T'),
+            skbio.DNA('-C-T')]
+        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+        obs = _create_terminal_gap_mask(msa, self.mask2)
+        npt.assert_array_equal(obs, [True, False, False, False])
 
-    #     seqs = [
-    #         skbio.DNA('ACGT---'),
-    #         skbio.DNA('AG-TTTT'),
-    #         skbio.DNA('-C-TTTT')]
-    #     msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
-    #     obs = _refseq_to_aln_positions(msa, self.mask2, True)
-    #     self.assertEqual(obs, [1, 3])
+        seqs = [
+            skbio.DNA('-CG-'),
+            skbio.DNA('AG-T'),
+            skbio.DNA('-C--')]
+        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+        obs = _create_terminal_gap_mask(msa, self.mask2)
+        npt.assert_array_equal(obs, [True, False, False, True])
 
-    #     seqs = [
-    #         skbio.DNA('ACGT---'),
-    #         skbio.DNA('AG-TTTT'),
-    #         skbio.DNA('-C-T---')]
-    #     msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
-    #     obs = _refseq_to_aln_positions(msa, self.mask2, True)
-    #     self.assertEqual(obs, [1, 3, 4, 5, 6])
+    def test_create_terminal_gap_mask_none(self):
+        seqs = [
+            skbio.DNA('AC--'),
+            skbio.DNA('AG-T'),
+            skbio.DNA('--TT')]
+        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+        obs = _create_terminal_gap_mask(msa, self.mask2)
+        npt.assert_array_equal(obs, [False, False, False, False])
 
-    #     seqs = [
-    #         skbio.DNA('ACGTAAA'),
-    #         skbio.DNA('AG-TAAA'),
-    #         skbio.DNA('-C-T-A-')]
-    #     self.msa1 = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
-    #     obs = _refseq_to_aln_positions(msa, self.mask5, True)
-    #     self.assertEqual(obs, [0, 3, 6])
+        seqs = [
+            skbio.DNA('AC--'),
+            skbio.DNA('AG-T'),
+            skbio.DNA('AATT')]
+        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+        obs = _create_terminal_gap_mask(msa, self.mask5)
+        npt.assert_array_equal(obs, [False, False, False, False])
 
-    # def test_refseq_to_aln_positions_error(self):
-    #     with self.assertRaisesRegex(IndexError, 'sequence position 42.*e s1'):
-    #         _refseq_to_aln_positions(self.msa1, self.mask3, True)
-    #     with self.assertRaisesRegex(IndexError, 'sequence position 42.*e s1'):
-    #         _refseq_to_aln_positions(self.msa1, self.mask3, False)
+    def test_create_terminal_gap_mask_all(self):
+        seqs = [
+            skbio.DNA('----'),
+            skbio.DNA('AGAT'),
+            skbio.DNA('----')]
+        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+        obs = _create_terminal_gap_mask(msa, self.mask2)
+        npt.assert_array_equal(obs, [True, True, True, True])
+
+        seqs = [
+            skbio.DNA('ACG-'),
+            skbio.DNA('AG-T'),
+            skbio.DNA('----')]
+        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+        obs = _create_terminal_gap_mask(msa, self.mask5)
+        npt.assert_array_equal(obs, [True, True, True, True])
+
+    def test_create_mask_one_chrome(self):
+        obs = _create_mask(self.msa1, self.mask5)
+        npt.assert_array_equal(obs, [False, False, False, True])
+
+    def test_create_mask_two_chrome(self):
+        obs = _create_mask(self.msa1, self.mask2)
+        npt.assert_array_equal(obs, [False, True, False, True])
+
+    def test_create_mask_mask_all(self):
+        obs = _create_mask(self.msa1, self.mask6)
+        npt.assert_array_equal(obs, [True, True, True, True])
+
+    def test_create_mask_mask_none(self):
+        obs = _create_mask(self.msa1, self.mask7)
+        npt.assert_array_equal(obs, [False, False, False, False])
+
+    def test_create_mask_error(self):
+        with self.assertRaisesRegex(IndexError, 'sequence position out .* s1'):
+            _create_mask(self.msa1, self.mask3)
 
     def test_apply_mask_mask_none(self):
         obs = _apply_mask(self.msa1, np.array([False, False, False, False]))
@@ -202,7 +249,7 @@ class MaskTests(TestPluginBase):
         exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
         self.assertEqual(obs, exp)
 
-    def test_mask2_wo_mask_ends(self):
+    def test_mask2_wo_terminal_gap_mask(self):
         obs = mask(self.msa1, self.mask2, "mask", False)
         seqs = [
             skbio.DNA('ACG'),
@@ -219,7 +266,7 @@ class MaskTests(TestPluginBase):
         exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
         self.assertEqual(obs, exp)
 
-    def test_mask2_w_mask_ends(self):
+    def test_mask2_w_terminal_gap_mask(self):
         obs = mask(self.msa1, self.mask2, "mask", True)
         seqs = [
             skbio.DNA('ACG'),
@@ -258,7 +305,7 @@ class MaskTests(TestPluginBase):
         exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
         self.assertEqual(obs, exp)
 
-    def test_mask4_wo_mask_ends(self):
+    def test_mask4_wo_terminal_gap_mask(self):
         obs = mask(self.msa2, self.mask4, "mask", False)
         seqs = [
             skbio.DNA('TCNNNGGTGCCA-CC--A-'),
@@ -283,7 +330,7 @@ class MaskTests(TestPluginBase):
                 seqs, index=['s1', 's2', 's3', 'S_4', 'seq5.555', 's11'])
         self.assertEqual(obs, exp)
 
-    def test_mask4_w_mask_ends(self):
+    def test_mask4_w_terminal_gap_mask(self):
         obs = mask(self.msa2, self.mask4, "mask", True)
         seqs = [
             skbio.DNA('NNNGGTGCCA-CC--A'),

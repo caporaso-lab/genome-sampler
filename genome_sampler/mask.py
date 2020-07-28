@@ -21,19 +21,19 @@ def _create_position_map(aln, refseq_id):
 
 # so: https://stackoverflow.com/a/32681075/579416
 def _rle(inarray):
-        """ run length encoding. Partial credit to R rle function.
-            Multi datatype arrays catered for including non Numpy
-            returns: tuple (runlengths, startpositions, values) """
-        ia = np.asarray(inarray)                # force numpy
-        n = len(ia)
-        if n == 0:
-            return (None, None, None)
-        else:
-            y = np.array(ia[1:] != ia[:-1]) # pairwise unequal (string safe)
-            i = np.append(np.where(y), n - 1) # must include last element posi
-            z = np.diff(np.append(-1, i)) # run lengths
-            p = np.cumsum(np.append(0, z))[:-1] # positions
-            return(z, p, ia[i])
+    """ run length encoding. Partial credit to R rle function.
+        Multi datatype arrays catered for including non Numpy
+        returns: tuple (runlengths, startpositions, values) """
+    ia = np.asarray(inarray)                # force numpy
+    n = len(ia)
+    if n == 0:
+        return (None, None, None)
+    else:
+        y = np.array(ia[1:] != ia[:-1])      # pairwise unequal (string safe)
+        i = np.append(np.where(y), n - 1)    # must include last element posi
+        z = np.diff(np.append(-1, i))        # run lengths
+        p = np.cumsum(np.append(0, z))[:-1]  # positions
+        return(z, p, ia[i])
 
 
 def _find_terminal_gaps(aligned_seq):
@@ -66,14 +66,15 @@ def _create_mask(aln, mask):
         try:
             aligned_mask_idx = position_lookup[mask_idx]
         except IndexError:
-             raise IndexError('Reference sequence position is out of range '
-                              'for sequence %s' % chrom)
+            raise IndexError('Reference sequence position out of range '
+                             'for sequence %s' % chrom)
 
         result[aligned_mask_idx] = True
     return result
 
 
 def _apply_mask(aln, mask):
+    # True values indicate positions to remove in input mask
     return aln[:, ~mask]
 
 
@@ -82,12 +83,8 @@ def mask(alignment: skbio.TabularMSA, mask: pd.DataFrame,
          ) -> skbio.TabularMSA:
     mask = _filter_mask_by_level(mask, level)
     mask_vector = _create_mask(alignment, mask)
-    print(mask_vector)
     if mask_terminal_gaps:
         terminal_gap_vector = _create_terminal_gap_mask(alignment, mask)
-        print(terminal_gap_vector)
         mask_vector |= terminal_gap_vector
-    print(mask_vector)
-    print("=========")
     masked_alignment = _apply_mask(alignment, mask_vector)
     return masked_alignment
