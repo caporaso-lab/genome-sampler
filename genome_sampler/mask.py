@@ -19,62 +19,101 @@ def _create_position_map(aln, refseq_id):
     return non_gaps.nonzero()[0]
 
 
-def _refseq_to_aln_positions(aln, mask, mask_gapped_ends):
-    # positions in mask will be one-indexed
-    # positions in result will be zero-indexed
-    result = []
-    position_maps = {}
-    for e in mask.itertuples():
-        refseq_id = e.CHROM
-        refseq_position = e.POS
-
-        if refseq_id not in position_maps:
-            position_maps[refseq_id] = _create_position_map(aln, refseq_id)
-        position_map = position_maps[refseq_id]
-
-        try:
-            aln_position = position_map[refseq_position - 1]
-        except IndexError:
-            raise IndexError('Reference sequence position %d is out of range '
-                             'for sequence %s' % (refseq_position, refseq_id))
-        result.append(aln_position)
-
-        if mask_gapped_ends:
-            # if the aligned reference sequences contains only gap characters
-            # up to the position that is being masked, mask all alignment
-            # positions preceeding this position (since they're outside the
-            # range of the reference sequence)
-            if aln.loc[refseq_id, :aln_position].gaps().all():
-                result.extend(range(aln_position))
-            # if the aligned reference sequences contains only gap characters
-            # after the position that is being masked, mask all alignment
-            # positions following this position (since they're outside the
-            # range of the reference sequence)
-            if aln.loc[refseq_id, aln_position + 1:].gaps().all():
-                result.extend(range(aln_position+1, aln.shape[1]))
-
-        result.sort()
-
-    return result
+# so: https://stackoverflow.com/a/32681075/579416
+def _rle(inarray):
+        """ run length encoding. Partial credit to R rle function.
+            Multi datatype arrays catered for including non Numpy
+            returns: tuple (runlengths, startpositions, values) """
+        ia = np.asarray(inarray)                # force numpy
+        n = len(ia)
+        if n == 0:
+            return (None, None, None)
+        else:
+            y = np.array(ia[1:] != ia[:-1])     # pairwise unequal (string safe)
+            i = np.append(np.where(y), n - 1)   # must include last element posi
+            z = np.diff(np.append(-1, i))       # run lengths
+            p = np.cumsum(np.append(0, z))[:-1] # positions
+            return(z, p, ia[i])
 
 
-def _compute_boolean_mask(aln, aln_positions_to_remove):
+def _find_end_gaps(aligned_seq):
+    run_len, pos, vals = _rle(aligned_seq.gaps())
+
+    output = np.full(len(aligned_seq), False, dtype=bool)
+    if vals[0]:
+        output[:run_len[0]] = True
+
+    if vals[-1]:
+        output[pos[-1]:] = True
+
+    return output
+
+
+def _create_terminal_gap_mask(aln, mask):
     result = np.full(aln.shape[1], True, dtype=bool)
-    np.put(result, aln_positions_to_remove, [False])
+    for chrom in mask['CHROM'].unique():
+        result &= _find_end_gaps(aln.loc[chrom])
     return result
+
+
+def _create_mask(aln, mask):
+    result = np.full(aln.shape[1], False, dtype=bool)
+    for chrom in mask['CHROM'].unique():
+        chrom_idx = mask['CHROM'] == chrom
+        mask_idx = mask['POS'].loc[chrom_idx] - 1
+
+        position_lookup = _create_position_map(aln, chrom)
+        try:
+            aligned_mask_idx = position_lookup[mask_idx]
+        except IndexError:
+             raise IndexError('Reference sequence position is out of range '
+                              'for sequence %s' % chrom)
+
+        result[aligned_mask_idx] = True
+    return result
+
+
+# def _create_mask(aln, mask):
+#     # positions in mask will be one-indexed
+#     # positions in result will be zero-indexed
+#     result = np.full(aln.shape[1], False, dtype=bool)
+#     position_maps = {}
+#     for e in mask.itertuples():
+#         refseq_id = e.CHROM
+#         refseq_position = e.POS
+
+#         if refseq_id not in position_maps:
+#             # this is a new reference sequence
+#             position_map = _create_position_map(aln, refseq_id)
+#             position_maps[refseq_id] = position_map
+#         else:
+#             position_map = position_maps[refseq_id]
+
+#         try:
+#             aln_position = position_map[refseq_position - 1]
+#         except IndexError:
+#             raise IndexError('Reference sequence position %d is out of range '
+#                              'for sequence %s' % (refseq_position, refseq_id))
+#         result[aln_position] = True
+
+#     return result
 
 
 def _apply_mask(aln, mask):
-    return aln[:, mask]
+    return aln[:, ~mask]
 
 
 def mask(alignment: skbio.TabularMSA, mask: pd.DataFrame,
-         level: str = 'mask', mask_gapped_ends: bool = True
+         level: str = 'mask', mask_terminal_gaps: bool = True
          ) -> skbio.TabularMSA:
     mask = _filter_mask_by_level(mask, level)
-    aln_positions_to_remove = \
-        _refseq_to_aln_positions(alignment, mask, mask_gapped_ends)
-    boolean_mask = _compute_boolean_mask(
-            alignment, aln_positions_to_remove)
-    masked_alignment = _apply_mask(alignment, boolean_mask)
+    mask_vector = _create_mask(alignment, mask)
+    print(mask_vector)
+    if mask_terminal_gaps:
+        terminal_gap_vector = _create_terminal_gap_mask(alignment, mask)
+        print(terminal_gap_vector)
+        mask_vector |= terminal_gap_vector
+    print(mask_vector)
+    print("=========")
+    masked_alignment = _apply_mask(alignment, mask_vector)
     return masked_alignment

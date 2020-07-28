@@ -368,7 +368,7 @@ plugin.methods.register_function(
             'mask': AlignmentMask},
     parameters={
         'level': Str % Choices('mask', 'caution'),
-        'mask_gapped_ends': Bool,
+        'mask_terminal_gaps': Bool,
     },
     outputs=[('masked_alignment', FeatureData[AlignedSequence])],
     input_descriptions={
@@ -380,7 +380,7 @@ plugin.methods.register_function(
         'level': ('The level that masking should be performed at. "mask" will '
                   'mask only positions annotated as "mask", while "caution" '
                   'will mask positions annotated as "mask" or "caution".'),
-        'mask_gapped_ends':
+        'mask_terminal_gaps':
             ('Mask alignment positions: (1) up to the first masked reference '
              'sequence position if all of the positions in that reference '
              'sequence contain gap characters before that position, and (2) '
