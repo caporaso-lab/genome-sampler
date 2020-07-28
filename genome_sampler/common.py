@@ -20,6 +20,20 @@ class UNIXListFormat(model.TextFileFormat):
             return [s.strip() for s in fh]
 
 
+class VCFLikeMaskFormat(model.TextFileFormat):
+    def _validate_(self, level):
+        # any file with lines will be valid
+        return True
+
+    def to_list(self):
+        with self.open() as fh:
+            return [s.strip() for s in fh if not s.startswith('##')]
+
+
+VCFLikeMaskDirFmt = model.SingleFileDirectoryFormat(
+    'VCFLikeMaskDirFmt', 'mask.tsv', VCFLikeMaskFormat)
+
+
 class IDMetadataFormat(model.TextFileFormat):
     def _validate_(self, level):
         try:
@@ -47,6 +61,8 @@ class IDSelection:
 
 
 Selection = SemanticType('Selection', variant_of=FeatureData.field['type'])
+
+AlignmentMask = SemanticType('AlignmentMask')
 
 
 # modified from DNAFastaFormat in q2_types to allow lowercase characters
