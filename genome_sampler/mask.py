@@ -81,6 +81,8 @@ def _apply_mask(aln, mask):
 def mask(alignment: skbio.TabularMSA, mask: pd.DataFrame,
          level: str = 'mask', mask_terminal_gaps: bool = True
          ) -> skbio.TabularMSA:
+    alignment.reassign_index(minter='id')
+
     mask = _filter_mask_by_level(mask, level)
     mask_vector = _create_mask(alignment, mask)
     if mask_terminal_gaps:

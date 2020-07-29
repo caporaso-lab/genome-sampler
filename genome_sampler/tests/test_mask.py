@@ -40,20 +40,20 @@ class MaskTests(TestPluginBase):
                                               filename='mask7.tsv')
 
         seqs = [
-            skbio.DNA('ACGT'),
-            skbio.DNA('AG-T'),
-            skbio.DNA('-C-T')]
-        self.msa1 = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('ACGT', metadata=dict(id='s1')),
+            skbio.DNA('AG-T', metadata=dict(id='s2')),
+            skbio.DNA('-C-T', metadata=dict(id='s3'))]
+        self.msa1 = skbio.TabularMSA(seqs, minter='id')
 
         seqs = [
-            skbio.DNA('TCNTGNNNGGTGCCA-CC--AAA--'),
-            skbio.DNA('TCNTGCTCGGTGCCA-CC--AAAT-'),
-            skbio.DNA('TCNTGCTCGGTACCA-CC--AAA--'),
-            skbio.DNA('-CN-GCTCGGTGCCA-CCGGAAACT'),
-            skbio.DNA('TCNTGCTCGGTGCCA-CC--AAATT'),
-            skbio.DNA('--NTGCTCGGTGCCA-CC--AAAT-')]
-        self.msa2 = skbio.TabularMSA(
-                seqs, index=['s1', 's2', 's3', 'S_4', 'seq5.555', 's11'])
+            skbio.DNA('TCNTGNNNGGTGCCA-CC--AAA--', metadata=dict(id='s1')),
+            skbio.DNA('TCNTGCTCGGTGCCA-CC--AAAT-', metadata=dict(id='s2')),
+            skbio.DNA('TCNTGCTCGGTACCA-CC--AAA--', metadata=dict(id='s3')),
+            skbio.DNA('-CN-GCTCGGTGCCA-CCGGAAACT', metadata=dict(id='S_4')),
+            skbio.DNA('TCNTGCTCGGTGCCA-CC--AAATT',
+                      metadata=dict(id='seq5.555')),
+            skbio.DNA('--NTGCTCGGTGCCA-CC--AAAT-', metadata=dict(id='s11'))]
+        self.msa2 = skbio.TabularMSA(seqs, minter='id')
 
     def test_find_terminal_gaps_5_prime(self):
         aseq = skbio.DNA('--ACGTAGTCGA-AGCT----GATCG')
@@ -112,10 +112,10 @@ class MaskTests(TestPluginBase):
 
     def test_create_position_map_all_gaps(self):
         seqs = [
-            skbio.DNA('ACGT'),
-            skbio.DNA('AG-T'),
-            skbio.DNA('----')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('ACGT', metadata=dict(id='s1')),
+            skbio.DNA('AG-T', metadata=dict(id='s2')),
+            skbio.DNA('----', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
 
         obs = _create_position_map(msa, 's3')
         exp = np.array([])
@@ -130,10 +130,10 @@ class MaskTests(TestPluginBase):
         npt.assert_array_equal(obs, [True, False, False, False])
 
         seqs = [
-            skbio.DNA('ACG-'),
-            skbio.DNA('AG-T'),
-            skbio.DNA('-C-T')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('ACG-', metadata=dict(id='s1')),
+            skbio.DNA('AG-T', metadata=dict(id='s2')),
+            skbio.DNA('-C-T', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
         obs = _create_terminal_gap_mask(msa, self.mask5)
         npt.assert_array_equal(obs, [True, False, False, False])
 
@@ -142,52 +142,52 @@ class MaskTests(TestPluginBase):
         npt.assert_array_equal(obs, [False, False, False, False])
 
         seqs = [
-            skbio.DNA('-CGT'),
-            skbio.DNA('AG-T'),
-            skbio.DNA('-C-T')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('-CGT', metadata=dict(id='s1')),
+            skbio.DNA('AG-T', metadata=dict(id='s2')),
+            skbio.DNA('-C-T', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
         obs = _create_terminal_gap_mask(msa, self.mask2)
         npt.assert_array_equal(obs, [True, False, False, False])
 
         seqs = [
-            skbio.DNA('-CG-'),
-            skbio.DNA('AG-T'),
-            skbio.DNA('-C--')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('-CG-', metadata=dict(id='s1')),
+            skbio.DNA('AG-T', metadata=dict(id='s2')),
+            skbio.DNA('-C--', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
         obs = _create_terminal_gap_mask(msa, self.mask2)
         npt.assert_array_equal(obs, [True, False, False, True])
 
     def test_create_terminal_gap_mask_none(self):
         seqs = [
-            skbio.DNA('AC--'),
-            skbio.DNA('AG-T'),
-            skbio.DNA('--TT')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('AC--', metadata=dict(id='s1')),
+            skbio.DNA('AG-T', metadata=dict(id='s2')),
+            skbio.DNA('--TT', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
         obs = _create_terminal_gap_mask(msa, self.mask2)
         npt.assert_array_equal(obs, [False, False, False, False])
 
         seqs = [
-            skbio.DNA('AC--'),
-            skbio.DNA('AG-T'),
-            skbio.DNA('AATT')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('AC--', metadata=dict(id='s1')),
+            skbio.DNA('AG-T', metadata=dict(id='s2')),
+            skbio.DNA('AATT', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
         obs = _create_terminal_gap_mask(msa, self.mask5)
         npt.assert_array_equal(obs, [False, False, False, False])
 
     def test_create_terminal_gap_mask_all(self):
         seqs = [
-            skbio.DNA('----'),
-            skbio.DNA('AGAT'),
-            skbio.DNA('----')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('----', metadata=dict(id='s1')),
+            skbio.DNA('AGAT', metadata=dict(id='s2')),
+            skbio.DNA('----', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
         obs = _create_terminal_gap_mask(msa, self.mask2)
         npt.assert_array_equal(obs, [True, True, True, True])
 
         seqs = [
-            skbio.DNA('ACG-'),
-            skbio.DNA('AG-T'),
-            skbio.DNA('----')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('ACG-', metadata=dict(id='s1')),
+            skbio.DNA('AG-T', metadata=dict(id='s2')),
+            skbio.DNA('----', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
         obs = _create_terminal_gap_mask(msa, self.mask5)
         npt.assert_array_equal(obs, [True, True, True, True])
 
@@ -218,139 +218,135 @@ class MaskTests(TestPluginBase):
     def test_apply_mask_mask_some(self):
         obs = _apply_mask(self.msa1, np.array([False, True, True, True]))
         seqs = [
-            skbio.DNA('A'),
-            skbio.DNA('A'),
-            skbio.DNA('-')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('A', metadata=dict(id='s1')),
+            skbio.DNA('A', metadata=dict(id='s2')),
+            skbio.DNA('-', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
         obs = _apply_mask(self.msa1, np.array([False, True, True, False]))
         seqs = [
-            skbio.DNA('AT'),
-            skbio.DNA('AT'),
-            skbio.DNA('-T')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('AT', metadata=dict(id='s1')),
+            skbio.DNA('AT', metadata=dict(id='s2')),
+            skbio.DNA('-T', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
         obs = _apply_mask(self.msa1, np.array([False, True, False, False]))
         seqs = [
-            skbio.DNA('AGT'),
-            skbio.DNA('A-T'),
-            skbio.DNA('--T')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('AGT', metadata=dict(id='s1')),
+            skbio.DNA('A-T', metadata=dict(id='s2')),
+            skbio.DNA('--T', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
     def test_apply_mask_mask_all(self):
         obs = _apply_mask(self.msa1, np.array([True, True, True, True]))
         seqs = [
-            skbio.DNA(''),
-            skbio.DNA(''),
-            skbio.DNA('')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('', metadata=dict(id='s1')),
+            skbio.DNA('', metadata=dict(id='s2')),
+            skbio.DNA('', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
     def test_mask2_wo_terminal_gap_mask(self):
         obs = mask(self.msa1, self.mask2, "mask", False)
         seqs = [
-            skbio.DNA('ACG'),
-            skbio.DNA('AG-'),
-            skbio.DNA('-C-')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('ACG', metadata=dict(id='s1')),
+            skbio.DNA('AG-', metadata=dict(id='s2')),
+            skbio.DNA('-C-', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
         obs = mask(self.msa1, self.mask2, "caution", False)
         seqs = [
-            skbio.DNA('AG'),
-            skbio.DNA('A-'),
-            skbio.DNA('--')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('AG', metadata=dict(id='s1')),
+            skbio.DNA('A-', metadata=dict(id='s2')),
+            skbio.DNA('--', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
     def test_mask2_w_terminal_gap_mask(self):
         obs = mask(self.msa1, self.mask2, "mask", True)
         seqs = [
-            skbio.DNA('ACG'),
-            skbio.DNA('AG-'),
-            skbio.DNA('-C-')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('ACG', metadata=dict(id='s1')),
+            skbio.DNA('AG-', metadata=dict(id='s2')),
+            skbio.DNA('-C-', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
         obs = mask(self.msa1, self.mask2, "caution", True)
         seqs = [
-            skbio.DNA('AG'),
-            skbio.DNA('A-'),
-            skbio.DNA('--')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('AG', metadata=dict(id='s1')),
+            skbio.DNA('A-', metadata=dict(id='s2')),
+            skbio.DNA('--', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
         obs = mask(self.msa1, self.mask5, "caution", True)
         seqs = [
-            skbio.DNA('CG'),
-            skbio.DNA('G-'),
-            skbio.DNA('C-')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('CG', metadata=dict(id='s1')),
+            skbio.DNA('G-', metadata=dict(id='s2')),
+            skbio.DNA('C-', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
         seqs = [
-            skbio.DNA('ACGTA'),
-            skbio.DNA('AG-TA'),
-            skbio.DNA('-C-T-')]
-        msa = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('ACGTA', metadata=dict(id='s1')),
+            skbio.DNA('AG-TA', metadata=dict(id='s2')),
+            skbio.DNA('-C-T-', metadata=dict(id='s3'))]
+        msa = skbio.TabularMSA(seqs, minter='id')
 
         obs = mask(msa, self.mask5, "caution", True)
         seqs = [
-            skbio.DNA('CG'),
-            skbio.DNA('G-'),
-            skbio.DNA('C-')]
-        exp = skbio.TabularMSA(seqs, index=['s1', 's2', 's3'])
+            skbio.DNA('CG', metadata=dict(id='s1')),
+            skbio.DNA('G-', metadata=dict(id='s2')),
+            skbio.DNA('C-', metadata=dict(id='s3'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
     def test_mask4_wo_terminal_gap_mask(self):
         obs = mask(self.msa2, self.mask4, "mask", False)
         seqs = [
-            skbio.DNA('TCNNNGGTGCCA-CC--A-'),
-            skbio.DNA('TCCTCGGTGCCA-CC--A-'),
-            skbio.DNA('TCCTCGGTACCA-CC--A-'),
-            skbio.DNA('-CCTCGGTGCCA-CCGGAT'),
-            skbio.DNA('TCCTCGGTGCCA-CC--AT'),
-            skbio.DNA('--CTCGGTGCCA-CC--A-')]
-        exp = skbio.TabularMSA(
-                seqs, index=['s1', 's2', 's3', 'S_4', 'seq5.555', 's11'])
+            skbio.DNA('TCNNNGGTGCCA-CC--A-', metadata=dict(id='s1')),
+            skbio.DNA('TCCTCGGTGCCA-CC--A-', metadata=dict(id='s2')),
+            skbio.DNA('TCCTCGGTACCA-CC--A-', metadata=dict(id='s3')),
+            skbio.DNA('-CCTCGGTGCCA-CCGGAT', metadata=dict(id='S_4')),
+            skbio.DNA('TCCTCGGTGCCA-CC--AT', metadata=dict(id='seq5.555')),
+            skbio.DNA('--CTCGGTGCCA-CC--A-', metadata=dict(id='s11'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
         obs = mask(self.msa2, self.mask4, "caution", False)
         seqs = [
-            skbio.DNA('TCNNNGGCCA-CC--A-'),
-            skbio.DNA('TCCTCGGCCA-CC--A-'),
-            skbio.DNA('TCCTCGGCCA-CC--A-'),
-            skbio.DNA('-CCTCGGCCA-CCGGAT'),
-            skbio.DNA('TCCTCGGCCA-CC--AT'),
-            skbio.DNA('--CTCGGCCA-CC--A-')]
-        exp = skbio.TabularMSA(
-                seqs, index=['s1', 's2', 's3', 'S_4', 'seq5.555', 's11'])
+            skbio.DNA('TCNNNGGCCA-CC--A-', metadata=dict(id='s1')),
+            skbio.DNA('TCCTCGGCCA-CC--A-', metadata=dict(id='s2')),
+            skbio.DNA('TCCTCGGCCA-CC--A-', metadata=dict(id='s3')),
+            skbio.DNA('-CCTCGGCCA-CCGGAT', metadata=dict(id='S_4')),
+            skbio.DNA('TCCTCGGCCA-CC--AT', metadata=dict(id='seq5.555')),
+            skbio.DNA('--CTCGGCCA-CC--A-', metadata=dict(id='s11'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
     def test_mask4_w_terminal_gap_mask(self):
         obs = mask(self.msa2, self.mask4, "mask", True)
         seqs = [
-            skbio.DNA('NNNGGTGCCA-CC--A'),
-            skbio.DNA('CTCGGTGCCA-CC--A'),
-            skbio.DNA('CTCGGTACCA-CC--A'),
-            skbio.DNA('CTCGGTGCCA-CCGGA'),
-            skbio.DNA('CTCGGTGCCA-CC--A'),
-            skbio.DNA('CTCGGTGCCA-CC--A')]
-        exp = skbio.TabularMSA(
-                seqs, index=['s1', 's2', 's3', 'S_4', 'seq5.555', 's11'])
+            skbio.DNA('NNNGGTGCCA-CC--A', metadata=dict(id='s1')),
+            skbio.DNA('CTCGGTGCCA-CC--A', metadata=dict(id='s2')),
+            skbio.DNA('CTCGGTACCA-CC--A', metadata=dict(id='s3')),
+            skbio.DNA('CTCGGTGCCA-CCGGA', metadata=dict(id='S_4')),
+            skbio.DNA('CTCGGTGCCA-CC--A', metadata=dict(id='seq5.555')),
+            skbio.DNA('CTCGGTGCCA-CC--A', metadata=dict(id='s11'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
 
         obs = mask(self.msa2, self.mask4, "caution", True)
         seqs = [
-            skbio.DNA('NNNGGCCA-CC--A'),
-            skbio.DNA('CTCGGCCA-CC--A'),
-            skbio.DNA('CTCGGCCA-CC--A'),
-            skbio.DNA('CTCGGCCA-CCGGA'),
-            skbio.DNA('CTCGGCCA-CC--A'),
-            skbio.DNA('CTCGGCCA-CC--A')]
-        exp = skbio.TabularMSA(
-                seqs, index=['s1', 's2', 's3', 'S_4', 'seq5.555', 's11'])
+            skbio.DNA('NNNGGCCA-CC--A', metadata=dict(id='s1')),
+            skbio.DNA('CTCGGCCA-CC--A', metadata=dict(id='s2')),
+            skbio.DNA('CTCGGCCA-CC--A', metadata=dict(id='s3')),
+            skbio.DNA('CTCGGCCA-CCGGA', metadata=dict(id='S_4')),
+            skbio.DNA('CTCGGCCA-CC--A', metadata=dict(id='seq5.555')),
+            skbio.DNA('CTCGGCCA-CC--A', metadata=dict(id='s11'))]
+        exp = skbio.TabularMSA(seqs, minter='id')
         self.assertEqual(obs, exp)
