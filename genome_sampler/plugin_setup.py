@@ -456,8 +456,8 @@ plugin.methods.register_function(
                 ' `delimiter`. If metadata and columns are not provided, the'
                 ' first occurrence of delimiter and any characters following'
                 ' that will be removed from all sequence ids. DEPRECATED: this'
-                ' will be accessible through `label_seqs`.'
-
+                ' will be accessible through `label_seqs`.',
+    deprecated=True,
 )
 
 
