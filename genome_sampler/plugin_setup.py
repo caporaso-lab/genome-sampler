@@ -45,7 +45,7 @@ from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
 from genome_sampler.combine import combine_selections
 from genome_sampler.summarize import summarize_selections
-from genome_sampler.label_seqs import label_seqs
+from genome_sampler.label_seqs import label_seqs, label_unaligned_seqs
 from genome_sampler.mask import mask
 
 citations = Citations.load('citations.bib', package='genome_sampler')
@@ -416,7 +416,7 @@ plugin.methods.register_function(
     output_descriptions={
         'labeled_seqs': 'The re-labeled sequences.'
     },
-    name='Re-label sequences',
+    name='Re-label aligned sequences',
     description='Modifies sequence identifiers either by adding or removing'
                 ' metadata. If metadata and one or more columns are provided,'
                 ' the specified metadata columns will be added to the sequence'
@@ -424,6 +424,40 @@ plugin.methods.register_function(
                 ' `delimiter`. If metadata and columns are not provided, the'
                 ' first occurrence of delimiter and any characters following'
                 ' that will be removed from all sequence ids.'
+)
+
+plugin.methods.register_function(
+    function=label_unaligned_seqs,
+    inputs={'seqs': FeatureData[Sequence]},
+    parameters={
+        'delimiter': Str % Choices('|', ',', '+', ':', ';'),
+        'metadata': Metadata,
+        'columns': List[Str],
+        'missing_value': Str,
+    },
+    outputs=[('labeled_seqs', FeatureData[Sequence])],
+    input_descriptions={'seqs': 'The sequences to be re-labeled.'},
+    parameter_descriptions={
+        'delimiter': 'The delimiter between the sequence id and each metadata'
+                     ' entry.',
+        'metadata': 'The metadata to embed in the header.',
+        'columns': 'The columns in the metadata to be used.',
+        'missing_value': 'Value to use to indicate missing metadata column '
+                         'values for sequences.'
+    },
+    output_descriptions={
+        'labeled_seqs': 'The re-labeled sequences.'
+    },
+    name='Re-label unaligned sequences (deprecated)',
+    description='Modifies sequence identifiers either by adding or removing'
+                ' metadata. If metadata and one or more columns are provided,'
+                ' the specified metadata columns will be added to the sequence'
+                ' id following the original sequence id and separated by'
+                ' `delimiter`. If metadata and columns are not provided, the'
+                ' first occurrence of delimiter and any characters following'
+                ' that will be removed from all sequence ids. DEPRECATED: this'
+                ' will be accessible through `label_seqs`.'
+
 )
 
 

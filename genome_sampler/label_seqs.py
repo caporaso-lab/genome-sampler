@@ -60,3 +60,10 @@ def label_seqs(seqs: pd.Series, delimiter: str,
     seqs.index = seqs.index.map(rename)
 
     return seqs
+
+
+def label_unaligned_seqs(seqs: pd.Series, delimiter: str,
+                         metadata: qiime2.Metadata = None, columns: str = None,
+                         missing_value: str = 'missing') \
+                   -> pd.Series:
+    return label_seqs(seqs, delimiter, metadata, columns, missing_value)
