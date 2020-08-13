@@ -102,21 +102,30 @@ class VCFMaskFormatTransformerTests(TestPluginBase):
                                            pd.DataFrame,
                                            filename='mask1.vcf')
 
-        self.assertEqual(obs.shape, (20, 3))
-        self.assertEqual(list(obs.columns), ['CHROM', 'POS', 'FILTER'])
-        self.assertEqual(list(obs.loc[0]), ['MN908947.3', 1, 'mask'])
-        self.assertEqual(list(obs.loc[9]), ['MN908947.3', 76, 'caution'])
-        self.assertEqual(list(obs.loc[19]), ['MN908947.3', 29903, 'mask'])
+        self.assertEqual(obs.shape, (20, 8))
+        exp_columns = ['CHROM', 'POS', 'ID', 'REF', 'ALT',
+                       'QUAL', 'FILTER', 'INFO']
+        self.assertEqual(list(obs.columns), exp_columns)
+        self.assertEqual(list(obs[['CHROM', 'POS', 'FILTER']].loc[0]),
+                         ['MN908947.3', 1, 'mask'])
+        self.assertEqual(list(obs[['CHROM', 'POS', 'FILTER']].loc[9]),
+                         ['MN908947.3', 76, 'caution'])
+        self.assertEqual(list(obs[['CHROM', 'POS', 'FILTER']].loc[19]),
+                         ['MN908947.3', 29903, 'mask'])
 
     def test_vcf_mask_to_df2(self):
         input, obs = self.transform_format(VCFMaskFormat,
                                            pd.DataFrame,
                                            filename='mask2.vcf')
 
-        self.assertEqual(obs.shape, (2, 3))
-        self.assertEqual(list(obs.columns), ['CHROM', 'POS', 'FILTER'])
-        self.assertEqual(list(obs.loc[0]), ['s3', 1, 'caution'])
-        self.assertEqual(list(obs.loc[1]), ['s1', 4, 'mask'])
+        self.assertEqual(obs.shape, (2, 8))
+        exp_columns = ['CHROM', 'POS', 'ID', 'REF', 'ALT',
+                       'QUAL', 'FILTER', 'INFO']
+        self.assertEqual(list(obs.columns), exp_columns)
+        self.assertEqual(list(obs[['CHROM', 'POS', 'FILTER']].loc[0]),
+                         ['s3', 1, 'caution'])
+        self.assertEqual(list(obs[['CHROM', 'POS', 'FILTER']].loc[1]),
+                         ['s1', 4, 'mask'])
 
     def test_vcf_mask_validation_failure(self):
         filepath = self.get_data_path('gisaid1.fasta')

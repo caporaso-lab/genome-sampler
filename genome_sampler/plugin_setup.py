@@ -170,8 +170,10 @@ def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
 
 @plugin.register_transformer
 def _5(fmt: VCFMaskFormat) -> pd.DataFrame:
-    return pd.DataFrame([(r.CHROM, r.POS, r.FILTER[0]) for r in fmt.to_list()],
-                        columns=['CHROM', 'POS', 'FILTER'])
+    data = [(r.CHROM, r.POS, r.ID, r.REF, r.ALT, r.QUAL, r.FILTER[0], r.INFO)
+            for r in fmt.to_list()]
+    columns = ['CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO']
+    return pd.DataFrame(data, columns=columns)
 
 
 plugin.methods.register_function(
