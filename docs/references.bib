@@ -1,5 +1,5 @@
 
-@ARTICLE{Minh2020-mz,
+@ARTICLE{iqtree2,
   title    = "{IQ-TREE} 2: New Models and Efficient Methods for Phylogenetic
               Inference in the Genomic Era",
   author   = "Minh, Bui Quang and Schmidt, Heiko A and Chernomor, Olga and
@@ -26,7 +26,7 @@
 }
 
 
-@ARTICLE{Katoh2013-lz,
+@ARTICLE{mafft7,
   title    = "{MAFFT} multiple sequence alignment software version 7:
               improvements in performance and usability",
   author   = "Katoh, Kazutaka and Standley, Daron M",
@@ -50,7 +50,7 @@
 }
 
 
-@ARTICLE{Bolyen2020-kt,
+@ARTICLE{genome-sampler-f1000,
   title     = "Reproducibly sampling {SARS-CoV-2} genomes across time,
                geography, and viral diversity",
   author    = "Bolyen, Evan and Dillon, Matthew R and Bokulich, Nicholas A and
@@ -93,7 +93,7 @@
 }
 
 
-@ARTICLE{Bolyen2019-dt,
+@ARTICLE{qiime2-nbt,
   title    = "Reproducible, interactive, scalable and extensible microbiome
               data science using {QIIME} 2",
   author   = "Bolyen, Evan and Rideout, Jai Ram and Dillon, Matthew R and
@@ -138,5 +138,83 @@
   journal  = "Nat. Biotechnol.",
   month    =  jul,
   year     =  2019,
+  language = "en"
+}
+
+
+@ARTICLE{snakemake-bioi,
+  title    = "Snakemake--a scalable bioinformatics workflow engine",
+  author   = "K{\"o}ster, Johannes and Rahmann, Sven",
+  abstract = "SUMMARY: Snakemake is a workflow engine that provides a readable
+              Python-based workflow definition language and a powerful
+              execution environment that scales from single-core workstations
+              to compute clusters without modifying the workflow. It is the
+              first system to support the use of automatically inferred
+              multiple named wildcards (or variables) in input and output
+              filenames. AVAILABILITY: http://snakemake.googlecode.com.
+              CONTACT: johannes.koester@uni-due.de.",
+  journal  = "Bioinformatics",
+  volume   =  28,
+  number   =  19,
+  pages    = "2520--2522",
+  month    =  oct,
+  year     =  2012,
+  language = "en"
+}
+
+
+@ARTICLE{vsearch-peerj,
+  title    = "{VSEARCH}: a versatile open source tool for metagenomics",
+  author   = "Rognes, Torbj{\o}rn and Flouri, Tom{\'a}{\v s} and Nichols, Ben
+              and Quince, Christopher and Mah{\'e}, Fr{\'e}d{\'e}ric",
+  abstract = "BACKGROUND: VSEARCH is an open source and free of charge
+              multithreaded 64-bit tool for processing and preparing
+              metagenomics, genomics and population genomics nucleotide
+              sequence data. It is designed as an alternative to the widely
+              used USEARCH tool (Edgar, 2010) for which the source code is not
+              publicly available, algorithm details are only rudimentarily
+              described, and only a memory-confined 32-bit version is freely
+              available for academic use. METHODS: When searching nucleotide
+              sequences, VSEARCH uses a fast heuristic based on words shared by
+              the query and target sequences in order to quickly identify
+              similar sequences, a similar strategy is probably used in
+              USEARCH. VSEARCH then performs optimal global sequence alignment
+              of the query against potential target sequences, using full
+              dynamic programming instead of the seed-and-extend heuristic used
+              by USEARCH. Pairwise alignments are computed in parallel using
+              vectorisation and multiple threads. RESULTS: VSEARCH includes
+              most commands for analysing nucleotide sequences available in
+              USEARCH version 7 and several of those available in USEARCH
+              version 8, including searching (exact or based on global
+              alignment), clustering by similarity (using length pre-sorting,
+              abundance pre-sorting or a user-defined order), chimera detection
+              (reference-based or de novo), dereplication (full length or
+              prefix), pairwise alignment, reverse complementation, sorting,
+              and subsampling. VSEARCH also includes commands for FASTQ file
+              processing, i.e., format detection, filtering, read quality
+              statistics, and merging of paired reads. Furthermore, VSEARCH
+              extends functionality with several new commands and improvements,
+              including shuffling, rereplication, masking of low-complexity
+              sequences with the well-known DUST algorithm, a choice among
+              different similarity definitions, and FASTQ file format
+              conversion. VSEARCH is here shown to be more accurate than
+              USEARCH when performing searching, clustering, chimera detection
+              and subsampling, while on a par with USEARCH for paired-ends read
+              merging. VSEARCH is slower than USEARCH when performing
+              clustering and chimera detection, but significantly faster when
+              performing paired-end reads merging and dereplication. VSEARCH is
+              available at https://github.com/torognes/vsearch under either the
+              BSD 2-clause license or the GNU General Public License version
+              3.0. DISCUSSION: VSEARCH has been shown to be a fast, accurate
+              and full-fledged alternative to USEARCH. A free and open-source
+              versatile tool for sequence analysis is now available to the
+              metagenomics community.",
+  journal  = "PeerJ",
+  volume   =  4,
+  pages    = "e2584",
+  month    =  oct,
+  year     =  2016,
+  keywords = "Alignment; Chimera detection; Clustering; Dereplication; Masking;
+              Metagenomics; Parallellization; Searching; Sequences; Shuffling",
   language = "en"
 }

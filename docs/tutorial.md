@@ -21,9 +21,11 @@ folder](https://www.dropbox.com/sh/tkb0c4snk5zodj8/AABLCykSiEe5zqv8gTeOSegna?dl=
 
 ## Using `genome-sampler` (Snakemake workflow)
 
-The full `genome-sampler` workflow can be run using Snakemake. If you'd like
-to get started quickly and use default parameters, start here. If you'd like
-more control over your analysis or want to work through the steps
+The full `genome-sampler` workflow can be run using
+[Snakemake](https://snakemake.readthedocs.io/en/stable/)
+{cite}`snakemake-bioi`. If you'd like to get started quickly and use default
+parameters, start here.
+If you'd like more control over your analysis or want to work through the steps
 individually, move on to the next section.
 
 Download the Snakemake file using `curl` as follows:
@@ -44,13 +46,22 @@ you'll use. `sequences.fasta` will contain your subsampled context sequences
 and your focal sequences. You should use this file for downstream analyses,
 such as alignment and phylogenetic analyses. `selection-summary.qzv` will
 provide a summary of the sampling run. You can view this file using [QIIME 2
-View](https://view.qiime2.org). Be sure to click the _Provenance_ tab after
-loading the file on that page - that will provide full details on the
-workflow that was executed.
+View](https://view.qiime2.org).
 
-You should now be able to move on to analysis of your own data. If you'd like
-to modify parameters of the workflow, you can do so by opening the Snakemake
-file in a text editor and editing the values in the `CONFIGS` section.
+```{note}
+After loading `selection-summary.qzv` with [QIIME 2
+View](https://view.qiime2.org), click the _Provenance_ tab to see full details
+on the workflow that was executed. This allows you to review exactly what steps
+were performed, what parameters were used for each step, and what versions of
+`genome-sampler` and its dependencies were installed when you ran
+`genome-sampler`. Keep this file for your records so you can refer to it if
+any of this information is needed in the future (for example, when publishing
+your findings).
+```
+
+You should now be able to move on to analysis of your own data. See
+{ref}`adapting-tutorial` to learn about what changes you might want to make
+to your `Snakefile` before running your own analysis.
 
 🐍
 
