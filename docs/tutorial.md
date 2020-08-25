@@ -1,41 +1,10 @@
-# `genome-sampler` installation and usage tutorial
+(usage-tutorial)=
+# `genome-sampler` usage tutorial
 
-This document provides instructions for installing and using genome-sampler.
+This document provides illustrates how to use `genome-sampler` on a small
+tutorial data set.
 
-## Installation instructions
-
-### Install Miniconda
-[Miniconda](https://conda.io/miniconda.html) provides the conda environment
-and package manager, and is the recommended way to install `genome-sampler`.
-Follow the instructions for downloading and installing Miniconda. You may
-choose either Miniconda2 or Miniconda3 (i.e. Miniconda Python 2 or 3).
-`genome-sampler` will work with either version of Miniconda.
-
-### Install `genome-sampler` from source
-A conda package will be available in the near future. For the moment we only
-provide a source installation.
-
-First create a suitable conda environment:
-```
-conda create -y -n genome-sampler
-conda activate genome-sampler
-```
-
-Next install dependencies:
-```
-conda install \
-  -c conda-forge -c bioconda -c qiime2 -c defaults \
-  qiime2 q2cli q2templates q2-types q2-feature-table q2-metadata vsearch snakemake
-```
-
-Finally install from source:
-```
-pip install git+https://github.com/caporaso-lab/genome-sampler.git
-```
-
-## Usage instructions
-
-### Download tutorial data
+## Download tutorial data
 The tutorial data set used here is intended for educational purposes only. If
 you're interested in using these sequences for other analyses, we recommend
 starting with sequence repositories such as GISAID or NCBI Genbank, which may
@@ -50,7 +19,7 @@ Name the file downloaded from the `context-metadata` tab
 Download the two fasta files from [this Dropbox
 folder](https://www.dropbox.com/sh/tkb0c4snk5zodj8/AABLCykSiEe5zqv8gTeOSegna?dl=0).
 
-### Using `genome-sampler` (Snakemake workflow)
+## Using `genome-sampler` (Snakemake workflow)
 
 The full `genome-sampler` workflow can be run using Snakemake. If you'd like
 to get started quickly and use default parameters, start here. If you'd like
@@ -85,7 +54,7 @@ file in a text editor and editing the values in the `CONFIGS` section.
 
 🐍
 
-### Using `genome-sampler` (step-by-step instructions)
+## Using `genome-sampler` (step-by-step instructions)
 
 You'll begin the workflow by importing the fasta files into QIIME 2
 Artifacts. QIIME 2 Artifacts are structured zip files which will contain the
@@ -257,45 +226,18 @@ qiime tools export \
   --output-format DNAFASTAFormat
 ```
 
-**Optional**: QIIME 2 contains some tools for sequence alignment and
-phylogenetic reconstruction in the
+## Optional: alignment and phylogenetic reconstruction with QIIME 2
+
+QIIME 2 contains tools for preliminary sequence alignment and
+phylogenetic tree generation in the
 [q2-alignment](https://docs.qiime2.org/2020.2/plugins/available/alignment/)
 and
 [q2-phylogeny](https://docs.qiime2.org/2020.2/plugins/available/phylogeny/)
-plugins (which are not installed by default with genome-sampler). If you'd
-like, you can use these for the next steps of your
-analyses. These would take the `sequences.qza` file as input, so you could
-just postpone the export step that you ran above. For example, you could
-align and build a tree as follows. Note however that usually you would
-perform some manual filtering and trimming between these two steps, so these
-two commands likely won't get you a publication quality phylogeny.
+plugins (which are not installed by default with genome-sampler). Building
+high quality trees is not the focus of QIIME 2, but it can help you to
+generate and visualize initial alignments and trees.
 
-```
-qiime alignment mafft \
-  --i-sequences sequences.qza \
-  --o-aligned-sequences aligned-sequences.qza
+These steps would take the `sequences.qza` file as input, so you could
+postpone or skip the export step that you ran above.
 
-qiime phylogeny fasttree \
-  --i-alignment aligned-sequences.qza \
-  --o-tree tree.qza
-```
-
-## Getting help, contributing, etc
-`genome-sampler` is open source and free for all use. Software and unit tests
-are available at https://github.com/caporaso-lab/genome-sampler under the BSD
-3-clause license. Documentation, written using
-[Myst](https://myst-parser.readthedocs.io/en/latest) and rendered using
-[Jupyter Book](https://jupyterbook.org/), is available at
-http://caporasolab.us/genome-sampler/.
-
-If you need technical support, please post a question to the QIIME 2 Forum at
-https://forum.qiime2.org. We are very interested in contributions to
-genome-sampler from the community - please get in touch via the GitHub issue
-tracker or the QIIME 2 Forum if you’re interested in contributing. Before
-getting in touch, please review the software project's [code of
-conduct](https://github.com/caporaso-lab/code-of-conduct/blob/master/code-of-conduct.md),
-which is adapted from the [Contributor
-Covenant](https://www.contributor-covenant.org), version 1.4.
-
-## Citing `genome-sampler`
-If you use `genome-sampler` in published work, please cite [our paper](https://f1000research.com/articles/9-657).
+If you'd like to learn more about this, refer to {ref}`downstream`.
