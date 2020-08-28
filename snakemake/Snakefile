@@ -5,9 +5,10 @@
 # NOTE: Modify the contents of this section to match specs on your system
 #
 # INPUT FILEPATHS:
-CONTEXT_SEQS_FP = 'context-seqs.fasta'
-FOCAL_SEQS_FP = 'focal-seqs.fasta'
-CONTEXT_METADATA_FP = 'context-metadata.tsv'
+INPUT_DIR = 'tutorial-data/'
+CONTEXT_SEQS_FP = INPUT_DIR + 'context-seqs.fasta'
+FOCAL_SEQS_FP = INPUT_DIR + 'focal-seqs.fasta'
+CONTEXT_METADATA_FP = INPUT_DIR + 'context-metadata.tsv'
 #
 # OUTPUT FILEPATHS:
 OUTPUT_DIR = ''
