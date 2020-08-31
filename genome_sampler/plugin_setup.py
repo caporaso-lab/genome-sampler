@@ -46,7 +46,7 @@ from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
 from genome_sampler.combine import combine_selections
 from genome_sampler.summarize import summarize_selections
-from genome_sampler.label_seqs import label_seqs, label_unaligned_seqs
+from genome_sampler.label_seqs import label_seqs
 from genome_sampler.mask import mask
 
 citations = Citations.load('citations.bib', package='genome_sampler')
