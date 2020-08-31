@@ -17,6 +17,7 @@ from qiime2.plugin import (
     List,
     Citations,
     Bool,
+    TypeMatch,
 )
 from q2_types.feature_data import (
     FeatureData,
@@ -393,17 +394,18 @@ plugin.methods.register_function(
     description='Apply pre-computed alignment mask to filter positions.'
 )
 
+T = TypeMatch([Sequence, AlignedSequence])
 
 plugin.methods.register_function(
     function=label_seqs,
-    inputs={'seqs': FeatureData[AlignedSequence]},
+    inputs={'seqs': FeatureData[T]},
     parameters={
         'delimiter': Str % Choices('|', ',', '+', ':', ';'),
         'metadata': Metadata,
         'columns': List[Str],
         'missing_value': Str,
     },
-    outputs=[('labeled_seqs', FeatureData[AlignedSequence])],
+    outputs=[('labeled_seqs', FeatureData[T])],
     input_descriptions={'seqs': 'The sequences to be re-labeled.'},
     parameter_descriptions={
         'delimiter': 'The delimiter between the sequence id and each metadata'
@@ -425,41 +427,6 @@ plugin.methods.register_function(
                 ' first occurrence of delimiter and any characters following'
                 ' that will be removed from all sequence ids.'
 )
-
-plugin.methods.register_function(
-    function=label_unaligned_seqs,
-    inputs={'seqs': FeatureData[Sequence]},
-    parameters={
-        'delimiter': Str % Choices('|', ',', '+', ':', ';'),
-        'metadata': Metadata,
-        'columns': List[Str],
-        'missing_value': Str,
-    },
-    outputs=[('labeled_seqs', FeatureData[Sequence])],
-    input_descriptions={'seqs': 'The sequences to be re-labeled.'},
-    parameter_descriptions={
-        'delimiter': 'The delimiter between the sequence id and each metadata'
-                     ' entry.',
-        'metadata': 'The metadata to embed in the header.',
-        'columns': 'The columns in the metadata to be used.',
-        'missing_value': 'Value to use to indicate missing metadata column '
-                         'values for sequences.'
-    },
-    output_descriptions={
-        'labeled_seqs': 'The re-labeled sequences.'
-    },
-    name='Re-label unaligned sequences (deprecated)',
-    description='Modifies sequence identifiers either by adding or removing'
-                ' metadata. If metadata and one or more columns are provided,'
-                ' the specified metadata columns will be added to the sequence'
-                ' id following the original sequence id and separated by'
-                ' `delimiter`. If metadata and columns are not provided, the'
-                ' first occurrence of delimiter and any characters following'
-                ' that will be removed from all sequence ids. DEPRECATED: this'
-                ' will be accessible through `label_seqs`.',
-    deprecated=True,
-)
-
 
 plugin.visualizers.register_function(
     function=summarize_selections,
