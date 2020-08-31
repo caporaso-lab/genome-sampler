@@ -10,14 +10,16 @@ you're interested in using these sequences for other analyses, we recommend
 starting with sequence repositories such as GISAID or NCBI Genbank, which may
 have updated versions.
 
-Download metadata as tsv from the two tabs in [this
-spreadsheet](https://docs.google.com/spreadsheets/d/18IyZK6gvwcqKrl2U1FnucrC71Q5VSy_qFTz4ktffNK4/edit#gid=0).
-Name the file downloaded from the `context-metadata` tab
-`context-metadata.tsv` and the file downloaded from the `focal-metadata` tab
-`focal-metadata.tsv`.
+Download the tutorial sequences and corresponding metadata using the following
+commands:
 
-Download the two fasta files from [this Dropbox
-folder](https://www.dropbox.com/sh/tkb0c4snk5zodj8/AABLCykSiEe5zqv8gTeOSegna?dl=0).
+```
+mkdir -p tutorial-data
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/focal-seqs.fasta --output tutorial-data/focal-seqs.fasta
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/context-seqs.fasta --output tutorial-data/context-seqs.fasta
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/focal-metadata.tsv --output tutorial-data/focal-metadata.tsv
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/context-metadata.tsv --output tutorial-data/context-metadata.tsv
+```
 
 ## Using `genome-sampler` (Snakemake workflow)
 
@@ -129,8 +131,10 @@ step, you can run:
 qiime genome-sampler filter-seqs --help
 ```
 
+```{note}
 The `--help` parameter can be provided to any of the commands that are used
 in this tutorial.
+```
 
 At any time, you could get some summary information about your sequences
 using the following command:
@@ -138,7 +142,7 @@ using the following command:
 ```
 qiime feature-table tabulate-seqs \
   --i-data filtered-focal-seqs.qza \
-  --o-visualization filtered-focal-seqs.qza
+  --o-visualization filtered-focal-seqs.qzv
 ```
 
 That command will create a QIIME 2 visualization that you can view using
@@ -244,11 +248,11 @@ phylogenetic tree generation in the
 [q2-alignment](https://docs.qiime2.org/2020.2/plugins/available/alignment/)
 and
 [q2-phylogeny](https://docs.qiime2.org/2020.2/plugins/available/phylogeny/)
-plugins (which are not installed by default with genome-sampler). Building
-high quality trees is not the focus of QIIME 2, but it can help you to
-generate and visualize initial alignments and trees.
+plugins. QIIME 2 is not designed for high-accuracy phylogenetic analysis, but
+it can help you to generate and visualize initial alignments and trees.
 
-These steps would take the `sequences.qza` file as input, so you could
-postpone or skip the export step that you ran above.
+These steps would take the `sequences.qza` file as input, so if you're
+interested in using these you could postpone or skip the export step that you
+ran above.
 
 If you'd like to learn more about this, refer to {ref}`downstream`.

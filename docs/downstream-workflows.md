@@ -10,6 +10,13 @@ plugins (which are not installed by default with genome-sampler). This document
 illustrates how these steps can be applied after working through
 {ref}`usage-tutorial`.
 
+QIIME 2 often wraps other widely used tools in QIIME 2 plugins rather than
+implement them directly. For example, under-the-hood, `genome-sampler`'s
+`sample-diversity` action is using `vsearch` {cite}`vsearch-peerj`. In this
+document we'll build an alignment with MAFFT {cite}`mafft7`,
+apply a pre-computed alignment position mask, and then build a phylogenetic
+tree with IQTree 2 {cite}`iqtree2`.
+
 ```{warning}
 QIIME 2 is not designed for high-accuracy phylogenetic analysis. If you use the
 workflow illustrated here, we recommend that you consider the resulting trees
@@ -18,21 +25,17 @@ what is happening with your data, but you may want to use other tools for your
 final trees.
 ```
 
-QIIME 2 often wraps other widely used tools in QIIME 2 plugins rather than
-implement them directly. For example, under-the-hood, `genome-sampler`'s
-`sample-diversity` action is using `vsearch` {cite}`vsearch-peerj`. In this
-document we'll build an alignment with MAFFT {cite}`mafft7`,
-apply a pre-computed alignment position mask, and then build a phylogenetic
-tree with IQTree 2 {cite}`iqtree2`.
-
-## Installing other plugins
-
-TODO: Fill this in at release time...
+```{note}
+This tutorial assumes that you have already run {ref}`usage-tutorial`. If you
+haven't, you'll be missing files that are needed for this tutorial.
+```
 
 ## Obtain reference sequence and alignment mask
 
-Download the two `.qza` files from
-[this Dropbox folder](https://www.dropbox.com/sh/tkb0c4snk5zodj8/AABLCykSiEe5zqv8gTeOSegna?dl=0).
+```
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/alignment-mask.qza --output tutorial-data/alignment-mask.qza
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/sarscov2-reference-genome.qza --output tutorial-data/sarscov2-reference-genome.qza
+```
 
 ## Align sequences and build a tree
 
@@ -47,7 +50,7 @@ qiime feature-table merge-seqs \
   --o-merged-data sequences-w-ref.qza
 ```
 
-Perform sequence alignment using MAFFT.
+Next, we'll perform sequence alignment using MAFFT.
 
 ```
 qiime alignment mafft \
@@ -66,16 +69,19 @@ qiime genome-sampler mask \
   --o-masked-alignment masked-aligned-sequences-w-ref.qza
 ```
 
-Finally, we build a tree from the resulting alignment. This `.qza` file can
-be viewed directly with [iTOL](https://itol.embl.de/) to get a quick look.
-We'll also soon be adding support for viewing this with
-[Empress](https://github.com/biocore/empress).
+Finally, we build a tree from the resulting alignment. This will generate an
+unrooted phylogenetic tree.
 
 ```
 qiime phylogeny iqtree \
   --i-alignment masked-aligned-sequences-w-ref.qza \
   --o-tree unrooted-tree.qza
 ```
+
+This `.qza` file can
+be viewed directly with [iTOL](https://itol.embl.de/) to get a quick look.
+We'll also soon be adding support for viewing this with
+[Empress](https://github.com/biocore/empress).
 
 All of the `.qza` files that were generated in this example can be exported
 using `qiime tools export`. Exporting of sequence or alignment files will
