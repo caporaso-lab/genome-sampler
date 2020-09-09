@@ -152,6 +152,14 @@ median length of the sequences. (Your data is not uploaded to a server when
 you visit [QIIME 2 View](https://view.qiime2.org), so you don't need to be
 conerned about exposing sensitive research data.)
 
+```{note}
+If some of your focal sequences are present in your context sequence
+collection (for example because you submitted your sequences to GISAID before
+downloading GISAID), you should remove those sequences from either your focal
+or context sequence collection. See {ref}`removing-sequences` for instructions
+on how to do that.
+```
+
 We're now ready to start sampling our data, and we'll do this in three steps.
 These subsampling steps are independent, so can be run in any order.
 
