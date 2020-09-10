@@ -36,9 +36,11 @@ jobs:
     # for versioneer
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - uses: qiime2/action-library-packaging@alpha1
-      with: 
-        plugin-name: genome-sampler
+      with:
+        package-name: genome-sampler
         additional-tests: pytest --pyargs genome_sampler
+        build-target: release
+        library-token: ${{ secrets.LIBRARY_TOKEN }}
 
   doc-build:
     needs: build-and-test
@@ -63,7 +65,7 @@ jobs:
       run: |
         conda install -p ./test-env -q -y \
           -c file://$PWD/built \
-          -c qiime2-staging/label/r2020.6 \
+          -c qiime2 \
           -c conda-forge \
           -c bioconda \
           -c defaults \
