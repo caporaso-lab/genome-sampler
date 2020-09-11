@@ -42,6 +42,37 @@ jobs:
         build-target: release
         library-token: ${{ secrets.LIBRARY_TOKEN }}
 
+  integrate:
+    needs: build-and-test
+    # TODO: uncomment before merging
+    # if: github.ref == 'refs/heads/master'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: install QIIME 2 core distro
+      shell: bash -l {0}
+      run: |
+        case "${{ matrix.os }}" in
+          'ubuntu-latest') envFile='qiime2-2020.8-py36-linux-conda.yml' ;;
+          'macos-latest')  envFile='qiime2-2020.8-py36-osx-conda.yml' ;;
+        esac
+        wget https://data.qiime2.org/distro/core/$envFile
+        conda env create -p ./genome-sampler --file $envFile
+        conda activate ./genome-sampler
+        conda install -q -y \
+          -c https://packages.qiime2.org/qiime2/unverified/ \
+          -c qiime2 \
+          -c conda-forge \
+          -c bioconda \
+          -c defaults \
+          --override-channels \
+          genome-sampler
+        # TODO: run @ebolyen's env-stripping script here
+        conda env export  # TODO: export into a file
+        # TODO: commit env file
+
   doc-build:
     needs: build-and-test
     runs-on: ubuntu-latest
