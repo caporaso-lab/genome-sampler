@@ -60,39 +60,39 @@ jobs:
           sudo conda update -q conda
           conda info -a
 
-     - name: install QIIME 2 core distro
-       run: |
-         case "${{ matrix.os }}" in
-           'ubuntu-latest') envFile='qiime2-2020.8-py36-linux-conda.yml' ;;
-           'macos-latest')  envFile='qiime2-2020.8-py36-osx-conda.yml' ;;
-         esac
-         wget https://data.qiime2.org/distro/core/$envFile
-         conda init bash
-         conda env create -p ./genome-sampler --file $envFile
+      - name: install QIIME 2 core distro
+        run: |
+          case "${{ matrix.os }}" in
+            'ubuntu-latest') envFile='qiime2-2020.8-py36-linux-conda.yml' ;;
+            'macos-latest')  envFile='qiime2-2020.8-py36-osx-conda.yml' ;;
+          esac
+          wget https://data.qiime2.org/distro/core/$envFile
+          conda init bash
+          conda env create -p ./genome-sampler --file $envFile
 
-     - name: install genome-sampler
-       run: |
-         conda install -p ./genome-sampler -q \
-          -c https://packages.qiime2.org/qiime2/unverified/ \
-          -c qiime2 \
-          -c conda-forge \
-          -c bioconda \
-          -c defaults \
-          --override-channels \
-          genome-sampler
+      - name: install genome-sampler
+        run: |
+          conda install -p ./genome-sampler -q \
+           -c https://packages.qiime2.org/qiime2/unverified/ \
+           -c qiime2 \
+           -c conda-forge \
+           -c bioconda \
+           -c defaults \
+           --override-channels \
+           genome-sampler
 
-     - name: export env
-       run: |
-         # TODO: export to a file when convinced
-         conda env export
+      - name: export env
+        run: |
+          # TODO: export to a file when convinced
+          conda env export
 
-     - name: strip env
-       run: |
-         echo "#TODO: run @ebolyen's script here"
+      - name: strip env
+        run: |
+          echo "#TODO: run @ebolyen's script here"
 
-     - name: commit env files
-       run: |
-         echo "#TODO: commit env files"
+      - name: commit env files
+        run: |
+          echo "#TODO: commit env files"
 
   # TODO: refactor to use built-in runner conda
   doc-build:
