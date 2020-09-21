@@ -82,6 +82,8 @@ jobs:
       - name: export env
         run: |
           # TODO: export to a file when convinced
+          source "$CONDA/etc/profile.d/conda.sh"
+          conda activate ./genome-sampler-env
           conda env export
 
       - name: strip env
