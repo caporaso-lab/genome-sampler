@@ -65,13 +65,12 @@ jobs:
             'macos-latest')  envFile='qiime2-2020.8-py36-osx-conda.yml' ;;
           esac
           wget https://data.qiime2.org/distro/core/$envFile
-          sudo conda env create -q -p ./genome-sampler --file $envFile
+          sudo conda env create -q -p ./genome-sampler-env --file $envFile
 
       - name: install genome-sampler
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
-          conda activate ./genome-sampler
-          sudo conda install -q \
+          sudo conda install -p ./genome-sampler-env -q \
            -c https://packages.qiime2.org/qiime2/unverified/ \
            -c qiime2 \
            -c conda-forge \
