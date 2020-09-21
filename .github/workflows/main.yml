@@ -1,4 +1,4 @@
-name: lint-build-test
+name: ci
 
 on:
   push:
@@ -55,8 +55,6 @@ jobs:
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
           conda config --set always_yes yes --set changeps1 no
-          echo -e "pkgs_dirs:\n    - $HOME/.conda/pkgs" >> $HOME/.condarc
-          echo -e "envs_dirs:\n    - $HOME/.conda/envs" >> $HOME/.condarc
           sudo conda update -q conda
           conda info -a
 
@@ -67,11 +65,13 @@ jobs:
             'macos-latest')  envFile='qiime2-2020.8-py36-osx-conda.yml' ;;
           esac
           wget https://data.qiime2.org/distro/core/$envFile
-          conda env create -p ./genome-sampler --file $envFile
+          conda env create -q -p ./genome-sampler --file $envFile
 
       - name: install genome-sampler
         run: |
-          conda install -p ./genome-sampler -q \
+          source "$CONDA/etc/profile.d/conda.sh"
+          conda activate ./genome-sampler
+          sudo conda install -q \
            -c https://packages.qiime2.org/qiime2/unverified/ \
            -c qiime2 \
            -c conda-forge \
