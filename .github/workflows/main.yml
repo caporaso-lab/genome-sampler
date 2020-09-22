@@ -58,14 +58,26 @@ jobs:
           sudo conda update -q conda
           conda info -a
 
-      - name: install QIIME 2 core distro
+      - name: set host helper env var
         run: |
           case "${{ matrix.os }}" in
-            'ubuntu-latest') envFile='qiime2-2020.8-py36-linux-conda.yml' ;;
-            'macos-latest')  envFile='qiime2-2020.8-py36-osx-conda.yml' ;;
+            'ubuntu-latest') echo '::set-env name=QIIME2_PLATFORM::linux' ;;
+            'macos-latest') echo '::set-env name=QIIME2_PLATFORM::osx' ;;
           esac
+
+      - name: install QIIME 2 core distro
+        run: |
+          envFile=qiime2-2020.8-py36-$QIIME2_PLATFORM-conda.yml
           wget https://data.qiime2.org/distro/core/$envFile
           sudo conda env create -q -p ./genome-sampler-env --file $envFile
+
+      - name: fetch genome-sampler conda package
+        uses: actions/download-artifact@v2
+          with:
+            name: $QIIME2_PLATFORM-64
+
+      - name: debug (delete me)
+        run: ls -lahR
 
       - name: install genome-sampler
         run: |
@@ -83,12 +95,25 @@ jobs:
         run: |
           # TODO: export to a file when convinced
           source "$CONDA/etc/profile.d/conda.sh"
-          conda activate ./genome-sampler-env
-          conda env export
+          conda env export --no-builds --ignore-channels -p ./genome-sampler-env > raw-env.yml
 
       - name: strip env
         run: |
           echo "#TODO: run @ebolyen's script here"
+          cat raw-env.yml > stripped-env.yml
+
+      - name: rewire channels
+        run: |
+          sudo conda install -q -y -c conda-forge jq yq
+          yq ". | {channels: [\
+            \"https://packages.qiime2.org/qiime2/unverified\", \
+            \"qiime2\", \
+            \"conda-forge\", \
+            \"bioconda\", \
+            \"defaults\"\
+            ], dependencies: .dependencies}" stripped-env.yml --yaml-output \
+            > env.yml
+          cat env.yml
 
       - name: commit env files
         run: |
