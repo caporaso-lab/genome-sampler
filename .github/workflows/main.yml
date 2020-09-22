@@ -106,7 +106,7 @@ jobs:
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
           sudo conda install -q -y -c conda-forge jq yq
-          yq ". | {channels: [\
+          conda run yq ". | {channels: [\
             \"https://packages.qiime2.org/qiime2/unverified\", \
             \"qiime2\", \
             \"conda-forge\", \
