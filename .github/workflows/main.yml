@@ -77,7 +77,7 @@ jobs:
           name: ${{ env.QIIME2_PLATFORM }}-64
 
       - name: debug (delete me)
-        run: ls -lahR
+        run: ls -lah
 
       - name: install genome-sampler
         run: |
@@ -106,8 +106,8 @@ jobs:
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
           conda activate base
-          conda install -q -y -c conda-forge jq yq
-          conda run yq ". | {channels: [\
+          sudo conda install -q -y -c conda-forge jq yq
+          yq ". | {channels: [\
             \"https://packages.qiime2.org/qiime2/unverified\", \
             \"qiime2\", \
             \"conda-forge\", \
