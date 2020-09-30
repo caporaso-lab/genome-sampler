@@ -83,7 +83,7 @@ def sliding_window(metadata: pd.DataFrame,
                    inner_grouping: str,
                    window_size: int,
                    minimum_count: int,
-                   feature_grouping: str=None) -> (biom.Table, pd.DataFrame):
+                   feature_grouping: str = None) -> (biom.Table, pd.DataFrame):
     col_check = [dates, outer_grouping, inner_grouping]
     if feature_grouping is not None:
         col_check.append(feature_grouping)

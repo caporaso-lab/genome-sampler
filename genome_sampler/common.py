@@ -78,7 +78,7 @@ class WindowMetadataDirFmt(model.DirectoryFormat):
 
 Selection = SemanticType('Selection', variant_of=FeatureData.field['type'])
 WindowMetadata = SemanticType('WindowMetadata',
-    variant_of=SampleData.field['type'])
+                              variant_of=SampleData.field['type'])
 AlignmentMask = SemanticType('AlignmentMask')
 
 
