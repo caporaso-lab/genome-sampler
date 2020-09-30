@@ -92,6 +92,7 @@ def sliding_window(metadata: pd.DataFrame,
         if k not in metadata.columns:
             raise KeyError(f"{k} does not appear in the metadata")
 
+    metadata = metadata.to_dataframe()
     metadata[dates] = pd.to_datetime(metadata[dates], errors='coerce')
     metadata = metadata[~metadata[dates].isnull()]
 

@@ -1,5 +1,6 @@
 import unittest
 
+import qiime2
 import pandas as pd
 import numpy as np
 import pandas.testing as pdt
@@ -84,8 +85,13 @@ class WindowTests(unittest.TestCase):
                                ['a', 'b', 'c', 'c2', 'e', 'f', 'i', 'j', 'k',
                                 'l', 'm'],
                                list(exp_md.index))
-        obs_table, obs_md = sliding_window(self.df, 'date', 'location1',
-                                           'location2', 2, 2)
+
+        # qiime doesn't have datetime support right now
+        sw_md = self.df.copy()
+        sw_md['date'] = sw_md['date'].apply(lambda x: x.strftime('%Y-%m-%d'))
+
+        obs_table, obs_md = sliding_window(qiime2.Metadata(sw_md), 'date',
+                                           'location1', 'location2', 2, 2)
         obs_table = obs_table.sort_order(exp_table.ids())
         self.assertEqual(obs_table, exp_table)
         obs_md.sort_values('timepoint_gradient', inplace=True)

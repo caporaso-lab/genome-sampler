@@ -40,6 +40,7 @@ from genome_sampler.common import (
     VCFLikeMaskDirFmt,
     AlignmentMask,
     WindowMetadata,
+    WindowMetadataFormat,
     WindowMetadataDirFmt,
 )
 from genome_sampler.sample_random import sample_random
@@ -190,18 +191,19 @@ def _5(fmt: VCFLikeMaskFormat) -> pd.DataFrame:
 @plugin.register_transformer
 def _6(obj: pd.DataFrame) -> WindowMetadataDirFmt:
     ff = WindowMetadataDirFmt()
-    Metadata(obj).save(str(ff))
+    path = ff.metadata.path_maker()
+    qiime2.Metadata(obj).save(path)
     return ff
 
 
 @plugin.register_transformer
-def _7(ff: WindowMetadataDirFmt) -> Metadata:
-    return Metadata.load(str(ff))
+def _7(ff: WindowMetadataDirFmt) -> qiime2.Metadata:
+    return ff.metadata.view(WindowMetadataFormat).to_metadata()
 
 
 @plugin.register_transformer
 def _8(ff: WindowMetadataDirFmt) -> pd.DataFrame:
-    return Metadata.load(str(ff)).to_dataframe()
+    return ff.metadata.view(WindowMetadataFormat).to_metadata().to_dataframe()
 
 
 plugin.methods.register_function(
