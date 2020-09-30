@@ -7,6 +7,7 @@ import qiime2
 import qiime2.plugin.model as model
 from qiime2.plugin import SemanticType
 from q2_types.feature_data import FeatureData
+from q2_types.sample_data import SampleData
 from qiime2.plugin import ValidationError
 
 
@@ -60,8 +61,24 @@ class IDSelection:
         self.label = label
 
 
-Selection = SemanticType('Selection', variant_of=FeatureData.field['type'])
+class WindowMetadataFormat(model.TextFileFormat):
+    def _validate_(self, level):
+        try:
+            self.to_metadata()
+        except qiime2.metadata.MetadataFileError as md_exc:
+            raise model.ValidationError(md_exc) from md_exc
 
+    def to_metadata(self):
+        return qiime2.Metadata.load(str(self))
+
+
+class WindowMetadataDirFmt(model.DirectoryFormat):
+    metadata = model.File('metadata.tsv', format=WindowMetadataFormat)
+
+
+Selection = SemanticType('Selection', variant_of=FeatureData.field['type'])
+WindowMetadata = SemanticType('WindowMetadata',
+    variant_of=SampleData.field['type'])
 AlignmentMask = SemanticType('AlignmentMask')
 
 

@@ -25,6 +25,8 @@ from q2_types.feature_data import (
     Sequence,
     AlignedSequence,
 )
+from q2_types.feature_table import FeatureTable, PresenceAbsence
+from q2_types.sample_data import SampleData
 
 import genome_sampler
 from genome_sampler.common import (
@@ -37,6 +39,8 @@ from genome_sampler.common import (
     VCFLikeMaskFormat,
     VCFLikeMaskDirFmt,
     AlignmentMask,
+    WindowMetadata,
+    WindowMetadataDirFmt,
 )
 from genome_sampler.sample_random import sample_random
 from genome_sampler.sample_longitudinal import sample_longitudinal
@@ -47,6 +51,8 @@ from genome_sampler.combine import combine_selections
 from genome_sampler.summarize import summarize_selections
 from genome_sampler.label_seqs import label_seqs, label_unaligned_seqs
 from genome_sampler.mask import mask
+from genome_sampler.windower import sliding_window
+
 
 citations = Citations.load('citations.bib', package='genome_sampler')
 
@@ -61,15 +67,19 @@ plugin = Plugin(
 )
 
 plugin.register_formats(IDSelectionDirFmt)
+plugin.register_formats(WindowMetadataDirFmt)
 plugin.register_formats(GISAIDDNAFASTAFormat)
 plugin.register_formats(VCFLikeMaskFormat)
 plugin.register_formats(VCFLikeMaskDirFmt)
 plugin.register_semantic_types(Selection)
 plugin.register_semantic_types(AlignmentMask)
+plugin.register_semantic_types(WindowMetadata)
 plugin.register_semantic_type_to_format(FeatureData[Selection],
                                         artifact_format=IDSelectionDirFmt)
 plugin.register_semantic_type_to_format(AlignmentMask,
                                         artifact_format=VCFLikeMaskDirFmt)
+plugin.register_semantic_type_to_format(SampleData[WindowMetadata],
+                                        artifact_format=WindowMetadataDirFmt)
 
 
 @plugin.register_transformer
@@ -175,6 +185,23 @@ def _5(fmt: VCFLikeMaskFormat) -> pd.DataFrame:
         df = pd.read_csv(fh, sep='\t')
     df = df.rename(columns={'#CHROM': 'CHROM'})
     return df
+
+
+@plugin.register_transformer
+def _6(obj: pd.DataFrame) -> WindowMetadataDirFmt:
+    ff = WindowMetadataDirFmt()
+    Metadata(obj).save(str(ff))
+    return ff
+
+
+@plugin.register_transformer
+def _7(ff: WindowMetadataDirFmt) -> Metadata:
+    return Metadata.load(str(ff))
+
+
+@plugin.register_transformer
+def _8(ff: WindowMetadataDirFmt) -> pd.DataFrame:
+    return Metadata.load(str(ff)).to_dataframe()
 
 
 plugin.methods.register_function(
@@ -458,6 +485,50 @@ plugin.methods.register_function(
                 ' that will be removed from all sequence ids. DEPRECATED: this'
                 ' will be accessible through `label_seqs`.',
     deprecated=True,
+)
+
+
+plugin.methods.register_function(
+    function=sliding_window,
+    inputs={},
+    parameters={'metadata': Metadata,
+                'dates': Str,
+                'window_size': Int % Range(1, None),
+                'minimum_count': Int % Range(1, None),
+                'outer_grouping': Str,
+                'inner_grouping': Str,
+                'feature_grouping': Str},
+    outputs=[('window_table', FeatureTable[PresenceAbsence]),
+             ('window_metadata', SampleData[WindowMetadata])],
+    input_descriptions={},
+    parameter_descriptions={'metadata': 'Feature metadata, such as the '
+                                        'metadata from GISAID.',
+                            'dates': 'The column containing feature '
+                                     'collection dates.',
+                            'window_size': 'The window width in days.',
+                            'minimum_count': 'The minimum number of features '
+                                             'that must exist in a window.',
+                            'outer_grouping': 'The column containing a broad '
+                                              'feature grouping (e.g., '
+                                              'country).',
+                            'inner_grouping': 'The column containing a more '
+                                              'specific grouping (e.g., '
+                                              'city).',
+                            'feature_grouping': 'The column containing a '
+                                                'feature grouping, such as '
+                                                'indicating what features are '
+                                                'the same strain.'},
+    output_descriptions={'window_table': 'A feature table describing the '
+                                         'features observed within a given '
+                                         'sliding window.',
+                         'window_metadata': 'A metadata file that provides '
+                                            'basic information on the '
+                                            'computed sliding windows.'},
+    name='Use temporal sliding windows to group features by space and time.',
+    description='Sliding windows are computed over a parameterized time '
+                'window, creating "community samples", that describe the '
+                'features observed within a given geographic location within '
+                'each window.'
 )
 
 
