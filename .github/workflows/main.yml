@@ -3,6 +3,7 @@ name: ci
 on:
   push:
     branches: [ master ]
+    paths-ignore: [ 'conda-env-files/**' ]
   pull_request:
     branches: [ master ]
 
@@ -107,12 +108,14 @@ jobs:
             \"bioconda\", \
             \"defaults\"\
             ], dependencies: .dependencies}" stripped-env.yml --yaml-output \
-            > env.yml
-          cat env.yml
+            > conda-env-files/genome-sampler-py36-$QIIME2_PLATFORM-conda.yml
 
       - name: commit env files
         run: |
-          echo "#TODO: commit env files"
+          git config --global user.name 'q2d2'
+          git config --global user.email 'q2d2@users.noreply.github.com'
+          git commit -i conda-env-files/* -m "CI: $QIIME2_PLATFORM env file"
+          git push
 
   # TODO: refactor to use built-in runner conda
   doc-build:
