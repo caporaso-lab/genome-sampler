@@ -71,14 +71,6 @@ jobs:
           wget https://data.qiime2.org/distro/core/$envFile
           sudo conda env create -q -p ./genome-sampler-env --file $envFile
 
-      - name: fetch genome-sampler conda package
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ env.QIIME2_PLATFORM }}-64
-
-      - name: debug (delete me)
-        run: ls -lah
-
       - name: install genome-sampler
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
@@ -93,13 +85,12 @@ jobs:
 
       - name: export env
         run: |
-          # TODO: export to a file when convinced
           source "$CONDA/etc/profile.d/conda.sh"
           conda env export --no-builds --ignore-channels -p ./genome-sampler-env > raw-env.yml
 
       - name: strip env
         run: |
-          echo "#TODO: run @ebolyen's script here"
+          #TODO: run @ebolyen's script here
           cat raw-env.yml > stripped-env.yml
 
       - name: rewire channels
