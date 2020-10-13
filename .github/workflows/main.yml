@@ -92,7 +92,7 @@ jobs:
       - name: strip env
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
-          conda activate ./genome_sampler
+          conda activate ./genome-sampler-env
           python .github/workflows/bin/extract-env.py genome-sampler q2cli --env-file stripped-env.yml
 
       - name: rewire channels
