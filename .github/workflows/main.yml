@@ -76,13 +76,13 @@ jobs:
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
           sudo conda install -p ./genome-sampler-env -q \
-           -c https://packages.qiime2.org/qiime2/unverified/ \
-           -c qiime2 \
-           -c conda-forge \
-           -c bioconda \
-           -c defaults \
-           --override-channels \
-           genome-sampler
+            -c https://packages.qiime2.org/qiime2/unverified/ \
+            -c qiime2 \
+            -c conda-forge \
+            -c bioconda \
+            -c defaults \
+            --override-channels \
+            genome-sampler
 
       - name: export env
         run: |

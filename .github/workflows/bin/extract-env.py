@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import json
 import argparse
 
@@ -14,6 +13,7 @@ def get_conda_prefix():
         raise Exception("Not in a conda environment.")
 
     return conda_prefix
+
 
 class CondaMeta:
     def __init__(self, prefix):
