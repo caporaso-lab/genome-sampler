@@ -115,6 +115,7 @@ jobs:
           git config --global user.name 'q2d2'
           git config --global user.email 'q2d2@users.noreply.github.com'
           git commit -i conda-env-files/* -m "CI: $QIIME2_PLATFORM env file"
+
           git push
 
   # TODO: refactor to use built-in runner conda
