@@ -51,6 +51,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v2
       - name: configure conda
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
@@ -90,8 +91,9 @@ jobs:
 
       - name: strip env
         run: |
-          #TODO: run @ebolyen's script here
-          cat raw-env.yml > stripped-env.yml
+          source "$CONDA/etc/profile.d/conda.sh"
+          conda activate ./genome_sampler
+          python .github/workflows/bin/extract-env.py genome-sampler q2cli --env-file stripped-env.yml
 
       - name: rewire channels
         run: |
