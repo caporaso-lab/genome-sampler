@@ -69,7 +69,7 @@ def write_env_file(env, fh):
             'defaults']}
     yaml.dump(channels, fh, default_flow_style=False)
 
-    dependencies = {'dependencies': ['='.join(r) for r in env.items()]}
+    dependencies = {'dependencies': ['='.join(r) for r in sorted(env.items())]}
     yaml.dump(dependencies, fh, default_flow_style=False)
 
 
