@@ -53,8 +53,7 @@ jobs:
 
   integrate:
     needs: build-and-test
-    # TODO: uncomment before merging
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -112,8 +111,7 @@ jobs:
 
   commit-env-files:
     needs: integrate
-    # TODO: uncomment before merging
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
