@@ -115,8 +115,6 @@ jobs:
 
       - name: merge results
         run: |
-          ls tmp-envs-dir/
-          tmp-envs-dir/linux-conda-env/genome-sampler-py36-linux-conda.yml
           mv tmp-envs-dir/linux-conda-env/* conda-env-files/
           mv tmp-envs-dir/osx-conda-env/* conda-env-files/
           ls conda-env-files
