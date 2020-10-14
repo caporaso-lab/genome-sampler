@@ -1,11 +1,5 @@
 name: ci
 
-env:
-  QIIME2_CONDA_CHANNEL: qiime2-staging
-  BUILD_TARGET: staging
-  # Note, can't parameterize the `on` directives, so update branche there, too.
-  BRANCH: master
-
 on:
   push:
     branches:
@@ -54,13 +48,13 @@ jobs:
       with:
         package-name: genome-sampler
         additional-tests: pytest --pyargs genome_sampler
-        build-target: ${{ env.BUILD_TARGET }}
+        build-target: release
         library-token: ${{ secrets.LIBRARY_TOKEN }}
 
   integrate:
     needs: build-and-test
     # TODO: uncomment before merging
-    # if: github.ref == 'refs/heads/${{ env.BRANCH }}'
+    # if: github.ref == 'refs/heads/master'
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -93,7 +87,7 @@ jobs:
           source "$CONDA/etc/profile.d/conda.sh"
           sudo conda install -p ./genome-sampler-env -q \
             -c https://packages.qiime2.org/qiime2/unverified/ \
-            -c $QIIME2_CONDA_CHANNEL \
+            -c qiime2-staging \
             -c conda-forge \
             -c bioconda \
             -c defaults \
@@ -118,7 +112,7 @@ jobs:
   commit-env-files:
     needs: integrate
     # TODO: uncomment before merging
-    # if: github.ref == 'refs/heads/${{ env.BRANCH }}'
+    # if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -190,7 +184,7 @@ jobs:
   doc-publish:
     needs: doc-build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/${{ env.BRANCH }}'
+    if: github.ref == 'refs/heads/master'
     steps:
     - name: fetch built docs
       uses: actions/download-artifact@v1
