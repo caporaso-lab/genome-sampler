@@ -13,7 +13,7 @@ from genome_sampler.sample_neighbors import (
 
 class TestSubsampleNeighbors(TestPluginBase):
     package = 'genome_sampler.tests'
-    _N_TEST_ITERATIONS = 50
+    _N_TEST_ITERATIONS = 250
 
     def setUp(self):
         super().setUp()
@@ -358,13 +358,17 @@ class TestSubsampleNeighbors(TestPluginBase):
         cluster = pd.DataFrame([['c4', 5, 'abc'],
                                 ['c2', 0, float('nan')],
                                 ['c99', 1, float('nan')],
-                                ['c42', 2, 'abc']],
+                                ['c42', 2, 'abc'],
+                                ['c142', 2, 'abc'],
+                                ['c242', 2, 'abc']],
                                columns=columns)
 
         count_obs_c4 = 0
         count_obs_c2 = 0
         count_obs_c99 = 0
         count_obs_c42 = 0
+        count_obs_c142 = 0
+        count_obs_c242 = 0
 
         for _ in range(self._N_TEST_ITERATIONS):
             obs = _sample_cluster(cluster, 3, np.random.RandomState())
@@ -377,13 +381,21 @@ class TestSubsampleNeighbors(TestPluginBase):
                 count_obs_c99 += 1
             if 'c42' in obs:
                 count_obs_c42 += 1
+            if 'c142' in obs:
+                count_obs_c142 += 1
+            if 'c242' in obs:
+                count_obs_c242 += 1
 
-        # c4 and c42 all have locale "abc" and c99 and c2 have unknown locale,
+        # c99 and c2 have unknown locale while all others have "abc" locale
         # so we expect to see c99 amd c2 more frequently
         self.assertTrue(count_obs_c99 > count_obs_c4)
         self.assertTrue(count_obs_c99 > count_obs_c42)
+        self.assertTrue(count_obs_c99 > count_obs_c142)
+        self.assertTrue(count_obs_c99 > count_obs_c242)
         self.assertTrue(count_obs_c2 > count_obs_c4)
         self.assertTrue(count_obs_c2 > count_obs_c42)
+        self.assertTrue(count_obs_c2 > count_obs_c142)
+        self.assertTrue(count_obs_c2 > count_obs_c242)
 
     def test_generate_weights_single_class(self):
         loc = pd.Series(['A'] * 4)
