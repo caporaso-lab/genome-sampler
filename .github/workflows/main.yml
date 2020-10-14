@@ -115,7 +115,9 @@ jobs:
 
       - name: merge results
         run: |
+          ls tmp-envs-dir
           mv tmp-envs-dir/* conda-env-files/
+          ls conda-env-files
 
       - name: commit env files
         run: |
