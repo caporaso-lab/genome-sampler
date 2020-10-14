@@ -3,17 +3,18 @@ name: ci
 env:
   QIIME2_CONDA_CHANNEL: qiime2-staging
   BUILD_TARGET: staging
+  # Note, can't parameterize the `on` directives, so update branche there, too.
   BRANCH: master
 
 on:
   push:
     branches:
-      - ${{ env.BRANCH }}
+      - master
     paths-ignore:
       - 'conda-env-files/**'
   pull_request:
     branches:
-      - ${{ env.BRANCH }}
+      - master
 
 jobs:
   lint:
