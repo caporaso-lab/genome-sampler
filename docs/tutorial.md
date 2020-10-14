@@ -4,6 +4,8 @@ This document provides instructions for installing and using genome-sampler.
 
 ## Installation instructions
 
+We provide a minimal conda environment for working with `genome-sampler`.
+
 ### Install Miniconda
 [Miniconda](https://conda.io/miniconda.html) provides the conda environment
 and package manager, and is the recommended way to install `genome-sampler`.
@@ -11,26 +13,34 @@ Follow the instructions for downloading and installing Miniconda. You may
 choose either Miniconda2 or Miniconda3 (i.e. Miniconda Python 2 or 3).
 `genome-sampler` will work with either version of Miniconda.
 
-### Install `genome-sampler` from source
-A conda package will be available in the near future. For the moment we only
-provide a source installation.
+### Install `wget`
 
-First create a suitable conda environment:
-```
-conda create -y -n genome-sampler
-conda activate genome-sampler
+```bash
+conda install wget
 ```
 
-Next install dependencies:
-```
-conda install \
-  -c conda-forge -c bioconda -c qiime2 -c defaults \
-  qiime2 q2cli q2templates q2-types q2-feature-table q2-metadata vsearch snakemake
+### Create a conda environment for `genome-sampler`
+
+For linux installation environments, please run:
+
+```bash
+wget https://raw.githubusercontent.com/caporaso-lab/genome-sampler/some-release-branch/conda-env-files/genome-sampler-py36-linux-conda.yml
+conda env create -n genome-sampler-2020.8 --file genome-sampler-py36-linux-conda.yml
+rm genome-sampler-py36-linux-conda.yml
 ```
 
-Finally install from source:
+For macOS installation environments, please run:
+
+```bash
+wget https://raw.githubusercontent.com/caporaso-lab/genome-sampler/some-release-branch/conda-env-files/genome-sampler-py36-osx-conda.yml
+conda env create -n genome-sampler-2020.8 --file genome-sampler-py36-osx-conda.yml
+rm genome-sampler-py36-osx-conda.yml
 ```
-pip install git+https://github.com/caporaso-lab/genome-sampler.git
+
+### Activate the `genome-sampler` conda environment
+
+```bash
+conda activate genome-sampler-2020.8
 ```
 
 ## Usage instructions
