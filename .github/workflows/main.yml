@@ -53,8 +53,7 @@ jobs:
 
   integrate:
     needs: build-and-test
-    # TODO: uncomment before merging
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -111,8 +110,7 @@ jobs:
 
   commit-env-files:
     needs: integrate
-    # TODO: uncomment before merging
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -136,8 +134,7 @@ jobs:
             conda-env-files/genome-sampler-py36-osx-conda.yml \
             --allow-empty \
             -m 'CI: updated envs'
-          # TODO: uncomment before merging
-          # git push
+          git push
 
   # TODO: refactor to use built-in runner conda
   doc-build:
