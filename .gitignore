@@ -1,6 +1,8 @@
 # Created by https://www.gitignore.io/api/vim,code,python,intellij,jupyternotebooks
 # Edit at https://www.gitignore.io/?templates=vim,code,python,intellij,jupyternotebooks
 
+tmp-envs-dir
+
 ### Code ###
 .vscode/*
 
