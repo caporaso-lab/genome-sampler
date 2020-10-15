@@ -27,7 +27,7 @@ dependencies:
 - decorator=4.4.2
 - freetype=2.10.2
 - future=0.18.2
-- genome-sampler=2020.8.0.dev0+2.g90fd8ee
+- genome-sampler=2020.8.0.dev0+3.g268e5b4
 - h5py=2.10.0
 - hdf5=1.10.6
 - hdmedians=0.13
