@@ -1,5 +1,4 @@
 import sys
-import io
 import skbio
 import pandas as pd
 
@@ -34,8 +33,8 @@ from genome_sampler.common import (
     IDMetadataFormat,
     UNIXListFormat,
     GISAIDDNAFASTAFormat,
-    VCFLikeMaskFormat,
-    VCFLikeMaskDirFmt,
+    VCFMaskFormat,
+    VCFMaskDirFmt,
     AlignmentMask,
 )
 from genome_sampler.sample_random import sample_random
@@ -62,14 +61,14 @@ plugin = Plugin(
 
 plugin.register_formats(IDSelectionDirFmt)
 plugin.register_formats(GISAIDDNAFASTAFormat)
-plugin.register_formats(VCFLikeMaskFormat)
-plugin.register_formats(VCFLikeMaskDirFmt)
+plugin.register_formats(VCFMaskFormat)
+plugin.register_formats(VCFMaskDirFmt)
 plugin.register_semantic_types(Selection)
 plugin.register_semantic_types(AlignmentMask)
 plugin.register_semantic_type_to_format(FeatureData[Selection],
                                         artifact_format=IDSelectionDirFmt)
 plugin.register_semantic_type_to_format(AlignmentMask,
-                                        artifact_format=VCFLikeMaskDirFmt)
+                                        artifact_format=VCFMaskDirFmt)
 
 
 @plugin.register_transformer
@@ -170,11 +169,11 @@ def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
 
 
 @plugin.register_transformer
-def _5(fmt: VCFLikeMaskFormat) -> pd.DataFrame:
-    with io.StringIO('\n'.join(fmt.to_list())) as fh:
-        df = pd.read_csv(fh, sep='\t')
-    df = df.rename(columns={'#CHROM': 'CHROM'})
-    return df
+def _5(fmt: VCFMaskFormat) -> pd.DataFrame:
+    data = [(r.CHROM, r.POS, r.ID, r.REF, r.ALT, r.QUAL, r.FILTER[0], r.INFO)
+            for r in fmt.to_list()]
+    columns = ['CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO']
+    return pd.DataFrame(data, columns=columns)
 
 
 plugin.methods.register_function(
