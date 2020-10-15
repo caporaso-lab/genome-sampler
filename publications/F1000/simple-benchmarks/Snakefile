@@ -1,23 +1,15 @@
-configfile: "benchmarks.yaml"
+configfile: "config.yaml"
 
 rule all:
-    input: 'results.tsv'
-
-rule combine:
     input:
-      expand('benchmarks/diversity_{N}_{R}.tsv',
+      expand('results/diversity_{N}_{R}.tsv',
              N=config['context_N'],
              R=range(config['context_R'])),
-      expand('benchmarks/neighbors_F_{Nf}_{Rf}_C_{Nc}_{Rc}.tsv',
+      expand('results/neighbors_F_{Nf}_{Rf}_C_{Nc}_{Rc}.tsv',
              Nf=config['focal_N'],
              Rf=range(config['focal_R']),
              Nc=config['context_N'],
              Rc=range(config['context_R']))
-    output: 'results.tsv'
-    shell: """
-    paste <(echo "file") <(head -n 1 $(head -n 1 <(ls {input}))) > {output};
-    paste <(ls {input}) <(tail -q -n+2 {input}) >> {output};
-    """
 
 rule subset:
     input: lambda w: config[w.type + '_seqs'],
@@ -47,7 +39,7 @@ rule sample_diversity:
     params:
       percent_id = 0.999
     threads: 9999
-    benchmark: "benchmarks/diversity_{N}_{R}.tsv"
+    benchmark: "results/diversity_{N}_{R}.tsv"
     shell: """
     qiime genome-sampler sample-diversity \
       --i-context-seqs {input} \
@@ -67,7 +59,7 @@ rule sample_neighbors:
       cluster = 3
     output: 'sel/neighbors_F_{Nf}_{Rf}_C_{Nc}_{Rc}.qza'
     threads: 9999
-    benchmark: 'benchmarks/neighbors_F_{Nf}_{Rf}_C_{Nc}_{Rc}.tsv'
+    benchmark: 'results/neighbors_F_{Nf}_{Rf}_C_{Nc}_{Rc}.tsv'
     shell: """
     qiime genome-sampler sample-neighbors \
       --i-focal-seqs {input.focal_seqs} \
