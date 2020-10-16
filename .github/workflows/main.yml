@@ -100,7 +100,7 @@ jobs:
           conda activate ./genome-sampler-env
           python \
             .github/workflows/bin/extract-env.py \
-            genome-sampler q2cli \
+            genome-sampler q2cli q2-feature-table alignment phylogeny \
             --env-file conda-env-files/genome-sampler-py36-$QIIME2_PLATFORM-conda.yml
 
       - name: cache env
@@ -143,6 +143,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     # TODO: any way to cache and extract the miniconda
     # installation included in action-library-packaging?
     - name: setup miniconda
@@ -150,29 +151,27 @@ jobs:
       with:
         auto-update-conda: true
         python-version: 3.6
-    - name: fetch built package
-      uses: actions/download-artifact@v1
-      with:
-        name: linux-64
-        path: built
+
     - name: create conda testing env
       run: conda create -q -y -p ./test-env
-    - name: install plugin and conda dependencies
+
+    - name: install dependencies
       run: |
         conda install -p ./test-env -q -y \
-          -c file://$PWD/built \
-          -c qiime2 \
           -c conda-forge \
           -c bioconda \
           -c defaults \
-          --override-channels genome-sampler sphinx=2.4.4 pip
+          --override-channels sphinx=2.4.4 pip
+
     - name: install pip dependencies
       shell: bash -l {0}
       run: |
         conda activate ./test-env
         pip install -U "jupyter-book>=0.7.0b"
-    - name: build doc
+
+    - name: build docs
       run: conda run -p ./test-env jb build docs/
+
     - name: save built doc
       uses: actions/upload-artifact@v2
       with:
@@ -182,13 +181,15 @@ jobs:
   doc-publish:
     needs: doc-build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    # TODO: update the following when cutting a release
+    if: github.ref == 'refs/heads/some-release-branch'
     steps:
     - name: fetch built docs
       uses: actions/download-artifact@v1
       with:
         name: docs
         path: built-docs
+
     - name: deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
