@@ -1,0 +1,17 @@
+# This benchmark assumes that the data has been imported already
+                                                  # Identifiers for original benchmark run
+focal_seqs: seqs-az-focal.qza                     # UUID: 03f16a7f-b2fb-44b6-af50-a809e5543c63
+context_seqs: seqs-gisaid-context.qza             # UUID: 86ebd7a2-4572-4779-a57c-aa9d06880ef8 
+context_metadata: metadata_2020-08-14_12-13.tsv   # md5: bf5da0f8642b2cb635df4450e79060be
+
+# subset sizes for resampling
+context_N: [79328, 63462, 47596, 31731, 15865]
+# number of times to repeat the resample at each subset
+context_R: 3
+
+# Same as above, but for focal sequences
+focal_N: [672, 537, 403, 268, 134]
+focal_R: 1
+
+# sample-diversity will run `context_N x context_R` times
+# sample-neighbors will run `(context_N x "_R) x (focal_N x "_R)` times
