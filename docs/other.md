@@ -174,7 +174,7 @@ focal sequence metadata file, and then use that to filter in the same way that
 context sequences were filtered here.
 
 ```{note}
-If your metadata file already contains a column that differeniates the
+If your metadata file already contains a column that differentiates the
 sequences you want to remove from the sequences you want to retain, it's not
 necessary to add a new column. Instead, you can design a value for the
 ``--p-where`` parameter that will allow the filter to operate on data from
