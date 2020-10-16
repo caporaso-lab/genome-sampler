@@ -1,0 +1,28 @@
+# INPUT FILEPATHS:
+context_seqs_fp: 'context-seqs.fasta'
+focal_seqs_fp: 'focal-seqs.fasta'
+context_metadata_fp: 'context-metadata.tsv'
+
+# OUTPUT FILEPATHS:
+output_dir: ''
+output_seqs_basename: 'sequences'
+
+# Filter settings
+# Max ambiguous sequences as fraction of total number of seqs in input
+max_ambiguous: 0.10
+# Whether to filter focal seqs. Will use same max_ambiguous setting
+filter_focal_seqs: True
+
+# Longitudinal sampling parameters
+dates_column_name: 'date'
+samples_per_interval: 7
+days_per_interval: 7
+start_date: '2019-12'
+
+# Neighbor sampling parameters
+locale_column_name: 'division'
+neighbors_percent_id: 0.9999
+samples_per_cluster: 3
+
+# Diversity sampling parameters
+diversity_percent_id: 0.999
