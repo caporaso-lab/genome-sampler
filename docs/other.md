@@ -123,7 +123,7 @@ sequences as follows:
 ```
 qiime feature-table filter-seqs\
  --i-data context-seqs.qza \
- --m-metadata-file focal-seqs.qza \
+ --m-metadata-file focal-metadata.tsv \
  --p-exclude-ids \
  --o-filtered-data filtered-context-seqs.qza
 ```
@@ -131,14 +131,13 @@ qiime feature-table filter-seqs\
 All of your downstream analysis steps should then use the resulting
 `filtered-context-seqs.qza` file.
 
-
 Alternatively, if you want to remove these sequences from your focal sequence
 collection, you could do this as follows:
 
 ```
 qiime feature-table filter-seqs\
  --i-data focal-seqs.qza \
- --m-metadata-file context-seqs.qza \
+ --m-metadata-file context-metadata.tsv \
  --p-exclude-ids \
  --o-filtered-data filtered-focal-seqs.qza
 ```
