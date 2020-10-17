@@ -100,7 +100,7 @@ jobs:
           conda activate ./genome-sampler-env
           python \
             .github/workflows/bin/extract-env.py \
-            genome-sampler q2cli q2-feature-table alignment phylogeny \
+            genome-sampler q2cli q2-feature-table q2-alignment q2-phylogeny \
             --env-file conda-env-files/genome-sampler-py36-$QIIME2_PLATFORM-conda.yml
 
       - name: cache env
