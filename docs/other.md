@@ -19,8 +19,9 @@ file. For more details on the format of these files, see
 different ways depending on whether you're running the steps individually or
 through Snakemake.
 
-If you're using Snakemake, you need to edit `Snakefile` to set the `N_THREADS`
-value to the number of threads you'd like genome-sampler to use.
+If you're using Snakemake, you need only pass additional cores (via
+`snakemake --cores N`). The parallelizable steps will automatically use the
+provided resources.
 
 If you're running the steps individually you can pass the `--p-n-threads`
 option to several of the commands. For example, `sample-diversity` is the
@@ -55,22 +56,18 @@ multiple cluster nodes, but we do not have this support now.
 ## Adapting Snakemake workflow for application to your own data
 The Snakemake workflow presented in the tutorial is a good starting point for
 your own analyses. There are typically a few things to do to adapt
-`Snakefile` for your own data. The changes that you'll make to the `Snakefile`
-are all in the section at the top that is annotated as ``CONFIGS``.
+`Snakefile` for your own data. These changes will be made to the `config.yaml`
+file which should be found alongside the `Snakefile`.
 
 1. Modify input filepaths as needed. The input filepaths listed correspond to
 the names of the files provided for the tutorial. You can either name your
 files using those names, or update the input filepath values.
 2. Modify output filepaths if you'd like these to be different from the ones
 used in the tutorial.
-3. Modify the `N_THREADS` value to match the number of threads that are
-accessible to you for your analysis. The default is `1`. This will work, but
-may take a _very_ long time to run. See {ref}`parallel` for more information
-on this topic.
-4. Modify longitudinal, neighbor, and diversity sampling parameters as
+3. Modify longitudinal, neighbor, and diversity sampling parameters as
 desired. If you end up experimenting with different values for these
 parameters, which we encourage, we would love to hear about your findings. Be
-aware that increasing the `*_PERCENT_ID` parameters will increase the runtime
+aware that increasing the `*_percent_id` parameters will increase the runtime
 of your analysis, and decreasing those values will decrease the runtime of your
 analysis.
 
