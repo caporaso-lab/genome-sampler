@@ -49,7 +49,8 @@ jobs:
         package-name: genome-sampler
         additional-tests: pytest --pyargs genome_sampler
         build-target: release
-        library-token: ${{ secrets.LIBRARY_TOKEN }}
+        # removed the token to prevent automatically publishing patch builds
+        library-token:
 
   integrate:
     needs: build-and-test
