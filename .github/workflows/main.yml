@@ -115,6 +115,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # for versioneer
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
       - name: fetch envs
         uses: actions/download-artifact@v2
