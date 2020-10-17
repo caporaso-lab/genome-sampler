@@ -1,1 +1,15 @@
-file: tutorial
+- file: intro
+
+- part: Getting started
+  chapters:
+  - file: install
+  - file: tutorial
+
+- part: Next steps
+  chapters:
+  - file: downstream-workflows
+  - file: other
+
+- part: Back matter
+  chapters:
+  - file: zreferences

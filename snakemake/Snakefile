@@ -8,15 +8,20 @@ else:
 
 VIEW_FOCAL_SEQS = FOCAL_SEQS.replace('.qza', '.qzv')
 
+if config['input_dir'] and not config['input_dir'].endswith('/'):
+    config['input_dir'] += '/'
+if config['output_dir'] and not config['output_dir'].endswith('/'):
+    config['output_dir'] += '/'
+
 rule all:
     input:
       config['output_dir'] + 'context-seqs.qzv',
-      VIEW_FOCAL_SEQS,
+      config['output_dir'] + VIEW_FOCAL_SEQS,
       config['output_dir'] + 'selection-summary.qzv',
       config['output_dir'] + config['output_seqs_basename'] + '.fasta'
 
 rule import_context_seqs:
-    input: config['context_seqs_fp']
+    input: config['input_dir'] + config['context_seqs_fp']
     output: config['output_dir'] + 'context-seqs.qza'
     shell: """
     qiime tools import \
@@ -27,7 +32,7 @@ rule import_context_seqs:
     """
 
 rule import_focal_seqs:
-    input: config['focal_seqs_fp']
+    input: config['input_dir'] + config['focal_seqs_fp']
     output: config['output_dir'] + 'focal-seqs.qza'
     shell: """
     qiime tools import \
@@ -49,7 +54,7 @@ rule view_context_seqs:
 rule filter_context_missing_metadata:
     input:
       context_seqs_qza = config['output_dir'] + 'context-seqs.qza',
-      context_metadata = config['context_metadata_fp']
+      context_metadata = config['input_dir'] + config['context_metadata_fp']
     output: config['output_dir'] + 'context-seqs-w-metadata.qza'
     shell: """
     qiime feature-table filter-seqs \
@@ -93,7 +98,7 @@ rule view_focal_seqs:
 
 rule sample_longitudinal:
     input:
-      dates_file = config['context_metadata_fp'],
+      dates_file = config['input_dir'] + config['context_metadata_fp'],
       filtered_context = config['output_dir'] + 'filtered-context-seqs.qza'
     params:
       start_date_flag = ("--p-start-date " + config['start_date']
@@ -130,9 +135,9 @@ rule sample_diversity:
 rule sample_neighbors:
     input:
       filtered_context = config['output_dir'] + 'filtered-context-seqs.qza',
-      focal_seqs = config['output_dir'] + FOCAL_SEQS
+      focal_seqs = config['output_dir'] + FOCAL_SEQS,
+      context_md_fp = config['input_dir'] + config['context_metadata_fp'],
     params:
-      context_metadata_fp = config['context_metadata_fp'],
       locale_column_name = config['locale_column_name'],
       neighbors_percent_id = config['neighbors_percent_id'],
       samples_per_cluster = config['samples_per_cluster']
@@ -142,7 +147,7 @@ rule sample_neighbors:
     qiime genome-sampler sample-neighbors \
       --i-focal-seqs {input.focal_seqs} \
       --i-context-seqs {input.filtered_context} \
-      --m-locale-file {params.context_metadata_fp} \
+      --m-locale-file {input.context_md_fp} \
       --m-locale-column {params.locale_column_name} \
       --p-percent-id {params.neighbors_percent_id} \
       --p-samples-per-cluster {params.samples_per_cluster} \
@@ -194,7 +199,7 @@ rule merge_seqs:
     input:
       focal_seqs = config['output_dir'] + FOCAL_SEQS,
       subsampled_context = config['output_dir'] + 'subsampled-context-seqs.qza'
-    output: config['output_seqs_basename'] + '.qza'
+    output: config['output_dir'] + config['output_seqs_basename'] + '.qza'
     shell: """
     qiime feature-table merge-seqs \
       --i-data {input.subsampled_context} {input.focal_seqs} \

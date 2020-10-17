@@ -241,4 +241,5 @@ tags
 
 # End of https://www.gitignore.io/api/vim,code,python,intellij,jupyternotebooks
 
+# Snakemake
 .snakemake/
