@@ -82,7 +82,7 @@ jobs:
           wget https://data.qiime2.org/distro/core/$envFile
           sudo conda env create -q -p ./genome-sampler-env --file $envFile
 
-      - name: install genome-sampler
+      - name: install genome-sampler and snakemake
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
           sudo conda install -p ./genome-sampler-env -q \
@@ -92,7 +92,7 @@ jobs:
             -c bioconda \
             -c defaults \
             --override-channels \
-            genome-sampler
+            genome-sampler snakemake
 
       - name: strip env
         run: |
@@ -100,7 +100,7 @@ jobs:
           conda activate ./genome-sampler-env
           python \
             .github/workflows/bin/extract-env.py \
-            genome-sampler q2cli q2-feature-table q2-alignment q2-phylogeny \
+            genome-sampler q2cli q2-feature-table q2-alignment q2-phylogeny snakemake \
             --env-file conda-env-files/genome-sampler-py36-$QIIME2_PLATFORM-conda.yml
 
       - name: cache env
