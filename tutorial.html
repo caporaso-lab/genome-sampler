@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>genome-sampler installation and usage tutorial &#8212; My Jupyter Book</title>
+    <title>genome-sampler usage tutorial &#8212; genome-sampler documentation</title>
     
   <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
 
@@ -52,12 +52,24 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://caporasolab.us/genome-sampler/tutorial.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Downstream alignment and phylogenetics with QIIME 2" href="downstream-workflows.html" />
+    <link rel="prev" title="genome-sampler installation instructions" href="install.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
 
+
+<!-- Opengraph tags -->
+<meta property="og:url"         content="https://caporasolab.us/genome-sampler/tutorial.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="genome-sampler usage tutorial" />
+<meta property="og:description" content="genome-sampler usage tutorial  This document provides illustrates how to use genome-sampler on a small tutorial data set.  Download tutorial data  The tutorial " />
+
+
+<meta name="twitter:card" content="summary" />
 
 
   </head>
@@ -73,7 +85,7 @@
 <a class="navbar-brand text-wrap" href="index.html">
   
   
-  <h1 class="site-logo" id="site-title">My Jupyter Book</h1>
+  <h1 class="site-logo" id="site-title">genome-sampler documentation</h1>
   
 </a>
 </div>
@@ -86,11 +98,68 @@
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <ul class="nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="#">
-   genome-sampler installation and usage tutorial
+  <a class="reference internal" href="intro.html">
+   genome-sampler documentation
   </a>
  </li>
 </ul>
+<p class="caption">
+ <span class="caption-text">
+  Getting started
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     genome-sampler
+    </span>
+   </code>
+   installation instructions
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     genome-sampler
+    </span>
+   </code>
+   usage tutorial
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Next steps
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="downstream-workflows.html">
+   Downstream alignment and phylogenetics with QIIME 2
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="other.html">
+   Other topics
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Back matter
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="zreferences.html">
+   List of works cited
+  </a>
+ </li>
+</ul>
+
 </nav>
 
  <!-- To handle the deprecated key -->
@@ -142,6 +211,24 @@
 </div>
         <!-- Source interaction buttons -->
 
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/caporaso-lab/genome-sampler"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/caporaso-lab/genome-sampler/issues/new?title=Issue%20on%20page%20%2Ftutorial.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/caporaso-lab/genome-sampler/edit/master/docs/tutorial.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
@@ -162,75 +249,35 @@
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installation-instructions">
-   Installation instructions
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#install-miniconda">
-     Install Miniconda
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#install-genome-sampler-from-source">
-     Install
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       genome-sampler
-      </span>
-     </code>
-     from source
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#usage-instructions">
-   Usage instructions
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#download-tutorial-data">
-     Download tutorial data
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#using-genome-sampler-snakemake-workflow">
-     Using
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       genome-sampler
-      </span>
-     </code>
-     (Snakemake workflow)
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#using-genome-sampler-step-by-step-instructions">
-     Using
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       genome-sampler
-      </span>
-     </code>
-     (step-by-step instructions)
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#getting-help-contributing-etc">
-   Getting help, contributing, etc
+  <a class="reference internal nav-link" href="#download-tutorial-data">
+   Download tutorial data
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#citing-genome-sampler">
-   Citing
+  <a class="reference internal nav-link" href="#using-genome-sampler-snakemake-workflow">
+   Using
    <code class="docutils literal notranslate">
     <span class="pre">
      genome-sampler
     </span>
    </code>
+   (Snakemake workflow)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-genome-sampler-step-by-step-instructions">
+   Using
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     genome-sampler
+    </span>
+   </code>
+   (step-by-step instructions)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#optional-alignment-and-phylogenetic-reconstruction-with-qiime-2">
+   Optional: alignment and phylogenetic reconstruction with QIIME 2
   </a>
  </li>
 </ul>
@@ -244,64 +291,37 @@
         
               <div>
                 
-  <div class="section" id="genome-sampler-installation-and-usage-tutorial">
-<h1><code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> installation and usage tutorial<a class="headerlink" href="#genome-sampler-installation-and-usage-tutorial" title="Permalink to this headline">¶</a></h1>
-<p>This document provides instructions for installing and using genome-sampler.</p>
-<div class="section" id="installation-instructions">
-<h2>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="install-miniconda">
-<h3>Install Miniconda<a class="headerlink" href="#install-miniconda" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="https://conda.io/miniconda.html">Miniconda</a> provides the conda environment
-and package manager, and is the recommended way to install <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code>.
-Follow the instructions for downloading and installing Miniconda. You may
-choose either Miniconda2 or Miniconda3 (i.e. Miniconda Python 2 or 3).
-<code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> will work with either version of Miniconda.</p>
-</div>
-<div class="section" id="install-genome-sampler-from-source">
-<h3>Install <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> from source<a class="headerlink" href="#install-genome-sampler-from-source" title="Permalink to this headline">¶</a></h3>
-<p>A conda package will be available in the near future. For the moment we only
-provide a source installation.</p>
-<p>First create a suitable conda environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">y</span> <span class="o">-</span><span class="n">n</span> <span class="n">genome</span><span class="o">-</span><span class="n">sampler</span>
-<span class="n">conda</span> <span class="n">activate</span> <span class="n">genome</span><span class="o">-</span><span class="n">sampler</span>
-</pre></div>
-</div>
-<p>Next install dependencies:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> \
-  <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="o">-</span><span class="n">c</span> <span class="n">bioconda</span> <span class="o">-</span><span class="n">c</span> <span class="n">qiime2</span> <span class="o">-</span><span class="n">c</span> <span class="n">defaults</span> \
-  <span class="n">qiime2</span> <span class="n">q2cli</span> <span class="n">q2templates</span> <span class="n">q2</span><span class="o">-</span><span class="n">types</span> <span class="n">q2</span><span class="o">-</span><span class="n">feature</span><span class="o">-</span><span class="n">table</span> <span class="n">q2</span><span class="o">-</span><span class="n">metadata</span> <span class="n">vsearch</span> <span class="n">snakemake</span>
-</pre></div>
-</div>
-<p>Finally install from source:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">caporaso</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">genome</span><span class="o">-</span><span class="n">sampler</span><span class="o">.</span><span class="n">git</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="usage-instructions">
-<h2>Usage instructions<a class="headerlink" href="#usage-instructions" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="genome-sampler-usage-tutorial">
+<span id="usage-tutorial"></span><h1><code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> usage tutorial<a class="headerlink" href="#genome-sampler-usage-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This document provides illustrates how to use <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> on a small
+tutorial data set.</p>
 <div class="section" id="download-tutorial-data">
-<h3>Download tutorial data<a class="headerlink" href="#download-tutorial-data" title="Permalink to this headline">¶</a></h3>
+<h2>Download tutorial data<a class="headerlink" href="#download-tutorial-data" title="Permalink to this headline">¶</a></h2>
 <p>The tutorial data set used here is intended for educational purposes only. If
 you’re interested in using these sequences for other analyses, we recommend
 starting with sequence repositories such as GISAID or NCBI Genbank, which may
 have updated versions.</p>
-<p>Download metadata as tsv from the two tabs in <a class="reference external" href="https://docs.google.com/spreadsheets/d/18IyZK6gvwcqKrl2U1FnucrC71Q5VSy_qFTz4ktffNK4/edit#gid=0">this
-spreadsheet</a>.
-Name the file downloaded from the <code class="docutils literal notranslate"><span class="pre">context-metadata</span></code> tab
-<code class="docutils literal notranslate"><span class="pre">context-metadata.tsv</span></code> and the file downloaded from the <code class="docutils literal notranslate"><span class="pre">focal-metadata</span></code> tab
-<code class="docutils literal notranslate"><span class="pre">focal-metadata.tsv</span></code>.</p>
-<p>Download the two fasta files from <a class="reference external" href="https://www.dropbox.com/sh/tkb0c4snk5zodj8/AABLCykSiEe5zqv8gTeOSegna?dl=0">this Dropbox
-folder</a>.</p>
+<p>Download the tutorial sequences and corresponding metadata using the following
+commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">tutorial</span><span class="o">-</span><span class="n">data</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">caporaso</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">genome</span><span class="o">-</span><span class="n">sampler</span><span class="o">/</span><span class="n">r2020</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">snakemake</span><span class="o">/</span><span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">focal</span><span class="o">-</span><span class="n">seqs</span><span class="o">.</span><span class="n">fasta</span> <span class="o">--</span><span class="n">output</span> <span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">focal</span><span class="o">-</span><span class="n">seqs</span><span class="o">.</span><span class="n">fasta</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">caporaso</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">genome</span><span class="o">-</span><span class="n">sampler</span><span class="o">/</span><span class="n">r2020</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">snakemake</span><span class="o">/</span><span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">context</span><span class="o">-</span><span class="n">seqs</span><span class="o">.</span><span class="n">fasta</span> <span class="o">--</span><span class="n">output</span> <span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">context</span><span class="o">-</span><span class="n">seqs</span><span class="o">.</span><span class="n">fasta</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">caporaso</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">genome</span><span class="o">-</span><span class="n">sampler</span><span class="o">/</span><span class="n">r2020</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">snakemake</span><span class="o">/</span><span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">focal</span><span class="o">-</span><span class="n">metadata</span><span class="o">.</span><span class="n">tsv</span> <span class="o">--</span><span class="n">output</span> <span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">focal</span><span class="o">-</span><span class="n">metadata</span><span class="o">.</span><span class="n">tsv</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">caporaso</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">genome</span><span class="o">-</span><span class="n">sampler</span><span class="o">/</span><span class="n">r2020</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">snakemake</span><span class="o">/</span><span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">context</span><span class="o">-</span><span class="n">metadata</span><span class="o">.</span><span class="n">tsv</span> <span class="o">--</span><span class="n">output</span> <span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span><span class="n">context</span><span class="o">-</span><span class="n">metadata</span><span class="o">.</span><span class="n">tsv</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="using-genome-sampler-snakemake-workflow">
-<h3>Using <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> (Snakemake workflow)<a class="headerlink" href="#using-genome-sampler-snakemake-workflow" title="Permalink to this headline">¶</a></h3>
-<p>The full <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> workflow can be run using Snakemake. If you’d like
-to get started quickly and use default parameters, start here. If you’d like
-more control over your analysis or want to work through the steps
+<h2>Using <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> (Snakemake workflow)<a class="headerlink" href="#using-genome-sampler-snakemake-workflow" title="Permalink to this headline">¶</a></h2>
+<p>The full <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> workflow can be run using
+<a class="reference external" href="https://snakemake.readthedocs.io/en/stable/">Snakemake</a>
+<a class="bibtex reference internal" href="zreferences.html#snakemake-bioi" id="id1">[6]</a>. If you’d like to get started quickly and use default
+parameters, start here.
+If you’d like more control over your analysis or want to work through the steps
 individually, move on to the next section.</p>
-<p>Download the Snakemake file using <code class="docutils literal notranslate"><span class="pre">curl</span></code> as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">caporaso</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">genome</span><span class="o">-</span><span class="n">sampler</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">snakemake</span><span class="o">/</span><span class="n">Snakefile</span> <span class="o">--</span><span class="n">output</span> <span class="n">Snakefile</span>
+<p>Download the Snakemake and associated config file using <code class="docutils literal notranslate"><span class="pre">curl</span></code> as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">caporaso</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">genome</span><span class="o">-</span><span class="n">sampler</span><span class="o">/</span><span class="n">r2020</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">snakemake</span><span class="o">/</span><span class="n">Snakefile</span> <span class="o">--</span><span class="n">output</span> <span class="n">Snakefile</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">caporaso</span><span class="o">-</span><span class="n">lab</span><span class="o">/</span><span class="n">genome</span><span class="o">-</span><span class="n">sampler</span><span class="o">/</span><span class="n">r2020</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">snakemake</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span> <span class="o">--</span><span class="n">output</span> <span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
 <p>Place the resulting Snakemake file in the same folder as the sequence and
@@ -314,16 +334,31 @@ you’ll use. <code class="docutils literal notranslate"><span class="pre">seque
 and your focal sequences. You should use this file for downstream analyses,
 such as alignment and phylogenetic analyses. <code class="docutils literal notranslate"><span class="pre">selection-summary.qzv</span></code> will
 provide a summary of the sampling run. You can view this file using <a class="reference external" href="https://view.qiime2.org">QIIME 2
-View</a>. Be sure to click the <em>Provenance</em> tab after
-loading the file on that page - that will provide full details on the
-workflow that was executed.</p>
-<p>You should now be able to move on to analysis of your own data. If you’d like
-to modify parameters of the workflow, you can do so by opening the Snakemake
-file in a text editor and editing the values in the <code class="docutils literal notranslate"><span class="pre">CONFIGS</span></code> section.</p>
+View</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After loading <code class="docutils literal notranslate"><span class="pre">selection-summary.qzv</span></code> with <a class="reference external" href="https://view.qiime2.org">QIIME 2
+View</a>, click the <em>Provenance</em> tab to see full details
+on the workflow that was executed. This allows you to review exactly what steps
+were performed, what parameters were used for each step, and what versions of
+<code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> and its dependencies were installed when you ran
+<code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code>. Keep this file for your records so you can refer to it if
+any of this information is needed in the future (for example, when publishing
+your findings).</p>
+</div>
+<p>You should now be able to move on to analysis of your own data. See
+<a class="reference internal" href="other.html#adapting-tutorial"><span class="std std-ref">Adapting Snakemake workflow for application to your own data</span></a> to learn about what changes you might want to make
+to your <code class="docutils literal notranslate"><span class="pre">Snakefile</span></code> before running your own analysis.</p>
 <p>🐍</p>
 </div>
 <div class="section" id="using-genome-sampler-step-by-step-instructions">
-<h3>Using <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> (step-by-step instructions)<a class="headerlink" href="#using-genome-sampler-step-by-step-instructions" title="Permalink to this headline">¶</a></h3>
+<h2>Using <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> (step-by-step instructions)<a class="headerlink" href="#using-genome-sampler-step-by-step-instructions" title="Permalink to this headline">¶</a></h2>
+<p>If you are working with the tutorial data above, then you will need to enter
+the tutorial directory. If you are working with your own data, then replace
+file paths as appropriate.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">tutorial</span><span class="o">-</span><span class="n">data</span><span class="o">/</span>
+</pre></div>
+</div>
 <p>You’ll begin the workflow by importing the fasta files into QIIME 2
 Artifacts. QIIME 2 Artifacts are structured zip files which will contain the
 data (still in fasta format), but also some QIIME 2-specific information that
@@ -378,13 +413,16 @@ step, you can run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qiime</span> <span class="n">genome</span><span class="o">-</span><span class="n">sampler</span> <span class="nb">filter</span><span class="o">-</span><span class="n">seqs</span> <span class="o">--</span><span class="n">help</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">--help</span></code> parameter can be provided to any of the commands that are used
 in this tutorial.</p>
+</div>
 <p>At any time, you could get some summary information about your sequences
 using the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qiime</span> <span class="n">feature</span><span class="o">-</span><span class="n">table</span> <span class="n">tabulate</span><span class="o">-</span><span class="n">seqs</span> \
   <span class="o">--</span><span class="n">i</span><span class="o">-</span><span class="n">data</span> <span class="n">filtered</span><span class="o">-</span><span class="n">focal</span><span class="o">-</span><span class="n">seqs</span><span class="o">.</span><span class="n">qza</span> \
-  <span class="o">--</span><span class="n">o</span><span class="o">-</span><span class="n">visualization</span> <span class="n">filtered</span><span class="o">-</span><span class="n">focal</span><span class="o">-</span><span class="n">seqs</span><span class="o">.</span><span class="n">qza</span>
+  <span class="o">--</span><span class="n">o</span><span class="o">-</span><span class="n">visualization</span> <span class="n">filtered</span><span class="o">-</span><span class="n">focal</span><span class="o">-</span><span class="n">seqs</span><span class="o">.</span><span class="n">qzv</span>
 </pre></div>
 </div>
 <p>That command will create a QIIME 2 visualization that you can view using
@@ -393,6 +431,14 @@ information such as the number of sequences present in this file and the
 median length of the sequences. (Your data is not uploaded to a server when
 you visit <a class="reference external" href="https://view.qiime2.org">QIIME 2 View</a>, so you don’t need to be
 conerned about exposing sensitive research data.)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If some of your focal sequences are present in your context sequence
+collection (for example because you submitted your sequences to GISAID before
+downloading GISAID), you should remove those sequences from either your focal
+or context sequence collection. See <a class="reference internal" href="other.html#removing-sequences"><span class="std std-ref">Removing sequences present in both focal and context sequence collections</span></a> for instructions
+on how to do that.</p>
+</div>
 <p>We’re now ready to start sampling our data, and we’ll do this in three steps.
 These subsampling steps are independent, so can be run in any order.</p>
 <p>First, we’ll sample across time. By default, this will select seven genomes
@@ -468,49 +514,20 @@ a fasta file that you can use in downstream analysis.</p>
   <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">DNAFASTAFormat</span>
 </pre></div>
 </div>
-<p><strong>Optional</strong>: QIIME 2 contains some tools for sequence alignment and
-phylogenetic reconstruction in the
+</div>
+<div class="section" id="optional-alignment-and-phylogenetic-reconstruction-with-qiime-2">
+<h2>Optional: alignment and phylogenetic reconstruction with QIIME 2<a class="headerlink" href="#optional-alignment-and-phylogenetic-reconstruction-with-qiime-2" title="Permalink to this headline">¶</a></h2>
+<p>QIIME 2 contains tools for preliminary sequence alignment and
+phylogenetic tree generation in the
 <a class="reference external" href="https://docs.qiime2.org/2020.2/plugins/available/alignment/">q2-alignment</a>
 and
 <a class="reference external" href="https://docs.qiime2.org/2020.2/plugins/available/phylogeny/">q2-phylogeny</a>
-plugins (which are not installed by default with genome-sampler). If you’d
-like, you can use these for the next steps of your
-analyses. These would take the <code class="docutils literal notranslate"><span class="pre">sequences.qza</span></code> file as input, so you could
-just postpone the export step that you ran above. For example, you could
-align and build a tree as follows. Note however that usually you would
-perform some manual filtering and trimming between these two steps, so these
-two commands likely won’t get you a publication quality phylogeny.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qiime</span> <span class="n">alignment</span> <span class="n">mafft</span> \
-  <span class="o">--</span><span class="n">i</span><span class="o">-</span><span class="n">sequences</span> <span class="n">sequences</span><span class="o">.</span><span class="n">qza</span> \
-  <span class="o">--</span><span class="n">o</span><span class="o">-</span><span class="n">aligned</span><span class="o">-</span><span class="n">sequences</span> <span class="n">aligned</span><span class="o">-</span><span class="n">sequences</span><span class="o">.</span><span class="n">qza</span>
-
-<span class="n">qiime</span> <span class="n">phylogeny</span> <span class="n">fasttree</span> \
-  <span class="o">--</span><span class="n">i</span><span class="o">-</span><span class="n">alignment</span> <span class="n">aligned</span><span class="o">-</span><span class="n">sequences</span><span class="o">.</span><span class="n">qza</span> \
-  <span class="o">--</span><span class="n">o</span><span class="o">-</span><span class="n">tree</span> <span class="n">tree</span><span class="o">.</span><span class="n">qza</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="getting-help-contributing-etc">
-<h2>Getting help, contributing, etc<a class="headerlink" href="#getting-help-contributing-etc" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> is open source and free for all use. Software and unit tests
-are available at https://github.com/caporaso-lab/genome-sampler under the BSD
-3-clause license. Documentation, written using
-<a class="reference external" href="https://myst-parser.readthedocs.io/en/latest">Myst</a> and rendered using
-<a class="reference external" href="https://jupyterbook.org/">Jupyter Book</a>, is available at
-http://caporasolab.us/genome-sampler/.</p>
-<p>If you need technical support, please post a question to the QIIME 2 Forum at
-https://forum.qiime2.org. We are very interested in contributions to
-genome-sampler from the community - please get in touch via the GitHub issue
-tracker or the QIIME 2 Forum if you’re interested in contributing. Before
-getting in touch, please review the software project’s <a class="reference external" href="https://github.com/caporaso-lab/code-of-conduct/blob/master/code-of-conduct.md">code of
-conduct</a>,
-which is adapted from the <a class="reference external" href="https://www.contributor-covenant.org">Contributor
-Covenant</a>, version 1.4.</p>
-</div>
-<div class="section" id="citing-genome-sampler">
-<h2>Citing <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code><a class="headerlink" href="#citing-genome-sampler" title="Permalink to this headline">¶</a></h2>
-<p>If you use <code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> in published work, please cite <a class="reference external" href="https://f1000research.com/articles/9-657">our paper</a>.</p>
+plugins. QIIME 2 is not designed for high-accuracy phylogenetic analysis, but
+it can help you to generate and visualize initial alignments and trees.</p>
+<p>These steps would take the <code class="docutils literal notranslate"><span class="pre">sequences.qza</span></code> file as input, so if you’re
+interested in using these you could postpone or skip the export step that you
+ran above.</p>
+<p>If you’d like to learn more about this, refer to <a class="reference internal" href="downstream-workflows.html#downstream"><span class="std std-ref">Downstream alignment and phylogenetics with QIIME 2</span></a>.</p>
 </div>
 </div>
 
@@ -542,13 +559,15 @@ Covenant</a>, version 1.4.</p>
     
     <div class='prev-next-bottom'>
         
+    <a class='left-prev' id="prev-link" href="install.html" title="previous page"><code class="docutils literal notranslate"><span class="pre">genome-sampler</span></code> installation instructions</a>
+    <a class='right-next' id="next-link" href="downstream-workflows.html" title="next page">Downstream alignment and phylogenetics with QIIME 2</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">
     <div class="container">
       <p>
         
-          By The Jupyter Book community<br/>
+          By The genome-sampler developers<br/>
         
             &copy; Copyright 2020.<br/>
       </p>
@@ -564,6 +583,16 @@ Covenant</a>, version 1.4.</p>
   <script src="_static/js/index.3da636dd464baa7582d2.js"></script>
 
 
+    
+    <!-- Google Analytics -->
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-86713402-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+    <!-- End Google Analytics -->
     
   </body>
 </html>
