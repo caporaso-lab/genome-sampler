@@ -64,7 +64,7 @@ dependencies:
 - ftputil=4.0.0
 - future=0.18.2
 - gdk-pixbuf=2.38.2
-- genome-sampler=2020.8.0.dev0+21.gca20ea9
+- genome-sampler=2020.8.0
 - gettext=0.19.8.1
 - ghostscript=9.53.3
 - giflib=5.2.1
