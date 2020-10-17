@@ -70,7 +70,7 @@ to your `Snakefile` before running your own analysis.
 
 ## Using `genome-sampler` (step-by-step instructions)
 If you are working with the tutorial data above, then you will need to enter
-the tutorial directory. If your are working with your own data, then replace
+the tutorial directory. If you are working with your own data, then replace
 file paths as appropriate.
 
 ```
