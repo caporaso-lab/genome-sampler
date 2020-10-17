@@ -30,10 +30,11 @@ parameters, start here.
 If you'd like more control over your analysis or want to work through the steps
 individually, move on to the next section.
 
-Download the Snakemake file using `curl` as follows:
+Download the Snakemake and associated config file using `curl` as follows:
 
 ```
 curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/Snakefile --output Snakefile
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/config.yaml --output config.yaml
 ```
 
 Place the resulting Snakemake file in the same folder as the sequence and
