@@ -23,7 +23,7 @@ conda install wget
 For linux installation environments, please run:
 
 ```bash
-wget https://raw.githubusercontent.com/caporaso-lab/genome-sampler/some-release-branch/conda-env-files/genome-sampler-py36-linux-conda.yml
+wget https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/conda-env-files/genome-sampler-py36-linux-conda.yml
 conda env create -n genome-sampler-2020.8 --file genome-sampler-py36-linux-conda.yml
 rm genome-sampler-py36-linux-conda.yml
 ```
@@ -31,7 +31,7 @@ rm genome-sampler-py36-linux-conda.yml
 For macOS installation environments, please run:
 
 ```bash
-wget https://raw.githubusercontent.com/caporaso-lab/genome-sampler/some-release-branch/conda-env-files/genome-sampler-py36-osx-conda.yml
+wget https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/conda-env-files/genome-sampler-py36-osx-conda.yml
 conda env create -n genome-sampler-2020.8 --file genome-sampler-py36-osx-conda.yml
 rm genome-sampler-py36-osx-conda.yml
 ```
