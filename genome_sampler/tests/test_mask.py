@@ -6,7 +6,7 @@ import numpy.testing as npt
 
 from qiime2.plugin.testing import TestPluginBase
 
-from genome_sampler.plugin_setup import VCFLikeMaskFormat
+from genome_sampler.plugin_setup import VCFMaskFormat
 from genome_sampler.mask import (
     _filter_mask_by_level, _create_position_map, _find_terminal_gaps,
     _create_terminal_gap_mask, _create_mask, _apply_mask, mask)
@@ -17,27 +17,27 @@ class MaskTests(TestPluginBase):
 
     def setUp(self):
         super().setUp()
-        _, self.mask1 = self.transform_format(VCFLikeMaskFormat,
+        _, self.mask1 = self.transform_format(VCFMaskFormat,
                                               pd.DataFrame,
-                                              filename='mask1.tsv')
-        _, self.mask2 = self.transform_format(VCFLikeMaskFormat,
+                                              filename='mask1.vcf')
+        _, self.mask2 = self.transform_format(VCFMaskFormat,
                                               pd.DataFrame,
-                                              filename='mask2.tsv')
-        _, self.mask3 = self.transform_format(VCFLikeMaskFormat,
+                                              filename='mask2.vcf')
+        _, self.mask3 = self.transform_format(VCFMaskFormat,
                                               pd.DataFrame,
-                                              filename='mask3.tsv')
-        _, self.mask4 = self.transform_format(VCFLikeMaskFormat,
+                                              filename='mask3.vcf')
+        _, self.mask4 = self.transform_format(VCFMaskFormat,
                                               pd.DataFrame,
-                                              filename='mask4.tsv')
-        _, self.mask5 = self.transform_format(VCFLikeMaskFormat,
+                                              filename='mask4.vcf')
+        _, self.mask5 = self.transform_format(VCFMaskFormat,
                                               pd.DataFrame,
-                                              filename='mask5.tsv')
-        _, self.mask6 = self.transform_format(VCFLikeMaskFormat,
+                                              filename='mask5.vcf')
+        _, self.mask6 = self.transform_format(VCFMaskFormat,
                                               pd.DataFrame,
-                                              filename='mask6.tsv')
-        _, self.mask7 = self.transform_format(VCFLikeMaskFormat,
+                                              filename='mask6.vcf')
+        _, self.mask7 = self.transform_format(VCFMaskFormat,
                                               pd.DataFrame,
-                                              filename='mask7.tsv')
+                                              filename='mask7.vcf')
 
         seqs = [
             skbio.DNA('ACGT', metadata=dict(id='s1')),
