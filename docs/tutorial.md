@@ -15,10 +15,10 @@ commands:
 
 ```
 mkdir -p tutorial-data
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/focal-seqs.fasta --output tutorial-data/focal-seqs.fasta
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/context-seqs.fasta --output tutorial-data/context-seqs.fasta
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/focal-metadata.tsv --output tutorial-data/focal-metadata.tsv
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/context-metadata.tsv --output tutorial-data/context-metadata.tsv
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/focal-seqs.fasta --output tutorial-data/focal-seqs.fasta
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/context-seqs.fasta --output tutorial-data/context-seqs.fasta
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/focal-metadata.tsv --output tutorial-data/focal-metadata.tsv
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/context-metadata.tsv --output tutorial-data/context-metadata.tsv
 ```
 
 ## Using `genome-sampler` (Snakemake workflow)
@@ -33,8 +33,8 @@ individually, move on to the next section.
 Download the Snakemake and associated config file using `curl` as follows:
 
 ```
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/Snakefile --output Snakefile
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/config.yaml --output config.yaml
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/Snakefile --output Snakefile
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/config.yaml --output config.yaml
 ```
 
 Place the resulting Snakemake file in the same folder as the sequence and

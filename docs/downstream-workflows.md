@@ -33,8 +33,8 @@ haven't, you'll be missing files that are needed for this tutorial.
 ## Obtain reference sequence and alignment mask
 
 ```
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/alignment-mask.qza --output tutorial-data/alignment-mask.qza
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/sarscov2-reference-genome.qza --output tutorial-data/sarscov2-reference-genome.qza
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/alignment-mask.qza --output tutorial-data/alignment-mask.qza
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/sarscov2-reference-genome.qza --output tutorial-data/sarscov2-reference-genome.qza
 ```
 
 ## Align sequences and build a tree

@@ -3,12 +3,12 @@ name: ci
 on:
   push:
     branches:
-      - master
+      - r2020.8
     paths-ignore:
       - 'conda-env-files/**'
   pull_request:
     branches:
-      - master
+      - r2020.8
 
 jobs:
   lint:
@@ -53,7 +53,7 @@ jobs:
 
   integrate:
     needs: build-and-test
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/r2020.8'
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -87,7 +87,7 @@ jobs:
           source "$CONDA/etc/profile.d/conda.sh"
           sudo conda install -p ./genome-sampler-env -q \
             -c https://packages.qiime2.org/qiime2/unverified/ \
-            -c qiime2-staging \
+            -c qiime2 \
             -c conda-forge \
             -c bioconda \
             -c defaults \
@@ -111,7 +111,7 @@ jobs:
 
   commit-env-files:
     needs: integrate
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/r2020.8'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -182,7 +182,7 @@ jobs:
     needs: doc-build
     runs-on: ubuntu-latest
     # TODO: update the following when cutting a release
-    if: github.ref == 'refs/heads/some-release-branch'
+    if: github.ref == 'refs/heads/r2020.8'
     steps:
     - name: fetch built docs
       uses: actions/download-artifact@v1
