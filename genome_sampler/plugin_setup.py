@@ -1,5 +1,4 @@
 import sys
-import io
 import skbio
 import pandas as pd
 
@@ -17,6 +16,7 @@ from qiime2.plugin import (
     List,
     Citations,
     Bool,
+    TypeMatch,
 )
 from q2_types.feature_data import (
     FeatureData,
@@ -36,8 +36,8 @@ from genome_sampler.common import (
     IDMetadataFormat,
     UNIXListFormat,
     GISAIDDNAFASTAFormat,
-    VCFLikeMaskFormat,
-    VCFLikeMaskDirFmt,
+    VCFMaskFormat,
+    VCFMaskDirFmt,
     AlignmentMask,
     WindowMetadata,
     WindowMetadataFormat,
@@ -50,7 +50,7 @@ from genome_sampler.sample_diversity import sample_diversity
 from genome_sampler.filter import filter_seqs
 from genome_sampler.combine import combine_selections
 from genome_sampler.summarize import summarize_selections
-from genome_sampler.label_seqs import label_seqs, label_unaligned_seqs
+from genome_sampler.label_seqs import label_seqs
 from genome_sampler.mask import mask
 from genome_sampler.windower import sliding_window
 
@@ -70,15 +70,15 @@ plugin = Plugin(
 plugin.register_formats(IDSelectionDirFmt)
 plugin.register_formats(WindowMetadataDirFmt)
 plugin.register_formats(GISAIDDNAFASTAFormat)
-plugin.register_formats(VCFLikeMaskFormat)
-plugin.register_formats(VCFLikeMaskDirFmt)
+plugin.register_formats(VCFMaskFormat)
+plugin.register_formats(VCFMaskDirFmt)
 plugin.register_semantic_types(Selection)
 plugin.register_semantic_types(AlignmentMask)
 plugin.register_semantic_types(WindowMetadata)
 plugin.register_semantic_type_to_format(FeatureData[Selection],
                                         artifact_format=IDSelectionDirFmt)
 plugin.register_semantic_type_to_format(AlignmentMask,
-                                        artifact_format=VCFLikeMaskDirFmt)
+                                        artifact_format=VCFMaskDirFmt)
 plugin.register_semantic_type_to_format(SampleData[WindowMetadata],
                                         artifact_format=WindowMetadataDirFmt)
 
@@ -181,11 +181,11 @@ def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
 
 
 @plugin.register_transformer
-def _5(fmt: VCFLikeMaskFormat) -> pd.DataFrame:
-    with io.StringIO('\n'.join(fmt.to_list())) as fh:
-        df = pd.read_csv(fh, sep='\t')
-    df = df.rename(columns={'#CHROM': 'CHROM'})
-    return df
+def _5(fmt: VCFMaskFormat) -> pd.DataFrame:
+    data = [(r.CHROM, r.POS, r.ID, r.REF, r.ALT, r.QUAL, r.FILTER[0], r.INFO)
+            for r in fmt.to_list()]
+    columns = ['CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO']
+    return pd.DataFrame(data, columns=columns)
 
 
 @plugin.register_transformer
@@ -422,17 +422,18 @@ plugin.methods.register_function(
     description='Apply pre-computed alignment mask to filter positions.'
 )
 
+T = TypeMatch([Sequence, AlignedSequence])
 
 plugin.methods.register_function(
     function=label_seqs,
-    inputs={'seqs': FeatureData[AlignedSequence]},
+    inputs={'seqs': FeatureData[T]},
     parameters={
         'delimiter': Str % Choices('|', ',', '+', ':', ';'),
         'metadata': Metadata,
         'columns': List[Str],
         'missing_value': Str,
     },
-    outputs=[('labeled_seqs', FeatureData[AlignedSequence])],
+    outputs=[('labeled_seqs', FeatureData[T])],
     input_descriptions={'seqs': 'The sequences to be re-labeled.'},
     parameter_descriptions={
         'delimiter': 'The delimiter between the sequence id and each metadata'
@@ -453,40 +454,6 @@ plugin.methods.register_function(
                 ' `delimiter`. If metadata and columns are not provided, the'
                 ' first occurrence of delimiter and any characters following'
                 ' that will be removed from all sequence ids.'
-)
-
-plugin.methods.register_function(
-    function=label_unaligned_seqs,
-    inputs={'seqs': FeatureData[Sequence]},
-    parameters={
-        'delimiter': Str % Choices('|', ',', '+', ':', ';'),
-        'metadata': Metadata,
-        'columns': List[Str],
-        'missing_value': Str,
-    },
-    outputs=[('labeled_seqs', FeatureData[Sequence])],
-    input_descriptions={'seqs': 'The sequences to be re-labeled.'},
-    parameter_descriptions={
-        'delimiter': 'The delimiter between the sequence id and each metadata'
-                     ' entry.',
-        'metadata': 'The metadata to embed in the header.',
-        'columns': 'The columns in the metadata to be used.',
-        'missing_value': 'Value to use to indicate missing metadata column '
-                         'values for sequences.'
-    },
-    output_descriptions={
-        'labeled_seqs': 'The re-labeled sequences.'
-    },
-    name='Re-label unaligned sequences (deprecated)',
-    description='Modifies sequence identifiers either by adding or removing'
-                ' metadata. If metadata and one or more columns are provided,'
-                ' the specified metadata columns will be added to the sequence'
-                ' id following the original sequence id and separated by'
-                ' `delimiter`. If metadata and columns are not provided, the'
-                ' first occurrence of delimiter and any characters following'
-                ' that will be removed from all sequence ids. DEPRECATED: this'
-                ' will be accessible through `label_seqs`.',
-    deprecated=True,
 )
 
 

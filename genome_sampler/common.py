@@ -2,6 +2,7 @@ import subprocess
 
 import pandas as pd
 import skbio
+import vcf
 
 import qiime2
 import qiime2.plugin.model as model
@@ -21,18 +22,19 @@ class UNIXListFormat(model.TextFileFormat):
             return [s.strip() for s in fh]
 
 
-class VCFLikeMaskFormat(model.TextFileFormat):
+class VCFMaskFormat(model.TextFileFormat):
     def _validate_(self, level):
-        # any file with lines will be valid
-        return True
+        try:
+            list(zip(range(5), vcf.Reader(open(str(self)))))
+        except (IndexError, SyntaxError) as error:
+            raise ValidationError(str(error))
 
     def to_list(self):
-        with self.open() as fh:
-            return [s.strip() for s in fh if not s.startswith('##')]
+        return list(vcf.Reader(open(str(self))))
 
 
-VCFLikeMaskDirFmt = model.SingleFileDirectoryFormat(
-    'VCFLikeMaskDirFmt', 'mask.tsv', VCFLikeMaskFormat)
+VCFMaskDirFmt = model.SingleFileDirectoryFormat(
+    'VCFMaskDirFmt', 'mask.tsv', VCFMaskFormat)
 
 
 class IDMetadataFormat(model.TextFileFormat):

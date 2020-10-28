@@ -24,6 +24,7 @@ requirements:
     - qiime2 {{ release }}.*
     - q2-types {{ release }}.*
     - q2templates {{ release }}.*
+    - pyvcf
 
 test:
   imports:
