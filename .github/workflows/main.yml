@@ -48,7 +48,7 @@ jobs:
       with:
         package-name: genome-sampler
         additional-tests: pytest --pyargs genome_sampler
-        build-target: release
+        build-target: staging
         library-token: ${{ secrets.LIBRARY_TOKEN }}
 
   integrate:
