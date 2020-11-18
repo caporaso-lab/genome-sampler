@@ -8,7 +8,8 @@ import biom
 
 from genome_sampler.windower import (sliding_window, _make_id, _id_order,
                                      _create_table, _create_window_df,
-                                     _group_by_window)
+                                     _group_by_overlapping_windows,
+                                     _group_by_nonoverlapping_windows)
 
 
 class WindowTests(unittest.TestCase):
@@ -32,16 +33,46 @@ class WindowTests(unittest.TestCase):
         self.df['date'] = pd.to_datetime(self.df['date'])
         self.df.set_index('feature-id', inplace=True)
 
-    def test_group_by_window_k1(self):
+    def test_group_by_nonoverlapping_windows_k1(self):
         exp = [{'starting_timepoint': r['date'],
                 'feature-id': [idx]} for idx, r in self.df.iterrows()
                if not idx == 'c2']
         exp[2]['feature-id'].append('c2')
 
-        obs = _group_by_window(self.df, k=1)
+        obs = _group_by_nonoverlapping_windows(self.df, k=1)
         self.assertEqual(obs, exp)
 
-    def test_group_by_window_k2(self):
+    def test_group_by_nonoverlapping_windows_k2(self):
+        exp = [{'starting_timepoint': pd.to_datetime('2020-07-01'),
+                'feature-id': ['a', 'b']},
+               {'starting_timepoint': pd.to_datetime('2020-07-03'),
+                'feature-id': ['c', 'c2', 'd']},
+               {'starting_timepoint': pd.to_datetime('2020-07-07'),
+                'feature-id': ['e', 'f']},
+               {'starting_timepoint': pd.to_datetime('2020-07-09'),
+                'feature-id': ['g']},
+               {'starting_timepoint': pd.to_datetime('2020-07-19'),
+                'feature-id': ['h']},
+               {'starting_timepoint': pd.to_datetime('2020-07-29'),
+                'feature-id': ['i']},
+               {'starting_timepoint': pd.to_datetime('2020-07-31'),
+                'feature-id': ['j', 'k']},
+               {'starting_timepoint': pd.to_datetime('2020-08-02'),
+                'feature-id': ['l', 'm']}]
+
+        obs = _group_by_nonoverlapping_windows(self.df, k=2)
+        self.assertEqual(obs, exp)
+
+    def test_group_by_overlapping_window_k1(self):
+        exp = [{'starting_timepoint': r['date'],
+                'feature-id': [idx]} for idx, r in self.df.iterrows()
+               if not idx == 'c2']
+        exp[2]['feature-id'].append('c2')
+
+        obs = _group_by_overlapping_windows(self.df, k=1)
+        self.assertEqual(obs, exp)
+
+    def test_group_by_overlapping_window_k2(self):
         exp = [{'starting_timepoint': pd.to_datetime('2020-07-01'),
                 'feature-id': ['a', 'b']},
                {'starting_timepoint': pd.to_datetime('2020-07-02'),
@@ -58,7 +89,7 @@ class WindowTests(unittest.TestCase):
                 'feature-id': ['k', 'l']},
                {'starting_timepoint': pd.to_datetime('2020-08-02'),
                 'feature-id': ['l', 'm']}]
-        obs = _group_by_window(self.df, k=2, min_count=2)
+        obs = _group_by_overlapping_windows(self.df, k=2, min_count=2)
         self.assertEqual(obs, exp)
 
     def test_sliding_window_nostrain_k2(self):

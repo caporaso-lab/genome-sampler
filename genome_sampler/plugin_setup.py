@@ -466,6 +466,7 @@ plugin.methods.register_function(
                 'minimum_count': Int % Range(1, None),
                 'outer_grouping': Str,
                 'inner_grouping': Str,
+                'overlap': Bool,
                 'feature_grouping': Str},
     outputs=[('window_table', FeatureTable[PresenceAbsence]),
              ('window_metadata', SampleData[WindowMetadata])],
@@ -483,6 +484,10 @@ plugin.methods.register_function(
                             'inner_grouping': 'The column containing a more '
                                               'specific grouping (e.g., '
                                               'city).',
+                            'overlap': 'If specified, use sliding '
+                                       'overlapping windows. If not '
+                                       'successive non-overlapping '
+                                       'windows will be computed.',
                             'feature_grouping': 'The column containing a '
                                                 'feature grouping, such as '
                                                 'indicating what features are '

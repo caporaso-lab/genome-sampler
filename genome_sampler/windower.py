@@ -4,7 +4,26 @@ import pandas as pd
 import biom
 
 
-def _group_by_window(df, k, column='date', min_count=1):
+def _group_by_nonoverlapping_windows(df, k, column='date', min_count=1):
+    index_name = df.index.name
+    df = df.sort_values(column)
+    df = df[~df[column].isnull()]
+
+    if len(df) == 0:
+        raise ValueError("DataFrame appears empty")
+
+    offset = pd.offsets.Day(k)
+
+    windows = []
+    for starting_timepoint, timepoint_grp in df.resample(offset, on=column):
+        if len(timepoint_grp) >= min_count:
+            windows.append({'starting_timepoint': starting_timepoint,
+                            index_name: list(timepoint_grp.index)})
+
+    return windows
+
+
+def _group_by_overlapping_windows(df, k, column='date', min_count=1):
     # pd.rolling and pd.Grouper don't fully account for this use case as best
     # as I can tell. Specifically, the goal here is a sliding window, such that
     # the indices within each window can be obtained rather than aggregated.
@@ -83,6 +102,7 @@ def sliding_window(metadata: pd.DataFrame,
                    inner_grouping: str,
                    window_size: int,
                    minimum_count: int,
+                   overlap: bool = True,
                    feature_grouping: str = None) -> (biom.Table, pd.DataFrame):
     col_check = [dates, outer_grouping, inner_grouping]
     if feature_grouping is not None:
@@ -109,12 +129,17 @@ def sliding_window(metadata: pd.DataFrame,
     rcv = defaultdict(int)
     index_name = metadata.index.name
 
+    if overlap:
+        window_f = _group_by_overlapping_windows
+    else:
+        window_f = _group_by_nonoverlapping_windows
+
     # e.g. for each country
     for outer_name, outer_group in metadata.groupby(outer_grouping):
         # e.g. for each city
         for inner_name, inner_group in outer_group.groupby(inner_grouping):
-            for window in _group_by_window(inner_group, window_size, dates,
-                                           minimum_count):
+            for window in window_f(inner_group, window_size, dates,
+                                   minimum_count):
                 window_id = _make_id(outer_name, inner_name,
                                      window['starting_timepoint'])
 
