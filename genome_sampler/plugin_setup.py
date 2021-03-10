@@ -1,5 +1,4 @@
 import sys
-import os
 import tempfile
 import skbio
 import pandas as pd
@@ -153,7 +152,7 @@ def _read_gisaid_dna_fasta(path):
             if lines is not None:
                 yield from lines
 
-    # perform an initial clean-up pass through the file. if _cleanup_gen() 
+    # perform an initial clean-up pass through the file. if _cleanup_gen()
     # is passed directly to skbio.io.read, the file ends up being read into
     # memory, which is a problem for large files
     fh = tempfile.TemporaryFile(mode='w+')
