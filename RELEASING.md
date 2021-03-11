@@ -18,7 +18,6 @@
 4. Push the new commit and tag up to
    https://github.com/caporaso-lab/genome-sampler
 
-
 ## diff format of the changes above
 
     diff --git a/.github/workflows/main.yml b/.github/workflows/main.yml
@@ -115,3 +114,15 @@
      ```
 
      ## Usage instructions
+
+# Preparing a new development cycle
+
+This is similar to what we do in "official" QIIME 2 packages - create an empty
+commit with the version info, and tag it. This should be done one `master`.
+
+```bash
+git pull caporaso-lab master --tags
+git commit --allow-empty -m 'VER: 20XY.Z.0.dev0'
+git tag 20XY.Z.0.dev0
+git push caporaso-lab master --tags
+```
