@@ -147,7 +147,7 @@ jobs:
     # TODO: any way to cache and extract the miniconda
     # installation included in action-library-packaging?
     - name: setup miniconda
-      uses: goanpeca/setup-miniconda@v1
+      uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
         python-version: 3.6
