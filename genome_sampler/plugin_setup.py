@@ -112,7 +112,7 @@ def _3(fmt: IDSelectionDirFmt) -> IDSelection:
     return IDSelection(inclusion, md, label)
 
 
-def _read_gisaid_dna_fasta(path):
+def _read_gisaid_dna_fasta(path, temp_fh):
     def _cleanup_gen():
         with open(path) as input_f:
             lines = None
@@ -155,21 +155,21 @@ def _read_gisaid_dna_fasta(path):
     # perform an initial clean-up pass through the file. if _cleanup_gen()
     # is passed directly to skbio.io.read, the file ends up being read into
     # memory, which is a problem for large files
-    fh = tempfile.TemporaryFile(mode='w+')
-    fh.writelines(_cleanup_gen())
-    fh.seek(0)
-    result = skbio.io.read(fh, verify=False,
+    temp_fh.writelines(_cleanup_gen())
+    temp_fh.seek(0)
+    result = skbio.io.read(temp_fh, verify=False,
                            format='fasta', constructor=skbio.DNA)
     return result
 
 
 @plugin.register_transformer
 def _4(fmt: GISAIDDNAFASTAFormat) -> DNASequencesDirectoryFormat:
-    data = _read_gisaid_dna_fasta(str(fmt))
     df = DNASequencesDirectoryFormat()
     ff = DNAFASTAFormat()
 
-    with ff.open() as file:
+    with ff.open() as file, \
+         tempfile.TemporaryFile(mode='w+') as temp_fh:
+        data = _read_gisaid_dna_fasta(str(fmt), temp_fh)
         skbio.io.write(data, format='fasta', into=file)
 
     df.file.write_data(ff, DNAFASTAFormat)
