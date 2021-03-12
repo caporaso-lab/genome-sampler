@@ -41,7 +41,9 @@ class CondaMeta:
     def iter_primary_deps(self, package):
         for dep in self[package]['depends']:
             dep = dep.split(' ')[0]
-            if dep in ('__cuda', '__osx', '__glibc', '__glibc', '__win'):
+            # We don't need no virtual packages
+            # https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-virtual.html
+            if dep in ('__cuda', '__osx', '__glibc', '__unix', '__win'):
                 continue
             else:
                 yield dep
