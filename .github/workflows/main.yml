@@ -95,6 +95,10 @@ jobs:
             genome-sampler snakemake
 
       - name: strip env
+        env:
+          CONDA_OVERRIDE_CUDA: ""
+          CONDA_OVERRIDE_OSX: ""
+          CONDA_OVERRIDE_GLIBC: ""
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
           conda activate ./genome-sampler-env
