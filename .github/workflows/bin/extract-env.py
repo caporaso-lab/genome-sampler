@@ -98,6 +98,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    print(args.packages)
     env = main(args.packages)
 
     if args.environment_file is not None:
