@@ -39,7 +39,12 @@ class CondaMeta:
         return self._cache[package]
 
     def iter_primary_deps(self, package):
-        yield from (dep.split(' ')[0] for dep in self[package]['depends'])
+        for dep in self[package]['depends']:
+            dep = dep.split(' ')[0]
+            if dep in ('__cuda', '__osx', '__glibc', '__glibc', '__win'):
+                continue
+            else:
+                yield from dep
 
     def iter_deps(self, package, *, include_self=True, _seen=None):
         if _seen is None:
@@ -82,7 +87,6 @@ def main(packages):
     env = {}
     for package in packages:
         for d in meta.iter_deps(package, include_self=True):
-            print('d:', d)
             env[d] = meta.get_version(d)
 
     return env
