@@ -44,7 +44,7 @@ class CondaMeta:
             if dep in ('__cuda', '__osx', '__glibc', '__glibc', '__win'):
                 continue
             else:
-                yield from dep
+                yield dep
 
     def iter_deps(self, package, *, include_self=True, _seen=None):
         if _seen is None:
