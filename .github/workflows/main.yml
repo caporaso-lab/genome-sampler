@@ -71,8 +71,8 @@ jobs:
       - name: set host helper env var
         run: |
           case "${{ matrix.os }}" in
-            'ubuntu-latest') echo '::set-env name=QIIME2_PLATFORM::linux' ;;
-            'macos-latest') echo '::set-env name=QIIME2_PLATFORM::osx' ;;
+            'ubuntu-latest') echo 'QIIME2_PLATFORM=linux' >> $GITHUB_ENV ;;
+            'macos-latest') echo 'QIIME2_PLATFORM=osx' >> $GITHUB_ENV ;;
           esac
 
       - name: install QIIME 2 core distro
