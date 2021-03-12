@@ -33,7 +33,8 @@ class CondaMeta:
                 with open(self.meta_lookup[package]) as fh:
                     self._cache[package] = json.load(fh)
             except KeyError:
-                raise Exception("Package %r not found in current environment.")
+                raise Exception(
+                    "Package %r not found in current environment." % package)
 
         return self._cache[package]
 
@@ -81,6 +82,7 @@ def main(packages):
     env = {}
     for package in packages:
         for d in meta.iter_deps(package, include_self=True):
+            print('d:', d)
             env[d] = meta.get_version(d)
 
     return env
@@ -98,7 +100,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print(args.packages)
     env = main(args.packages)
 
     if args.environment_file is not None:
