@@ -33,12 +33,19 @@ class CondaMeta:
                 with open(self.meta_lookup[package]) as fh:
                     self._cache[package] = json.load(fh)
             except KeyError:
-                raise Exception("Package %r not found in current environment.")
+                raise Exception(
+                    "Package %r not found in current environment." % package)
 
         return self._cache[package]
 
     def iter_primary_deps(self, package):
-        yield from (dep.split(' ')[0] for dep in self[package]['depends'])
+        for dep in self[package]['depends']:
+            dep = dep.split(' ')[0]
+            # https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-virtual.html
+            if dep in ('__cuda', '__osx', '__glibc', '__unix', '__win'):
+                continue
+            else:
+                yield dep
 
     def iter_deps(self, package, *, include_self=True, _seen=None):
         if _seen is None:
