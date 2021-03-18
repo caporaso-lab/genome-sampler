@@ -70,7 +70,7 @@ def write_env_file(env, fh):
 
     channels = {
         'channels': [
-            'https://packages.qiime2.org/qiime2/unverified/',
+            'https://packages.qiime2.org/qiime2/latest/tested/',
             'qiime2/label/r%s' % qiime2.__release__,
             'conda-forge',
             'bioconda',
