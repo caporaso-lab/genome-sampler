@@ -63,7 +63,7 @@ dependencies:
 - ftputil=5.0.0
 - future=0.18.2
 - gdk-pixbuf=2.42.2
-- genome-sampler=2021.4.0.dev0+7.gb11a9a0
+- genome-sampler=2021.4.0.dev0+9.gdca6c7d
 - gettext=0.19.8.1
 - giflib=5.2.1
 - google-api-core=1.25.1
