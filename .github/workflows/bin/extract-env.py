@@ -71,6 +71,7 @@ def write_env_file(env, fh):
     channels = {
         'channels': [
             'https://packages.qiime2.org/qiime2/latest/tested/',
+            'https://packages.qiime2.org/qiime2/latest/staged/',
             'qiime2/label/r%s' % qiime2.__release__,
             'conda-forge',
             'bioconda',

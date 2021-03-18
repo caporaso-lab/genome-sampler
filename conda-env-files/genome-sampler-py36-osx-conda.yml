@@ -1,5 +1,6 @@
 channels:
 - https://packages.qiime2.org/qiime2/latest/tested/
+- https://packages.qiime2.org/qiime2/latest/staged/
 - qiime2/label/r2021.4
 - conda-forge
 - bioconda
