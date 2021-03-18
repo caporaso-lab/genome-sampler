@@ -85,7 +85,7 @@ jobs:
         run: |
           source "$CONDA/etc/profile.d/conda.sh"
           sudo conda install -p ./genome-sampler-env -q \
-            -c https://packages.qiime2.org/qiime2/2021.4/tested/ \
+            -c https://packages.qiime2.org/qiime2/latest/tested/ \
             -c conda-forge \
             -c bioconda \
             -c defaults \
