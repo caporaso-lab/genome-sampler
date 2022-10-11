@@ -3,8 +3,9 @@ import numpy as np
 
 import qiime2
 from q2_types.feature_data import DNAFASTAFormat
+from q2_types._format import IDSelection
 
-from genome_sampler.common import IDSelection, ids_from_fasta
+from genome_sampler.common import ids_from_fasta
 
 
 def _sample_group(samples_per_interval, seed):

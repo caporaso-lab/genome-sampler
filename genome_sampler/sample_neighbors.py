@@ -6,8 +6,9 @@ import numpy as np
 import qiime2
 from qiime2.metadata import CategoricalMetadataColumn
 from q2_types.feature_data import DNAFASTAFormat
+from q2_types._format import IDSelection
 
-from genome_sampler.common import IDSelection, run_command, ids_from_fasta
+from genome_sampler.common import run_command, ids_from_fasta
 
 
 def _clusters_from_vsearch_out(vsearch_out, locale):

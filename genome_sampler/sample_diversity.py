@@ -4,8 +4,9 @@ import pandas as pd
 
 import qiime2
 from q2_types.feature_data import DNAFASTAFormat
+from q2_types._format import IDSelection
 
-from genome_sampler.common import IDSelection, run_command, ids_from_fasta
+from genome_sampler.common import run_command, ids_from_fasta
 
 
 # According to the vsearch 2.14.2 documentation, percent_id is defined as:

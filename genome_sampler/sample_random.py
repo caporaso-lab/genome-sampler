@@ -1,7 +1,7 @@
 import pandas as pd
 import qiime2
 
-from genome_sampler.common import IDSelection
+from q2_types._format import IDSelection
 
 
 def sample_random(ids: qiime2.Metadata, n: int, seed: int = None) \
