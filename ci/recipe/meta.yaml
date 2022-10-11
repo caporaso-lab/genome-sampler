@@ -30,7 +30,6 @@ test:
   imports:
     - genome_sampler
     - qiime2.plugins.genome_sampler
-    - qiime2.plugins.q2_types
 
 about:
   home: https://github.com/caporaso-lab/genome-sampler
