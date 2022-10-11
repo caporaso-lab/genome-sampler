@@ -3,7 +3,6 @@ import tempfile
 import skbio
 import pandas as pd
 
-import qiime2
 from qiime2.plugin import (
     Plugin,
     Metadata,
@@ -27,13 +26,10 @@ from q2_types.feature_data import (
     AlignedSequence,
 )
 
+from q2_types._type import Selection
+
 import genome_sampler
 from genome_sampler.common import (
-    IDSelectionDirFmt,
-    IDSelection,
-    Selection,
-    IDMetadataFormat,
-    UNIXListFormat,
     GISAIDDNAFASTAFormat,
     VCFMaskFormat,
     VCFMaskDirFmt,
@@ -61,55 +57,12 @@ plugin = Plugin(
     citations=[citations['genomesampler']]
 )
 
-plugin.register_formats(IDSelectionDirFmt)
 plugin.register_formats(GISAIDDNAFASTAFormat)
 plugin.register_formats(VCFMaskFormat)
 plugin.register_formats(VCFMaskDirFmt)
-plugin.register_semantic_types(Selection)
 plugin.register_semantic_types(AlignmentMask)
-plugin.register_semantic_type_to_format(FeatureData[Selection],
-                                        artifact_format=IDSelectionDirFmt)
 plugin.register_semantic_type_to_format(AlignmentMask,
                                         artifact_format=VCFMaskDirFmt)
-
-
-@plugin.register_transformer
-def _1(obj: IDSelection) -> IDSelectionDirFmt:
-    result = IDSelectionDirFmt()
-
-    inclusion = obj.inclusion
-    assert not inclusion.index.has_duplicates
-
-    include = inclusion.index[inclusion]
-    exclude = inclusion.index[~inclusion]
-    with open(result.included.path_maker(), 'w') as fh:
-        fh.write('\n'.join(include))
-    with open(result.excluded.path_maker(), 'w') as fh:
-        fh.write('\n'.join(exclude))
-
-    obj.metadata.save(result.metadata.path_maker())
-
-    with open(result.label.path_maker(), 'w') as fh:
-        fh.write(obj.label)
-
-    return result
-
-
-@plugin.register_transformer
-def _2(fmt: IDSelectionDirFmt) -> qiime2.Metadata:
-    md = fmt.metadata.view(IDMetadataFormat).to_metadata()
-    return md.filter_ids(fmt.included.view(UNIXListFormat).to_list())
-
-
-@plugin.register_transformer
-def _3(fmt: IDSelectionDirFmt) -> IDSelection:
-    md = fmt.metadata.view(IDMetadataFormat).to_metadata()
-    inclusion = pd.Series(False, index=md.to_dataframe().index)
-    included = fmt.included.view(UNIXListFormat).to_list()
-    inclusion[included] = True
-    with fmt.label.view(UNIXListFormat).open() as fh:
-        label = fh.read().strip()
-    return IDSelection(inclusion, md, label)
 
 
 def _read_gisaid_dna_fasta(path, temp_fh):

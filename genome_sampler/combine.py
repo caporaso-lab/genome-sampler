@@ -2,7 +2,7 @@ import operator
 
 import qiime2
 
-from genome_sampler.common import IDSelection
+from q2_types._format import IDSelection
 
 
 def _combine_df_error_if_not_equal(a, b):

@@ -5,7 +5,7 @@ import pandas as pd
 import q2templates
 
 
-from genome_sampler.common import IDSelection
+from q2_types._format import IDSelection
 
 SUMMARY_TEMPLATE = pkg_resources.resource_filename(
     'genome_sampler', 'assets/summarize/index.html')

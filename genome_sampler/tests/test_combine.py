@@ -4,9 +4,9 @@ import numpy as np
 
 import qiime2
 from qiime2.plugin.testing import TestPluginBase
+from q2_types._format import IDSelection
 
 from genome_sampler.combine import combine_selections
-from genome_sampler.common import IDSelection
 
 
 class TestCombineSelections(TestPluginBase):
