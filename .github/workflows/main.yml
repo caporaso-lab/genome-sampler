@@ -115,7 +115,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: fetch envs
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           path: tmp-envs-dir
 
@@ -183,7 +183,7 @@ jobs:
     if: github.ref == 'refs/heads/some-release-branch'
     steps:
     - name: fetch built docs
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4.1.7
       with:
         name: docs
         path: built-docs
