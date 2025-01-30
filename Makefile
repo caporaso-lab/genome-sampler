@@ -14,7 +14,7 @@ test-cov: all
 	py.test --cov=genome_sampler
 
 install: all
-	$(PYTHON) setup.py install
+	$(PYTHON) -m pip install -v .
 
 dev: all
 	pip install -e .
