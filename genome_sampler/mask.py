@@ -33,7 +33,7 @@ def _rle(inarray):
         i = np.append(np.where(y), n - 1)    # must include last element posi
         z = np.diff(np.append(-1, i))        # run lengths
         p = np.cumsum(np.append(0, z))[:-1]  # positions
-        return(z, p, ia[i])
+        return (z, p, ia[i])
 
 
 def _find_terminal_gaps(aligned_seq):
