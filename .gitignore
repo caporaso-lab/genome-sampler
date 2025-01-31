@@ -243,3 +243,6 @@ tags
 
 # Snakemake
 .snakemake/
+
+# Version file from versioningit
+_version.py
