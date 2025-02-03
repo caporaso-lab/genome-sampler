@@ -29,6 +29,8 @@ test:
   imports:
     - genome_sampler
     - qiime2.plugins.genome_sampler
+  commands:
+    - py.test --pyargs genome_sampler
 about:
   home: https://github.com/caporaso-lab/genome-sampler
   license: BSD-3-Clause
