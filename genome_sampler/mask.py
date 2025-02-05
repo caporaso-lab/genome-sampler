@@ -1,3 +1,11 @@
+# ----------------------------------------------------------------------------
+# Copyright (c) 2020-2024, Greg Caporaso.
+#
+# Distributed under the terms of the Modified BSD License.
+#
+# The full license is in the file LICENSE, distributed with this software.
+# ----------------------------------------------------------------------------
+
 import skbio
 import pandas as pd
 import numpy as np
@@ -33,7 +41,7 @@ def _rle(inarray):
         i = np.append(np.where(y), n - 1)    # must include last element posi
         z = np.diff(np.append(-1, i))        # run lengths
         p = np.cumsum(np.append(0, z))[:-1]  # positions
-        return(z, p, ia[i])
+        return (z, p, ia[i])
 
 
 def _find_terminal_gaps(aligned_seq):
