@@ -91,7 +91,7 @@ def _sample_clusters(clusters, samples_per_cluster, seed):
         sampled_cluster = _sample_cluster(
                 cluster, samples_per_cluster, random_state)
         result += sampled_cluster
-    return set(result)
+    return list(result)
 
 
 # According to the vsearch 2.14.2 documentation, percent_id is defined as:
