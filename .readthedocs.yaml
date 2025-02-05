@@ -4,17 +4,20 @@
 # Required
 version: 2
 
-conda:
-  environment: environment-files/readthedocs.yaml
-
 # Set the OS, Python version, and other tools you might need
 build:
   os: ubuntu-24.04
   tools:
-    python: "mambaforge-22.9"
+    python: "mambaforge-latest"
   jobs:
+    create_environment:
+      - conda env create -p .envs/ --file environment-files/readthedocs.yml
+      - ls .envs/bin/
     build:
       html:
-        - make html
+        - PATH=$(pwd)/.envs/bin/:$PATH make html
         - mkdir -p $READTHEDOCS_OUTPUT
         - cp -a docs/_build/* $READTHEDOCS_OUTPUT/
+
+conda:
+  environment: environment-files/readthedocs.yml

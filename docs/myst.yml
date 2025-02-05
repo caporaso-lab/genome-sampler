@@ -49,3 +49,4 @@ site:
   options:
     folders: true
     logo: images/dwq2-light.png
+    pretty_urls: false
