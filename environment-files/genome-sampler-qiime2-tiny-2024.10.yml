@@ -8,4 +8,4 @@ dependencies:
   - vsearch
   - pip
   - pip:
-    - genome-sampler@git+https://github.com/caporaso-lab/genome-sampler.git@master
+    - genome-sampler@git+https://github.com/caporaso-lab/genome-sampler.git@dev
