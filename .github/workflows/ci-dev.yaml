@@ -2,9 +2,9 @@
 name: ci-dev
 on:
   pull_request:
-    branches: ["master"]
+    branches: ["dev"]
   push:
-    branches: ["master"]
+    branches: ["dev"]
 jobs:
   ci:
     uses: qiime2/distributions/.github/workflows/lib-ci-dev.yaml@dev
