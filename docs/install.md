@@ -1,43 +1,25 @@
 (install)=
-# `genome-sampler` installation instructions
+# Installation
 
-This document provides instructions for installing genome-sampler.
+This document provides instructions for installing `genome-sampler`.
 
 ## Installation instructions
 
 ### Install Miniconda
-[Miniconda](https://conda.io/miniconda.html) provides the conda environment
-and package manager, and is the recommended way to install `genome-sampler`.
-Follow the instructions for downloading and installing Miniconda. You may
-choose either Miniconda2 or Miniconda3 (i.e. Miniconda Python 2 or 3).
-`genome-sampler` will work with either version of Miniconda.
+[Miniconda](https://conda.io/miniconda.html) provides the conda environment and package manager, and is currently the only supported way to install `genome-sampler`.
+Follow the instructions for downloading and installing Miniconda 3.
 
-### Install `wget`
+### Follow the installation instructions on the QIIME 2 Library
 
-```bash
-conda install wget
-```
-
-### Create a conda environment for `genome-sampler`
-
-For linux installation environments, please run:
-
-```bash
-wget https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/conda-env-files/genome-sampler-py36-linux-conda.yml
-conda env create -n genome-sampler-2020.8 --file genome-sampler-py36-linux-conda.yml
-rm genome-sampler-py36-linux-conda.yml
-```
-
-For macOS installation environments, please run:
-
-```bash
-wget https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/conda-env-files/genome-sampler-py36-osx-conda.yml
-conda env create -n genome-sampler-2020.8 --file genome-sampler-py36-osx-conda.yml
-rm genome-sampler-py36-osx-conda.yml
-```
+Refer to the [`genome-sampler` installation instructions](https://library.qiime2.org/plugin/caporaso-lab/genome-sampler) on the QIIME 2 Library.
+We recommend naming your environment `genome-sampler` (by specifying `--name genome-sampler`) in the `conda env create` command.
 
 ### Activate the `genome-sampler` conda environment
 
 ```bash
-conda activate genome-sampler-2020.8
+conda activate genome-sampler
+```
+
+```{note}
+If you used a different environment name when creating your conda environment, you'll need to specify that environment name here instead of `genome-sampler`.
 ```

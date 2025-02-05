@@ -7,7 +7,7 @@
 `genome-sampler` can be used for sampling focal sequences in addition to
 context sequences. In fact, all of the exact same sampling approaches can
 be applied in exactly the same way. The only additional file you'll need to do
-this (relative to the files used in {ref}`usage-tutorial`) is a focal sequence
+this (relative to the files used in [](#usage-tutorial)) is a focal sequence
 metadata file. This can mirror the format of the context sequence metadata
 file. For more details on the format of these files, see
 [Metadata in QIIME 2](https://docs.qiime2.org/2020.6/tutorials/metadata/).
@@ -76,7 +76,7 @@ analysis.
 
 We provide support for masking alignments with the pre-computed mask
 provided [here](https://github.com/W-L/ProblematicSites_SARS-CoV2). Like the
-rest of our {ref}`alignment and phylogenetics workflow <downstream>`,
+rest of our [downstream](#alignment and phylogenetics workflow),
 this is experimental. Let us know how it works for you. It would be very useful
 to hear about how your final results (e.g., a phylogenetic tree) computed
 using this mask compares to one created with your own custom mask.
@@ -106,9 +106,9 @@ qiime feature-table tabulate-seqs \
 Then, load the two visualizations with [QIIME 2 View](https://view.qiime2.org).
 The values in the _Feature ID_ column are the sequence ids. If the ids of the
 sequences that you want to remove are the same across your two data sets, you
-can follow the steps under {ref}`shared-identifiers`. If the identifiers you
+can follow the steps under [](#shared-identifiers). If the identifiers you
 want to remove are not the same across your two data sets, or you're not sure,
-follow the steps under {ref}`differing-identifiers`.
+follow the steps under [](#differing-identifiers).
 
 (shared-identifiers)=
 ### Shared identifiers
@@ -176,6 +176,6 @@ sequences you want to remove from the sequences you want to retain, it's not
 necessary to add a new column. Instead, you can design a value for the
 ``--p-where`` parameter that will allow the filter to operate on data from
 that column. For more information on metadata-based filtering, see
-[Metadata-based filtering](https://docs.qiime2.org/2020.8/tutorials/filtering/#metadata-based-filtering)
+[Metadata-based filtering](https://docs.qiime2.org/2024.10/tutorials/filtering/#metadata-based-filtering)
 in the QIIME 2 documentation.
 ```
