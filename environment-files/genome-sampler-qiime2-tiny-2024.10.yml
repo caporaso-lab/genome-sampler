@@ -4,6 +4,8 @@ channels:
 - bioconda
 dependencies:
   - qiime2-tiny
+  - pyvcf
+  - vsearch
   - pip
   - pip:
     - genome-sampler@git+https://github.com/caporaso-lab/genome-sampler.git@master
