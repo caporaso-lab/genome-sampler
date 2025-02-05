@@ -246,3 +246,9 @@ tags
 
 # Version file from versioningit
 _version.py
+
+# MyST and q2doc
+_build/
+.locks/
+docs/Plugin-Reference/
+docs/q2doc.bib

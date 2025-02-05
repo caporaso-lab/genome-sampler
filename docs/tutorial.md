@@ -1,5 +1,5 @@
 (usage-tutorial)=
-# `genome-sampler` usage tutorial
+# Tutorial
 
 This document provides illustrates how to use `genome-sampler` on a small
 tutorial data set.
@@ -15,17 +15,17 @@ commands:
 
 ```
 mkdir -p tutorial-data
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/focal-seqs.fasta --output tutorial-data/focal-seqs.fasta
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/context-seqs.fasta --output tutorial-data/context-seqs.fasta
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/focal-metadata.tsv --output tutorial-data/focal-metadata.tsv
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/tutorial-data/context-metadata.tsv --output tutorial-data/context-metadata.tsv
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/focal-seqs.fasta --output tutorial-data/focal-seqs.fasta
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/context-seqs.fasta --output tutorial-data/context-seqs.fasta
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/focal-metadata.tsv --output tutorial-data/focal-metadata.tsv
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/context-metadata.tsv --output tutorial-data/context-metadata.tsv
 ```
 
 ## Using `genome-sampler` (Snakemake workflow)
 
 The full `genome-sampler` workflow can be run using
 [Snakemake](https://snakemake.readthedocs.io/en/stable/)
-{cite}`snakemake-bioi`. If you'd like to get started quickly and use default
+[snakemake-bioi]. If you'd like to get started quickly and use default
 parameters, start here.
 If you'd like more control over your analysis or want to work through the steps
 individually, move on to the next section.
@@ -33,8 +33,8 @@ individually, move on to the next section.
 Download the Snakemake and associated config file using `curl` as follows:
 
 ```
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/Snakefile --output Snakefile
-curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/master/snakemake/config.yaml --output config.yaml
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/Snakefile --output Snakefile
+curl -sL https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/config.yaml --output config.yaml
 ```
 
 Place the resulting Snakemake file in the same folder as the sequence and
@@ -63,7 +63,7 @@ your findings).
 ```
 
 You should now be able to move on to analysis of your own data. See
-{ref}`adapting-tutorial` to learn about what changes you might want to make
+[](#adapting-tutorial) to learn about what changes you might want to make
 to your `Snakefile` before running your own analysis.
 
 🐍
@@ -164,7 +164,7 @@ conerned about exposing sensitive research data.)
 If some of your focal sequences are present in your context sequence
 collection (for example because you submitted your sequences to GISAID before
 downloading GISAID), you should remove those sequences from either your focal
-or context sequence collection. See {ref}`removing-sequences` for instructions
+or context sequence collection. See [](#removing-sequences) for instructions
 on how to do that.
 ```
 
@@ -271,4 +271,4 @@ These steps would take the `sequences.qza` file as input, so if you're
 interested in using these you could postpone or skip the export step that you
 ran above.
 
-If you'd like to learn more about this, refer to {ref}`downstream`.
+If you'd like to learn more about this, refer to [](#downstream).

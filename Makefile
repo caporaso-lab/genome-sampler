@@ -22,3 +22,16 @@ dev: all
 clean: distclean
 
 distclean: ;
+
+html:
+	cd docs/
+	q2doc autodoc .
+	-jupyter book build --html
+	# cp -r data/ _build/html/data/
+	cd ..
+
+serve:
+	npx serve docs/_build/html/ -p 4000
+
+clean:
+	rm -rf docs/_build/html/

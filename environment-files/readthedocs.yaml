@@ -1,0 +1,13 @@
+channels:
+- https://packages.qiime2.org/qiime2/2024.10/tiny/released
+- conda-forge
+- bioconda
+dependencies:
+  - qiime2-tiny
+  - pyvcf
+  - vsearch
+  - pip
+  - pip:
+    - genome-sampler@git+https://github.com/caporaso-lab/genome-sampler.git@dev
+    - q2doc@git+https://github.com/qiime2/q2doc@dev
+    - jupyter-book==2.0.0a0

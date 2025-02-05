@@ -1,0 +1,51 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: genome-sampler-docs
+  title: genome-sampler documentation
+  # description:
+  # keywords: []
+  # authors: ["Caporaso Lab"]
+  github: https://github.com/caporaso-lab/genome-sampler
+  references:
+    qiime2: https://develop.qiime2.org/en/latest/
+
+  plugins:
+    - type: executable
+      path: q2doc-plug.py
+
+  bibliography:
+    - q2doc.bib
+    - references.bib
+
+  toc:
+    - file: intro.md
+    - file: install.md
+    - file: tutorial.md
+    - file: downstream-workflows.md
+    - file: other.md
+    - title: Plugin Reference
+      children:
+        - file: Plugin-Reference/plugins/genome-sampler/index.md
+        - title: Plugin actions
+          children:
+            - file: Plugin-Reference/plugins/genome-sampler/0-sample-random.md
+            - file: Plugin-Reference/plugins/genome-sampler/1-sample-longitudinal.md
+            - file: Plugin-Reference/plugins/genome-sampler/2-sample-neighbors.md
+            - file: Plugin-Reference/plugins/genome-sampler/3-sample-diversity.md
+            - file: Plugin-Reference/plugins/genome-sampler/4-filter-seqs.md
+            - file: Plugin-Reference/plugins/genome-sampler/5-combine-selections.md
+            - file: Plugin-Reference/plugins/genome-sampler/6-mask.md
+            - file: Plugin-Reference/plugins/genome-sampler/7-label-seqs.md
+            - file: >-
+                Plugin-Reference/plugins/genome-sampler/8-summarize-selections.md
+        - title: Artifacts classes and formats
+          children:
+            - file: Plugin-Reference/artifacts/classes.md
+            - file: Plugin-Reference/artifacts/formats.md
+
+site:
+  template: https://github.com/ebolyen/myst-book-theme-poc.git
+  options:
+    folders: true
+    logo: images/dwq2-light.png
