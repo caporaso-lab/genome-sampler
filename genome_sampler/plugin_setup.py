@@ -61,7 +61,7 @@ citations = Citations.load('citations.bib', package='genome_sampler')
 
 plugin = Plugin(
     name='genome-sampler',
-    website='https://caporasolab.us/genome-sampler',
+    website='https://genome-sampler.readthedocs.io',
     package='genome_sampler',
     version=genome_sampler.__version__,
     description='Tools for sampling from collections of genomes.',

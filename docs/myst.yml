@@ -22,6 +22,7 @@ project:
     - file: intro.md
     - file: install.md
     - file: tutorial.md
+    - file: tutorial-snakemake.md
     - file: downstream-workflows.md
     - file: other.md
     - title: Plugin Reference

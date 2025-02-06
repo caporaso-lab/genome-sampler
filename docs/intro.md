@@ -13,7 +13,7 @@ Reach out on the [issue tracker](https://github.com/caporaso-lab/genome-sampler/
 ## Getting started with `genome-sampler`
 Installation instructions for `genome-sampler` are available in our [](#install).
 
-To learn how to use `genome-sampler` you can work through our [](#usage-tutorial) after installing.
+To learn how to use `genome-sampler` you can work through our [](#usage-tutorial) after installing or refer to the [Plugin Overview](plugin-reference/plugins/genome-sampler).
 
 (help)=
 ## Getting help

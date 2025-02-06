@@ -252,3 +252,4 @@ _build/
 .locks/
 docs/Plugin-Reference/
 docs/q2doc.bib
+docs/data/
