@@ -26,6 +26,7 @@ distclean: ;
 html:
 	cd docs && q2doc autodoc .
 	cd docs && jupyter book build --html
+	cp -r docs/data/ docs/_build/html/data/
 
 serve:
 	npx serve docs/_build/html/ -p 4000
