@@ -95,7 +95,7 @@ def _1(obj: IDSelection) -> IDSelectionDirFmt:
     with open(result.excluded.path_maker(), 'w') as fh:
         fh.write('\n'.join(exclude))
 
-    obj.metadata.save(result.metadata.path_maker())
+    obj.metadata.save(str(result.metadata.path_maker()))
 
     with open(result.label.path_maker(), 'w') as fh:
         fh.write(obj.label)
