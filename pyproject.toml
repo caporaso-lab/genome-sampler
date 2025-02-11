@@ -1,7 +1,8 @@
 [project]
 name = "genome-sampler"
 authors = [
-    { name = "Evan Bolyen", email = "ebolyen@gmail.com" }
+    { name = "Evan Bolyen", email = "evan.bolyen@nau.edu" },
+    { name = "Greg Caporaso", email = "greg.caporaso@nau.edu" }
 ]
 description = "None"
 readme = {file = "README.md", content-type = "text/markdown"}
@@ -9,7 +10,7 @@ license = {file = "LICENSE"}
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/caporaso-lab/genome-sampler"
+Homepage = "https://genome-sampler.readthedocs.io"
 Repository = "https://github.com/caporaso-lab/genome-sampler"
 
 [project.entry-points.'qiime2.plugins']
