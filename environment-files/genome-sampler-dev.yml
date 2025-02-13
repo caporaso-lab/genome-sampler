@@ -13,9 +13,4 @@ dependencies:
   - q2templates
   - pyvcf
   - vsearch
-  - nodejs
   - pip
-  - pip:
-    - genome-sampler@git+https://github.com/caporaso-lab/genome-sampler.git@dev
-    - q2doc@git+https://github.com/qiime2/q2doc@dev
-    - jupyter-book==2.0.0a0

@@ -11,11 +11,14 @@ build:
     python: "mambaforge-latest"
   jobs:
     create_environment:
-      - conda env create -p .envs/ --file environment-files/readthedocs.yml
-      - ls .envs/bin/
+      - conda env create -p .env/ --file environment-files/genome-sampler-dev.yml
+      - conda install -p .env/ -c conda-forge nodejs
+      - conda run -p .env/ pip install 'q2doc@git+https://github.com/qiime2/q2doc@dev'
+      - conda run -p .env/ pip install 'jupyter-book==2.0.0a1'
+      - conda run -p .env/ pip install .
     build:
       html:
-        - PATH=$(pwd)/.envs/bin/:$PATH make html
+        - PATH=$(pwd)/.env/bin/:$PATH make html
         - mkdir -p $READTHEDOCS_OUTPUT
         - cp -a docs/_build/* $READTHEDOCS_OUTPUT/
 
