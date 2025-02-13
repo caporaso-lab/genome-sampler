@@ -14,3 +14,5 @@ dependencies:
   - pyvcf
   - vsearch
   - pip
+  - pip:
+    - genome-sampler@git+https://github.com/caporaso-lab/genome-sampler.git@2025.02.0
