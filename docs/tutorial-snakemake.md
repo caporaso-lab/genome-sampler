@@ -1,11 +1,6 @@
 (usage-tutorial-snakemake)=
 # Snakemake tutorial
 
-```{note}
-The Snakemake workflow may need to be updated for the most recent versions of QIIME 2 - we haven't done that yet as part of the February 2025 updates.
-Reach out on the [issue tracker](https://github.com/caporaso-lab/genome-sampler/issues) if you notice any issues.
-```
-
 This document illustrates how to use `genome-sampler` on a small tutorial data set using Snakemake.
 This makes genome-sampler very straight-forward to run, but more challenging to customize to your needs relative to using it in a step-by-step manner as illustrated in [](usage-tutorial).
 
@@ -15,51 +10,19 @@ If you're interested in using these sequences for other analyses, we recommend s
 
 Download the tutorial sequences and corresponding metadata using the following commands:
 
-```{describe-usage}
-:scope: tutorial-snakemake
-
-context_metadata = use.init_metadata_from_url(
-   'context-metadata',
-   'https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/context-metadata.tsv')
-
-focal_metadata = use.init_metadata_from_url(
-   'focal-metadata',
-   'https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/focal-metadata.tsv')
 ```
+mkdir tutorial-data/
 
-```{describe-usage}
-def fasta_factory(url):
-    import urllib.request
-    import tempfile
-    from io import TextIOWrapper
-
-    from genome_sampler.common import GISAIDDNAFASTAFormat
-    from qiime2.plugin.util import transform
-
-    data = urllib.request.urlopen(url)
-    ff = GISAIDDNAFASTAFormat()
-    with ff.open() as fh:
-      fh.write(TextIOWrapper(data).read())
-    return ff
-
-def context_fasta_factory():
-    url = 'https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/context-seqs.fasta'
-    return fasta_factory(url)
-
-context_seqs_raw = use.init_format('context-seqs-raw', context_fasta_factory, ext='fasta')
-
-def focal_fasta_factory():
-    url = 'https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/focal-seqs.fasta'
-    return fasta_factory(url)
-
-focal_seqs_raw = use.init_format('focal-seqs-raw', focal_fasta_factory, ext='fasta')
+wget -O tutorial-data/context-metadata.tsv https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/context-metadata.tsv
+wget -O tutorial-data/focal-metadata.tsv https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/focal-metadata.tsv
+wget -O tutorial-data/context-seqs.fasta https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/context-seqs.fasta
+wget -O tutorial-data/focal-seqs.fasta https://raw.githubusercontent.com/caporaso-lab/genome-sampler/r2020.8/snakemake/tutorial-data/focal-seqs.fasta
 ```
 
 ## Using `genome-sampler` (Snakemake workflow)
 
 The full `genome-sampler` workflow can be run using [Snakemake](https://snakemake.readthedocs.io/en/stable/) [@snakemake-bioi].
-If you'd like to get started quickly and use default parameters, start here.
-If you'd like more control over your analysis or want to work through the steps individually, move on to the next section.
+Begin by [installing Snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
 
 Download the Snakemake and associated config file using `curl` as follows:
 
