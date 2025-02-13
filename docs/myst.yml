@@ -27,23 +27,23 @@ project:
     - file: other.md
     - title: Plugin Reference
       children:
-        - file: Plugin-Reference/plugins/genome-sampler/index.md
+        - file: plugin-reference/plugins/genome-sampler/index.md
         - title: Plugin actions
           children:
-            - file: Plugin-Reference/plugins/genome-sampler/0-sample-random.md
-            - file: Plugin-Reference/plugins/genome-sampler/1-sample-longitudinal.md
-            - file: Plugin-Reference/plugins/genome-sampler/2-sample-neighbors.md
-            - file: Plugin-Reference/plugins/genome-sampler/3-sample-diversity.md
-            - file: Plugin-Reference/plugins/genome-sampler/4-filter-seqs.md
-            - file: Plugin-Reference/plugins/genome-sampler/5-combine-selections.md
-            - file: Plugin-Reference/plugins/genome-sampler/6-mask.md
-            - file: Plugin-Reference/plugins/genome-sampler/7-label-seqs.md
+            - file: plugin-reference/plugins/genome-sampler/0-sample-random.md
+            - file: plugin-reference/plugins/genome-sampler/1-sample-longitudinal.md
+            - file: plugin-reference/plugins/genome-sampler/2-sample-neighbors.md
+            - file: plugin-reference/plugins/genome-sampler/3-sample-diversity.md
+            - file: plugin-reference/plugins/genome-sampler/4-filter-seqs.md
+            - file: plugin-reference/plugins/genome-sampler/5-combine-selections.md
+            - file: plugin-reference/plugins/genome-sampler/6-mask.md
+            - file: plugin-reference/plugins/genome-sampler/7-label-seqs.md
             - file: >-
-                Plugin-Reference/plugins/genome-sampler/8-summarize-selections.md
+                plugin-reference/plugins/genome-sampler/8-summarize-selections.md
         - title: Artifacts classes and formats
           children:
-            - file: Plugin-Reference/artifacts/classes.md
-            - file: Plugin-Reference/artifacts/formats.md
+            - file: plugin-reference/artifacts/classes.md
+            - file: plugin-reference/artifacts/formats.md
 
 site:
   template: https://github.com/ebolyen/myst-book-theme-poc.git
