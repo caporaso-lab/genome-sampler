@@ -44,11 +44,33 @@ class TestSubsampleLongitudinal(TestPluginBase):
         s2.name = 'date-md'
         self.md2 = qiime2.CategoricalMetadataColumn(s2)
 
+        s3 = pd.Series(['2019', '2020', '2020',
+                        '2019', '2020', '2020',
+                        '2020', '2020', '2020'],
+                       index=[chr(x) for x in range(65, 74)])
+        s3.index.name = 'id'
+        s3.name = 'date-md'
+        self.md3 = qiime2.CategoricalMetadataColumn(s3)
+
     def test_default(self):
         sel = sample_longitudinal(self.md1)
 
         self.assertEqual(sel.inclusion.sum(), 9)
         self.assertEqual(sel.metadata.get_column('date-md'), self.md1)
+        self.assertEqual(sel.label, 'sample_longitudinal')
+
+    def test_year_only(self):
+        sel = sample_longitudinal(self.md3, samples_per_interval=2,
+                                  days_per_interval=365)
+
+        self.assertEqual(sel.inclusion.sum(), 4)
+        selected_ids = set(sel.inclusion[sel.inclusion].index)
+        # the two 2019 ids are present
+        self.assertTrue('A' in selected_ids)
+        self.assertTrue('D' in selected_ids)
+        # and two non-2019 ids are present
+        self.assertEqual(len(set(['B', 'C', 'E', 'F', 'G', 'H', 'I']) &
+                             selected_ids), 2)
         self.assertEqual(sel.label, 'sample_longitudinal')
 
     def test_start_date_in_data(self):
