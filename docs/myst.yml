@@ -8,7 +8,7 @@ project:
   # authors: ["Caporaso Lab"]
   github: https://github.com/caporaso-lab/genome-sampler
   references:
-    qiime2: https://develop.qiime2.org/en/latest/
+    q2doc-api-target: https://develop.qiime2.org/en/latest/
 
   plugins:
     - type: executable
