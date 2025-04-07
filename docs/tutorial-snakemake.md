@@ -1,7 +1,7 @@
 (usage-tutorial-snakemake)=
-# Snakemake tutorial
+# genome-sampler: Snakemake tutorial
 
-This document illustrates how to use `genome-sampler` on a small tutorial data set using Snakemake.
+This document illustrates how to use `genome-sampler` on a small tutorial data set using [Snakemake](https://snakemake.readthedocs.io/en/stable/).
 This makes genome-sampler very straight-forward to run, but more challenging to customize to your needs relative to using it in a step-by-step manner as illustrated in [](usage-tutorial).
 
 ## Download tutorial data

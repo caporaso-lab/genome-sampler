@@ -1,5 +1,5 @@
 (usage-tutorial)=
-# Step-by-step tutorial
+# genome-sampler: step-by-step tutorial
 
 This document illustrates how to use `genome-sampler` on a small tutorial data set using step-by-step instructions.
 This gives you complete control over the analysis, but is more complex to run relative to using the genome-sampler Snakemake workflow as illustrated in [](usage-tutorial-snakemake).
