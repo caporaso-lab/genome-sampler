@@ -14,7 +14,7 @@ Reach out on the [issue tracker](https://github.com/caporaso-lab/genome-sampler/
 In fact, all of the exact same sampling approaches can be applied in exactly the same way.
 The only additional file you'll need to do this (relative to the files used in [](#usage-tutorial)) is a focal sequence metadata file.
 This can mirror the format of the context sequence metadata file.
-For more details on the format of these files, see [Metadata file format](https://use.qiime2.org/en/latest/references/metadata.html).
+For more details on the format of these files, see [Metadata file format](https://use.qiime2.org/en/stable/references/metadata.html).
 
 (parallel)=
 ## Running in parallel
