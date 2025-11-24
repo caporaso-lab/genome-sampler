@@ -102,7 +102,7 @@ filtered_focal_seqs, = use.action(
 
 ```{tip}
 The `--help` parameter can be provided to any of the commands that are used in this tutorial.
-[See here](https://use.qiime2.org/en/latest/tutorials/intro.html#exploring-the-available-functionality) for additional detail.
+[See here](https://use.qiime2.org/en/stable/tutorials/intro.html#exploring-the-available-functionality) for additional detail.
 ```
 
 At any time, you could get some summary information about your sequences using the following command:
@@ -116,10 +116,10 @@ filtered_focal_seqs_summary, = use.action(
 )
 ```
 
-That command will create a [QIIME 2 visualization](https://use.qiime2.org/en/latest/back-matter/glossary.html#term-visualization), which most frequently would be viewed using [QIIME 2 View](https://view.qiime2.org).
+That command will create a [QIIME 2 visualization](https://use.qiime2.org/en/stable/back-matter/glossary.html#term-visualization), which most frequently would be viewed using [QIIME 2 View](https://view.qiime2.org).
 Try viewing that file and finding information such as the number of sequences present in this file and the median length of the sequences.
 (Your data is not uploaded to a server when you visit [QIIME 2 View](https://view.qiime2.org), so you don't need to be concerned about exposing sensitive research data.)
-For additional information on how to view QIIME 2 visualizations, see [here](https://use.qiime2.org/en/latest/how-to-guides/view-visualizations.html).
+For additional information on how to view QIIME 2 visualizations, see [here](https://use.qiime2.org/en/stable/how-to-guides/view-visualizations.html).
 
 ```{note}
 If some of your focal sequences are present in your context sequence collection (for example because you submitted your sequences to GISAID before downloading GISAID), you should remove those sequences from either your focal or context sequence collection.
