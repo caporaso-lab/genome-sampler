@@ -14,7 +14,7 @@ build:
       - conda env create -p .env/ --file environment-files/genome-sampler-dev.yml
       - conda install -p .env/ -c conda-forge nodejs
       - conda run -p .env/ pip install 'q2doc@git+https://github.com/qiime2/q2doc@dev'
-      - conda run -p .env/ pip install 'jupyter-book==2.0.0a1'
+      - conda run -p .env/ pip install jupyter-book
       - conda run -p .env/ pip install .
     build:
       html:
