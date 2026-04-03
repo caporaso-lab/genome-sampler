@@ -10,7 +10,7 @@ import subprocess
 
 import pandas as pd
 import skbio
-import vcf
+import vcfpy
 
 import qiime2
 import qiime2.plugin.model as model
@@ -32,12 +32,14 @@ class UNIXListFormat(model.TextFileFormat):
 class VCFMaskFormat(model.TextFileFormat):
     def _validate_(self, level):
         try:
-            list(zip(range(5), vcf.Reader(open(str(self)))))
-        except (IndexError, SyntaxError) as error:
+            with vcfpy.Reader.from_path(str(self)) as reader:
+                list(zip(range(5), reader))
+        except Exception as error:
             raise ValidationError(str(error))
 
     def to_list(self):
-        return list(vcf.Reader(open(str(self))))
+        with vcfpy.Reader.from_path(str(self)) as reader:
+            return list(reader)
 
 
 VCFMaskDirFmt = model.SingleFileDirectoryFormat(

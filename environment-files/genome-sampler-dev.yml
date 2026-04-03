@@ -11,6 +11,6 @@ dependencies:
   - q2-alignment
   - q2-phylogeny
   - q2templates
-  - pyvcf
+  - vcfpy
   - vsearch
   - pip
