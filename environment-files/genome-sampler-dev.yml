@@ -1,5 +1,5 @@
 channels:
-- https://packages.qiime2.org/qiime2/2026.7/qiime2/passed/
+- https://packages.qiime2.org/qiime2/latest/qiime2/passed/
 - conda-forge
 - bioconda
 dependencies:
