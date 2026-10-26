@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 
 import os
-import pkg_resources
+import importlib
 
 import pandas as pd
 import q2templates
@@ -15,8 +15,8 @@ import q2templates
 
 from genome_sampler.common import IDSelection
 
-SUMMARY_TEMPLATE = pkg_resources.resource_filename(
-    'genome_sampler', 'assets/summarize/index.html')
+SUMMARY_TEMPLATE = (importlib.resources.files('genome_sampler') /
+                    'assets' / 'summarize' / 'index.html')
 
 
 def _build_summary_table(selections):
